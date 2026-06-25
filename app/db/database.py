@@ -1,6 +1,9 @@
 #
 # database.py == 테이블 조회 및 저장 용도 !!!
-#
+
+# 프론트 서버 열기 - npm run dev
+# 백엔드 서버 열기 - poetry run fastapi dev app/main.py
+
 from collections.abc import Generator
 
 from sqlalchemy import create_engine
