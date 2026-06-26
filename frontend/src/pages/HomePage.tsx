@@ -108,7 +108,7 @@ function HomePage() {
   }
 
   return (
-    <section className="relative min-h-[calc(100vh-96px)]">
+    <section className="relative">
       <div className="relative z-10 mx-auto grid max-w-[1480px] gap-12 px-12 py-16 lg:grid-cols-[0.7fr_1.4fr] lg:items-center lg:px-20">
         {/* 왼쪽 소개 영역 */}
         <div>
@@ -287,7 +287,7 @@ function HomePage() {
             </section>
 
           </div>
-        </div> {/* ✅ 배경 네모 닫힘 */}
+        </div>
 
       </div>
 
