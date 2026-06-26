@@ -30,10 +30,12 @@ function App() {
 
   // 페이지 등록 + 기본 배경 설정
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#fbfaff] text-slate-800">
-      <div className="pointer-events-none absolute -right-40 top-0 h-[520px] w-[520px] rounded-full bg-pink-200/40 blur-3xl" />
-      <div className="pointer-events-none absolute -left-40 top-64 h-[520px] w-[520px] rounded-full bg-violet-200/40 blur-3xl" />
-
+    <div
+      className="relative min-h-screen overflow-hidden bg-[#fbfaff] bg-cover bg-center bg-no-repeat text-slate-800"
+      style={{
+        backgroundImage: "url('/images/background/backgroundMain.png')",
+      }}
+    >
       <Header />
       <main>
         <HomePage apiMessage={message} />
