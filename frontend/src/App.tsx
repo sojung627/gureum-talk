@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import Header from './components/Header'
+import Footer from './components/Footer'
+import HomePage from './pages/HomePage'
 
 type ApiResponse = {
   message: string
@@ -29,16 +28,18 @@ function App() {
       })
   }, [])
 
+  // 페이지 등록 + 기본 배경 설정
   return (
-    <main className="min-h-screen bg-violet-50 p-10">
-      <h1 className="text-5xl font-bold text-violet-600">
-        GureumTalk
-      </h1>
+    <div className="relative min-h-screen overflow-hidden bg-[#fbfaff] text-slate-800">
+      <div className="pointer-events-none absolute -right-40 top-0 h-[520px] w-[520px] rounded-full bg-pink-200/40 blur-3xl" />
+      <div className="pointer-events-none absolute -left-40 top-64 h-[520px] w-[520px] rounded-full bg-violet-200/40 blur-3xl" />
 
-      <p className="mt-5 text-xl text-slate-700">
-        {message}
-      </p>
-    </main>
+      <Header />
+      <main>
+        <HomePage apiMessage={message} />
+      </main>
+      <Footer />
+    </div>
   )
 }
 
