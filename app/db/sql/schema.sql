@@ -1,6 +1,13 @@
+-- 테이블 삭제
+DROP TABLE IF EXISTS chat_messages CASCADE;
+DROP TABLE IF EXISTS chat_rooms CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+
 -- 1. 사용자
 CREATE TABLE users (
                        user_id BIGSERIAL PRIMARY KEY,
+                       user_login_id VARCHAR(50) NOT NULL UNIQUE,
                        user_name VARCHAR(50) NOT NULL,
                        user_email VARCHAR(100) NOT NULL UNIQUE,
                        user_password_hash VARCHAR(255) NOT NULL,
