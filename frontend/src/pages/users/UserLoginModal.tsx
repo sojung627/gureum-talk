@@ -1,16 +1,17 @@
 import { useState } from 'react'
 
 type UserLoginModalProps = {
-  onClose: () => void
+  onClose: () => void // 닫힘 버튼
+  onSwitchToRegister: () => void // 로그인 글자 버튼
+  onSwitchToPasswordReset: () => void // 비밀번호 글자 버튼
 }
 
-function UserLoginModal({ onClose }: UserLoginModalProps) {
+function UserLoginModal({ onClose, onSwitchToRegister, onSwitchToPasswordReset }: UserLoginModalProps) {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="relative w-full max-w-[520px] rounded-[32px] bg-white p-8 shadow-2xl">
-
+    <div className="overflow-hidden fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="relative w-full max-w-[520px] rounded-[32px] bg-white p-8 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-custom">
         <button
           type="button"
           onClick={onClose}
@@ -37,7 +38,7 @@ function UserLoginModal({ onClose }: UserLoginModalProps) {
 
         {/* 아이디 */}
         <div className="mt-8">
-          <label className="mb-2 block text-base font-semibold text-slate-700">
+          <label className="mb-1 block text-base font-semibold text-slate-700">
             아이디
           </label>
 
@@ -54,7 +55,7 @@ function UserLoginModal({ onClose }: UserLoginModalProps) {
 
         {/* 비밀번호 */}
         <div className="mt-4">
-          <label className="mb-2 block text-base font-semibold text-slate-700">
+          <label className="mb-1 block text-base font-semibold text-slate-700">
             비밀번호
           </label>
 
@@ -89,6 +90,7 @@ function UserLoginModal({ onClose }: UserLoginModalProps) {
             아직 계정이 없으신가요?{' '}
             <button
               type="button"
+              onClick={onSwitchToRegister}
               className="font-semibold text-violet-500 hover:underline"
             >
               회원가입
@@ -98,6 +100,7 @@ function UserLoginModal({ onClose }: UserLoginModalProps) {
             비밀번호를 잊으셨나요?{' '}
             <button
               type="button"
+              onClick={onSwitchToPasswordReset}
               className="font-semibold text-violet-500 hover:underline"
             >
               비밀번호 찾기

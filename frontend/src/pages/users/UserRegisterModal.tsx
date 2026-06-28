@@ -1,18 +1,18 @@
 import { FormEvent, useState } from 'react'
 
 type UserRegisterModalProps = {
-  onClose: () => void
+  onClose: () => void // 닫힘 버튼
+  onSwitchToLogin: () => void // 로그인 글자 버튼
 }
 
-function UserRegisterModal({ onClose }: UserRegisterModalProps) {
+function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps) {
 
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
 
     return (
-         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-              <div className="relative w-full max-w-[520px] rounded-[32px] bg-white p-8 shadow-2xl">
-
+         <div className="overflow-hidden fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+              <div className="relative w-full max-w-[520px] rounded-[32px] bg-white p-8 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-custom">
                 <button
                   type="button"
                   onClick={onClose}
@@ -33,8 +33,8 @@ function UserRegisterModal({ onClose }: UserRegisterModalProps) {
                 </p>
 
                 {/* 이름 */}
-                <div>
-                    <label className="mb-2 block text-base font-semibold text-slate-700">
+                <div className="mt-4">
+                    <label className="mb-1 block text-base font-semibold text-slate-700">
                       이름
                     </label>
 
@@ -48,9 +48,25 @@ function UserRegisterModal({ onClose }: UserRegisterModalProps) {
                    </div>
                 </div>
 
+                {/* 전화번호 */}
+                <div className="mt-4">
+                  <label className="mb-1 block text-base font-semibold text-slate-700">
+                    전화번호
+                  </label>
+
+                  <div className="mt-3 relative">
+                    <input
+                      type="text"
+                      placeholder="전화번호를 입력해주세요"
+                      className="h-14 w-full rounded-2xl border border-slate-200 pl-5 pr-14 text-sm outline-none transition focus:border-violet-400"
+                    />
+                    <i className="fa-solid fa-phone-flip absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  </div>
+                </div>
+
                 {/* 아이디 */}
-                <div>
-                    <label className="mb-2 block text-base font-semibold text-slate-700">
+                <div className="mt-4">
+                    <label className="mb-1 block text-base font-semibold text-slate-700">
                       아이디
                     </label>
 
@@ -65,8 +81,8 @@ function UserRegisterModal({ onClose }: UserRegisterModalProps) {
                 </div>
 
                 {/* 비밀번호 */}
-                <div>
-                  <label className="mb-2 block text-base font-semibold text-slate-700">
+                <div className="mt-4">
+                  <label className="mb-1 block text-base font-semibold text-slate-700">
                     비밀번호
                   </label>
 
@@ -88,8 +104,8 @@ function UserRegisterModal({ onClose }: UserRegisterModalProps) {
                 </div>
 
                 {/* 비밀번호 확인 */}
-                <div>
-                  <label className="mb-2 block text-base font-semibold text-slate-700">
+                <div className="mt-4">
+                  <label className="mb-1 block text-base font-semibold text-slate-700">
                     비밀번호 확인
                   </label>
 
@@ -111,8 +127,8 @@ function UserRegisterModal({ onClose }: UserRegisterModalProps) {
                 </div>
 
                 {/* 이메일 */}
-                <div>
-                  <label className="mb-2 block text-base font-semibold text-slate-700">
+                <div className="mt-4">
+                  <label className="mb-1 block text-base font-semibold text-slate-700">
                     이메일
                   </label>
 
@@ -171,6 +187,7 @@ function UserRegisterModal({ onClose }: UserRegisterModalProps) {
                       이미 계정이 있으신가요?{' '}
                       <button
                         type="button"
+                        onClick={onSwitchToLogin}
                         className="font-semibold text-violet-500 hover:underline"
                       >
                         로그인

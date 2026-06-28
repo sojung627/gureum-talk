@@ -16,3 +16,18 @@ button,
 input {
   font: inherit;
 }
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 10px;
+}
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 20px 0;
+}
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #c4b5fd;
+  border-radius: 999px;
+}
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #a78bfa;
+}
