@@ -7,24 +7,25 @@
 from collections.abc import Generator
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session, sessionmaker, DeclarativeBase  # ← DeclarativeBase 추가
 
 from app.core.config import settings
 
-# PostgreSQL 연결
-engine = create_engine (
+engine = create_engine(
     settings.database_url,
     pool_pre_ping=True,
 )
 
-# DB 작업 중 세션 만듦
-SessionLocal = sessionmaker (
+SessionLocal = sessionmaker(
     bind=engine,
     autoflush=False,
     expire_on_commit=False,
 )
 
-# API 요청마다 세션 열기
+# ← 이거 추가
+class Base(DeclarativeBase):
+    pass
+
 def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
     try:

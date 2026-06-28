@@ -51,6 +51,21 @@ function UserLoginModal({ onClose, onSwitchToRegister, onSwitchToPasswordReset }
 
             <i className="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
           </div>
+
+          <div className="regular mt-2">
+            <label className="group flex cursor-pointer items-center gap-3 text-base text-slate-500">
+              <input
+                type="checkbox"
+                className="peer hidden"
+              />
+
+              <div className="flex h-5 w-5 items-center justify-center rounded-md border border-slate-300 transition peer-checked:border-violet-500 peer-checked:bg-violet-500">
+                <i className="fa-solid fa-check text-xs text-white opacity-0 transition group-has-[:checked]:opacity-100"></i>
+              </div>
+
+              <span>아이디 저장</span>
+            </label>
+          </div>
         </div>
 
         {/* 비밀번호 */}

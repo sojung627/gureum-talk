@@ -9,6 +9,7 @@ CREATE TABLE users (
                        user_id BIGSERIAL PRIMARY KEY,
                        user_login_id VARCHAR(50) NOT NULL UNIQUE,
                        user_name VARCHAR(50) NOT NULL,
+                       user_tel VARCHAR(20) NOT NULL UNIQUE,
                        user_email VARCHAR(100) NOT NULL UNIQUE,
                        user_password_hash VARCHAR(255) NOT NULL,
                        user_created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
