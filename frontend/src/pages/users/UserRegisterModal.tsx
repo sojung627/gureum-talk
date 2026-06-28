@@ -9,6 +9,43 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
+  const [phone, setPhone] = useState('')
+
+  {/* 전화번호 포맷 */}
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, '') // 숫자만
+    let formatted = raw
+    if (raw.length <= 3) formatted = raw
+    else if (raw.length <= 7) formatted = `${raw.slice(0, 3)}-${raw.slice(3)}`
+    else formatted = `${raw.slice(0, 3)}-${raw.slice(3, 7)}-${raw.slice(7, 11)}`
+    setPhone(formatted)
+  }
+
+  {/* 아이디 제약조건 */}
+  const [userId, setUserId] = useState('')
+  const [userIdError, setUserIdError] = useState('')
+
+  const validateUserId = (value: string) => {
+    if (value.length === 0) {
+      setUserIdError('')
+      return
+    }
+    if (!/^[a-z0-9]+$/.test(value)) {
+      setUserIdError('영문 소문자와 숫자만 입력해주세요.')
+      return
+    }
+    if (value.length < 5) {
+      setUserIdError('5자 이상 작성해주세요.')
+      return
+    }
+    setUserIdError('')
+  }
+
+  const handleUserIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.slice(0, 15)
+    setUserId(value)
+    validateUserId(value)
+  }
 
     return (
          <div className="overflow-hidden fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -58,6 +95,9 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
                     <input
                       type="text"
                       placeholder="전화번호를 입력해주세요"
+                      onChange={handlePhoneChange}
+                      value={phone}
+                      maxLength={13}
                       className="h-14 w-full rounded-2xl border border-slate-200 pl-5 pr-14 text-sm outline-none transition focus:border-violet-400"
                     />
                     <i className="fa-solid fa-phone-flip absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -66,18 +106,41 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
                 {/* 아이디 */}
                 <div className="mt-4">
-                    <label className="mb-1 block text-base font-semibold text-slate-700">
-                      아이디
-                    </label>
+                  <label className="mb-1 block text-base font-semibold text-slate-700">
+                    아이디
+                  </label>
 
-                    <div className="relative">
-                       <input
-                         type="text"
-                         placeholder="아이디를 입력해주세요"
-                         className="h-14 w-full rounded-2xl border border-slate-200 pl-5 pr-14 text-sm outline-none transition focus:border-violet-400"
-                       />
-                       <i className="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <div className="flex gap-3">
+                    <div className="relative flex-[7.5]">
+                      <input
+                        type="text"
+                        value={userId}
+                        onChange={handleUserIdChange}
+                        placeholder="아이디를 입력해주세요"
+                        maxLength={15}
+                        className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition ${
+                          userIdError
+                            ? 'border-red-400 focus:border-red-400'
+                            : 'border-slate-200 focus:border-violet-400'
+                        }`}
+                      />
+                      <i className="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
                     </div>
+
+                    <button
+                      type="button"
+                      className="flex-[2.5] h-14 rounded-2xl bg-gradient-to-r from-violet-100 to-indigo-100 font-semibold text-violet-600 shadow-sm shadow-violet-100 transition hover:-translate-y-0.5 hover:from-violet-600 hover:to-indigo-400 hover:text-white hover:shadow-lg hover:shadow-violet-200 whitespace-nowrap"
+                    >
+                      중복 체크
+                    </button>
+                  </div>
+
+                  {userIdError && (
+                    <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
+                      <i className="bi bi-info-circle" />
+                      {userIdError}
+                    </p>
+                  )}
                 </div>
 
                 {/* 비밀번호 */}

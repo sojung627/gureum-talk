@@ -9,6 +9,17 @@ function UserPasswordResetModal({ onClose, onSwitchToLogin }: UserLoginModalProp
 
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
+  const [phone, setPhone] = useState('')
+
+  {/* 전화번호 포맷 */}
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, '') // 숫자만
+    let formatted = raw
+    if (raw.length <= 3) formatted = raw
+    else if (raw.length <= 7) formatted = `${raw.slice(0, 3)}-${raw.slice(3)}`
+    else formatted = `${raw.slice(0, 3)}-${raw.slice(3, 7)}-${raw.slice(7, 11)}`
+    setPhone(formatted)
+  }
 
     return(
         <div className="overflow-hidden fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -37,11 +48,11 @@ function UserPasswordResetModal({ onClose, onSwitchToLogin }: UserLoginModalProp
               <i className="bi bi-1-circle-fill" /> 본인 확인
             </div>
 
-            {/* 이름 */}
+            {/* 아이디 */}
             <div className="mt-3 relative">
              <input
                type="text"
-               placeholder="이름을 입력해주세요"
+               placeholder="아이디 입력해주세요"
                className="h-14 w-full rounded-2xl border border-slate-200 pl-5 pr-14 text-sm outline-none transition focus:border-violet-400"
              />
                <i className="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -51,6 +62,9 @@ function UserPasswordResetModal({ onClose, onSwitchToLogin }: UserLoginModalProp
             <div className="mt-3 relative">
               <input
                 type="text"
+                onChange={handlePhoneChange}
+                value={phone}
+                maxLength={13}
                 placeholder="전화번호를 입력해주세요"
                 className="h-14 w-full rounded-2xl border border-slate-200 pl-5 pr-14 text-sm outline-none transition focus:border-violet-400"
               />
