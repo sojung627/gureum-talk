@@ -4,6 +4,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
+from app.core.routers import user as user_router
 
 app = FastAPI(title="GureumTalk API")
 
@@ -18,6 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(user_router.router)
 
 @app.get("/")
 def read_root() -> dict[str, str]:

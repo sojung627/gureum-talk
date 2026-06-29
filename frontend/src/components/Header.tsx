@@ -10,6 +10,16 @@ const navigationItems = ['홈', '기능', '요금제', '도움말']
 function Header() {
   const [activeMenu, setActiveMenu] = useState('홈')
   const [activeModal, setActiveModal] = useState<ModalType>(null)
+  const [loginUser, setLoginUser] = useState<{ username: string; name: string } | null>(null)
+
+  const handleLoginSuccess = (username: string, name: string) => {
+    setLoginUser({ username, name })
+    setActiveModal(null)
+  }
+
+  const handleLogout = () => {
+    setLoginUser(null)
+  }
 
   return (
     <>
@@ -48,20 +58,37 @@ function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setActiveModal('login')}
-              className="rounded-2xl border border-slate-100 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
-            >
-              로그인
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveModal('register')}
-              className="rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5"
-            >
-              회원가입
-            </button>
+            {loginUser ? (
+              <>
+                <span className="text-sm font-semibold text-slate-700">
+                  {loginUser.name}님
+                </span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="rounded-2xl border border-slate-100 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
+                >
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setActiveModal('login')}
+                  className="rounded-2xl border border-slate-100 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
+                >
+                  로그인
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveModal('register')}
+                  className="rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5"
+                >
+                  회원가입
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -71,6 +98,7 @@ function Header() {
           onClose={() => setActiveModal(null)}
           onSwitchToRegister={() => setActiveModal('register')}
           onSwitchToPasswordReset={() => setActiveModal('password-reset')}
+          onLoginSuccess={handleLoginSuccess}
         />
       )}
 
@@ -87,7 +115,6 @@ function Header() {
           onSwitchToLogin={() => setActiveModal('login')}
         />
       )}
-
     </>
   )
 }
