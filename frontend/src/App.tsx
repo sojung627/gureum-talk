@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import HomePage from './pages/HomePage'
+import Plans from './pages/plans/Plans'
 
 type ApiResponse = {
   message: string
@@ -38,7 +40,10 @@ function App() {
     >
       <Header />
       <main>
-        <HomePage apiMessage={message} />
+         <Routes>
+           <Route path="/" element={<HomePage apiMessage={message} />} />
+           <Route path="/plans" element={<Plans />} />
+         </Routes>
       </main>
       <Footer />
     </div>

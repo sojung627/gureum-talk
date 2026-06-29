@@ -2,15 +2,23 @@ import { useState } from 'react'
 import UserRegisterModal from '../pages/users/UserRegisterModal'
 import UserLoginModal from '../pages/users/UserLoginModal'
 import PasswordResetModal from '../pages/users/UserPasswordResetModal'
+import { useNavigate } from 'react-router-dom'
 
 type ModalType = 'login' | 'register' | 'password-reset' | null
 
 const navigationItems = ['홈', '기능', '요금제', '도움말']
 
 function Header() {
+  const navigate = useNavigate()
   const [activeMenu, setActiveMenu] = useState('홈')
   const [activeModal, setActiveModal] = useState<ModalType>(null)
   const [loginUser, setLoginUser] = useState<{ username: string; name: string } | null>(null)
+
+    const handleMenuClick = (item: string) => {
+      setActiveMenu(item)
+      if (item === '요금제') navigate('/plans')
+      if (item === '홈') navigate('/')
+    }
 
   const handleLoginSuccess = (username: string, name: string) => {
     setLoginUser({ username, name })
@@ -28,7 +36,7 @@ function Header() {
           <button
             type="button"
             className="flex items-center gap-3"
-            onClick={() => setActiveMenu('홈')}
+            onClick={() => {setActiveMenu('홈'); navigate('/')}}
           >
             <img className="w-15 h-15 object-contain" src="/images/gureum/GureumAI.png" alt="구름AI" />
             <span className="text-2xl font-bold tracking-tight text-slate-800">
@@ -43,7 +51,7 @@ function Header() {
                 <button
                   key={item}
                   type="button"
-                  onClick={() => setActiveMenu(item)}
+                  onClick={() => handleMenuClick(item)}
                   className={`relative py-4 text-[15px] font-medium transition-colors ${
                     isActive ? 'text-slate-900' : 'text-slate-500 hover:text-violet-500'
                   }`}
