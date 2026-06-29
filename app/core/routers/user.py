@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api/users", tags=["users"])
 
 @router.post("/login")
 def login(request: UserLoginRequest, db: Session = Depends(get_db)):
-    user, error, locked, remaining_seconds = login_user(db, request.username, request.password)
+    user, error, locked, remaining_seconds, attempt_count = login_user(db, request.username, request.password)
 
     if locked:
         return JSONResponse(
@@ -25,7 +25,10 @@ def login(request: UserLoginRequest, db: Session = Depends(get_db)):
     if error:
         return JSONResponse(
             status_code=401,
-            content={"message": error},
+            content={
+                "message": error,
+                "attempt_count": attempt_count,
+            },
         )
 
     return UserLoginResponse(

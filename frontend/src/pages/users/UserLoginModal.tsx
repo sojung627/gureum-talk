@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import apiClient from '../../api/axios'
 
 type UserLoginModalProps = {
   onClose: () => void
@@ -31,7 +32,8 @@ function UserLoginModal({
   const [lockExpired, setLockExpired] = useState(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  // 잠금 타이머
+  const [attemptCount, setAttemptCount] = useState(0)
+
   useEffect(() => {
     if (!locked || remainingSeconds <= 0) return
 
@@ -57,13 +59,12 @@ function UserLoginModal({
   }
 
   const handleLogin = async () => {
-    // 초기화
+    setAttemptCount(0)
     setUsernameError('')
     setPasswordError('')
     setLoginError('')
     setLockExpired(false)
 
-    // 빈 값 검증
     let valid = true
     if (!username.trim()) {
       setUsernameError('아이디를 입력해주세요.')
@@ -76,31 +77,11 @@ function UserLoginModal({
     if (!valid) return
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/users/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username.trim(), password: password.trim() }),
+      const { data } = await apiClient.post('/api/users/login', {
+        username: username.trim(),
+        password: password.trim(),
       })
 
-      const data = await response.json()
-
-      // 잠금 상태 (423)
-      if (response.status === 423) {
-        setLocked(true)
-        setLockExpired(false)
-        setRemainingSeconds(data.remaining_seconds)
-        return
-      }
-
-      // 로그인 실패 (401)
-      if (!response.ok) {
-        setUsernameError(' ')
-        setPasswordError(' ')
-        setLoginError('아이디 혹은 비밀번호가 올바르지 않습니다.')
-        return
-      }
-
-      // 로그인 성공
       if (saveId) {
         localStorage.setItem(SAVED_ID_KEY, username.trim())
       } else {
@@ -109,7 +90,25 @@ function UserLoginModal({
 
       onLoginSuccess(data.username, data.name)
       onClose()
-    } catch {
+    } catch (err: any) {
+      const status = err.response?.status
+      const data = err.response?.data
+
+      if (status === 423) {
+        setLocked(true)
+        setLockExpired(false)
+        setRemainingSeconds(data.remaining_seconds)
+        return
+      }
+
+      if (status === 401) {
+        setUsernameError(' ')
+        setPasswordError(' ')
+        setAttemptCount(data.attempt_count)
+        setLoginError('아이디 혹은 비밀번호가 올바르지 않습니다.')
+        return
+      }
+
       setLoginError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.')
     }
   }
@@ -208,7 +207,6 @@ function UserLoginModal({
             </button>
           </div>
 
-          {/* 빈 값 에러 (비밀번호만) */}
           {passwordError && passwordError.trim() && !loginError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
@@ -216,15 +214,14 @@ function UserLoginModal({
             </p>
           )}
 
-          {/* 로그인 실패 에러 */}
           {loginError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
-              {loginError}
+              {loginError}{' '}
+              <span className="font-semibold">({attemptCount} / 5)</span>
             </p>
           )}
 
-          {/* 잠금 타이머 */}
           {locked && remainingSeconds > 0 && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
@@ -232,7 +229,6 @@ function UserLoginModal({
             </p>
           )}
 
-          {/* 잠금 해제 */}
           {lockExpired && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-400">
               <i className="bi bi-info-circle" />
@@ -258,21 +254,13 @@ function UserLoginModal({
 
           <div className="mt-5 text-center text-sm text-slate-500">
             아직 계정이 없으신가요?{' '}
-            <button
-              type="button"
-              onClick={onSwitchToRegister}
-              className="font-semibold text-violet-500 hover:underline"
-            >
+            <button type="button" onClick={onSwitchToRegister} className="font-semibold text-violet-500 hover:underline">
               회원가입
             </button>
           </div>
           <div className="mt-5 text-center text-sm text-slate-500">
             비밀번호를 잊으셨나요?{' '}
-            <button
-              type="button"
-              onClick={onSwitchToPasswordReset}
-              className="font-semibold text-violet-500 hover:underline"
-            >
+            <button type="button" onClick={onSwitchToPasswordReset} className="font-semibold text-violet-500 hover:underline">
               비밀번호 찾기
             </button>
           </div>

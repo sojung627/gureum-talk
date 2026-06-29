@@ -60,9 +60,6 @@ function Header() {
           <div className="flex items-center gap-3">
             {loginUser ? (
               <>
-                <span className="text-sm font-semibold text-slate-700">
-                  {loginUser.name}님
-                </span>
                 <button
                   type="button"
                   onClick={handleLogout}
