@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import HomePage from './pages/HomePage'
 import Plans from './pages/plans/Plans'
 import Features from './pages/features/Features'
+import Help from './pages/help/Help'
 
 type ApiResponse = {
   message: string
@@ -45,6 +46,7 @@ function App() {
            <Route path="/" element={<HomePage apiMessage={message} />} />
            <Route path="/plans" element={<Plans />} />
            <Route path="/features" element={<Features />} />
+           <Route path="/help" element={<Help />} />
          </Routes>
       </main>
       <Footer />

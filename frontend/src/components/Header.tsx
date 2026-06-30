@@ -12,7 +12,8 @@ const navigationItems = ['홈', '기능', '요금제', '도움말']
 const PATH_TO_MENU: Record<string, string> = {
   '/': '홈',
   '/plans': '요금제',
-  '/features': '기능'
+  '/features': '기능',
+  '/help': '도움말',
 }
 
 function Header() {
@@ -23,6 +24,7 @@ function Header() {
   const [loginUser, setLoginUser] = useState<{ username: string; name: string } | null>(null)
 
     const handleMenuClick = (item: string) => {
+      if (item === '도움말') navigate('/help')
       if (item === '기능') navigate('/features')
       if (item === '요금제') navigate('/plans')
       if (item === '홈') navigate('/')
