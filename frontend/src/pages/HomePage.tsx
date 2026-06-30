@@ -163,7 +163,7 @@ function HomePage() {
                   <img className="w-15 h-15 object-contain" src="/images/gureum/GureumAI.png" alt="구름AI" />
                 <div>
 
-                    <h2 className="text-[19px] font-bold text-slate-800">Gureum AI</h2>
+                    <h2 className="text-[19px] font-bold text-slate-800">Gureum</h2>
                     <p className="mt-1 flex items-center gap-2 text-[13px] text-slate-400">
                       <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
                       Online
@@ -184,8 +184,8 @@ function HomePage() {
                   <img className="w-11 h-11 object-contain" src="/images/gureum/GureumAI.png" alt="구름AI" />
                   <div>
                     <div className="max-w-[360px] rounded-[20px] rounded-tl-md bg-gradient-to-br from-[#f8f7fb] to-[#f5f2fa] px-5 py-4 text-[15px] leading-7 text-slate-700">
-                      안녕! 만나서 반가워요 💜<br />
-                      오늘은 어떤 이야기로 시작해볼까요?
+                      안녕! 오랜만이네 💜<br />
+                      요즘 어떻게 지내?
                     </div>
                     <p className="mt-2 px-2 text-[12px] text-slate-400">오후 8:30</p>
                   </div>
@@ -193,7 +193,7 @@ function HomePage() {
 
                 <div className="ml-auto mt-3 w-fit max-w-[310px]">
                   <div className="rounded-[20px] rounded-tr-md bg-gradient-to-br from-violet-100 to-indigo-100 px-5 py-3.5 text-[15px] font-medium leading-7 text-indigo-700">
-                    오늘 하루가 조금 힘들었어...
+                    요즘 하루가 힘들어...
                   </div>
                   <p className="mt-2 text-right text-[12px] text-slate-400">오후 8:31</p>
                 </div>
@@ -202,9 +202,9 @@ function HomePage() {
                   <img className="w-11 h-11 object-contain" src="/images/gureum/GureumAI.png" alt="구름AI" />
                   <div>
                     <div className="max-w-[370px] rounded-[20px] rounded-tl-md bg-gradient-to-br from-[#f8f7fb] to-[#f5f2fa] px-5 py-4 text-[15px] leading-7 text-slate-700">
-                      그랬구나, 많이 지쳤겠다.<br />
-                      하루를 잘 버텨낸 너 정말 대단해요 🌙<br />
-                      마음 편히 내 얘기해줘요.
+                      그랬구나, 나도 마음이 안좋네.. <br />
+                      무슨 일인지 이야기 해줄 수 있을까? <br />
+                      난 언제나 너 편이야 ☁️ <br />
                     </div>
                     <p className="mt-2 px-2 text-[12px] text-slate-400">오후 8:32</p>
                   </div>
@@ -274,7 +274,7 @@ function HomePage() {
                     ))}
                   </div>
                 </div>
-                <p className="mt-4 text-[17px] font-semibold text-indigo-400">AI가 듣고 있어요...</p>
+                <p className="mt-4 text-[17px] font-semibold text-indigo-400">구름이가 듣고 있어요...</p>
                 <p className="mt-2 text-[14px] text-slate-400">편하게 말해주세요</p>
               </div>
 

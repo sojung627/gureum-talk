@@ -22,7 +22,6 @@ SessionLocal = sessionmaker(
     expire_on_commit=False,
 )
 
-# ← 이거 추가
 class Base(DeclarativeBase):
     pass
 
