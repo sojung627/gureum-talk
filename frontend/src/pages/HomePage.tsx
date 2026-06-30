@@ -74,22 +74,28 @@ function SendIcon() {
   )
 }
 
-function VoiceWave() {
+export function VoiceWave({ size = 288 }: { size?: number }) {
   const barHeights = ['h-4', 'h-8', 'h-12', 'h-20', 'h-28', 'h-20', 'h-14', 'h-9', 'h-5']
+  const scale = size / 288 //기준 크기(288px) 대비 축소 비율 계산
 
   return (
-    <div className="relative grid h-72 w-72 place-items-center">
-      <div className="absolute inset-0 rounded-full border border-violet-100" />
-      <div className="absolute inset-7 rounded-full border border-fuchsia-100" />
-      <div className="absolute inset-14 rounded-full bg-violet-200/20 blur-2xl" />
-      <span className="absolute left-3 top-1/2 h-2 w-2 rounded-full bg-violet-300" />
-      <span className="absolute right-8 top-10 h-2 w-2 rounded-full bg-violet-300" />
-      <span className="absolute bottom-6 right-16 h-1.5 w-1.5 rounded-full bg-fuchsia-200" />
-      <span className="absolute left-14 top-12 h-1.5 w-1.5 rounded-full bg-fuchsia-200" />
-      <div className="relative flex h-44 w-44 items-center justify-center gap-2 rounded-full bg-gradient-to-br from-violet-200 via-purple-300 to-violet-400 shadow-[0_0_30px_rgba(177,133,255,0.55),0_0_75px_rgba(206,175,255,0.48),inset_0_0_30px_rgba(255,255,255,0.75)]">
-        {barHeights.map((height, index) => (
-          <span key={index} className={`w-1.5 rounded-full bg-white ${height}`} />
-        ))}
+    <div style={{ width: size, height: size, overflow: 'visible' }} className="relative">
+      <div
+        className="relative grid h-72 w-72 place-items-center"
+        style={{ transform: `scale(${scale})`, transformOrigin: 'top left' }}
+      >
+        <div className="absolute inset-0 rounded-full border border-violet-100" />
+        <div className="absolute inset-7 rounded-full border border-fuchsia-100" />
+        <div className="absolute inset-14 rounded-full bg-violet-200/20 blur-2xl" />
+        <span className="absolute left-3 top-1/2 h-2 w-2 rounded-full bg-violet-300" />
+        <span className="absolute right-8 top-10 h-2 w-2 rounded-full bg-violet-300" />
+        <span className="absolute bottom-6 right-16 h-1.5 w-1.5 rounded-full bg-fuchsia-200" />
+        <span className="absolute left-14 top-12 h-1.5 w-1.5 rounded-full bg-fuchsia-200" />
+        <div className="relative flex h-44 w-44 items-center justify-center gap-2 rounded-full bg-gradient-to-br from-violet-200 via-purple-300 to-violet-400 shadow-[0_0_30px_rgba(177,133,255,0.55),0_0_75px_rgba(206,175,255,0.48),inset_0_0_30px_rgba(255,255,255,0.75)]">
+          {barHeights.map((height, index) => (
+            <span key={index} className={`w-1.5 rounded-full bg-white ${height}`} />
+          ))}
+        </div>
       </div>
     </div>
   )
