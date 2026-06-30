@@ -15,6 +15,13 @@ function Plans() {
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('monthly')
   const [selectedPlan, setSelectedPlan] = useState('프리미엄')
 
+  const getDisplayPrice = (price: number) => {
+    if (price === 0) return 0
+    return billingCycle === 'yearly'
+    ? Math.round(price * 0.8)
+    : price
+  }
+
   const plans: Plan[] = [
     {
         name: '무료',
@@ -115,8 +122,18 @@ function Plans() {
               </div>
               <h3 className="text-lg font-bold text-slate-800">{plan.name}</h3>
               <p className="mt-1 text-sm text-slate-400">{plan.description}</p>
-              <div className="mt-6 text-3xl font-bold text-violet-600">
-                {plan.price.toLocaleString()}<span className="text-base font-medium text-slate-400">원 /월</span>
+              <div className="mt-6">
+                { billingCycle === 'yearly' && plan.price > 0 && (
+                    <span className="text-sm text-slate-400 line-through">
+                      {plan.price.toLocaleString()}원
+                    </span>
+                )}
+                <div className="text-3xl font-bold text-violet-600">
+                  {getDisplayPrice(plan.price).toLocaleString()}
+                  <span className="text-base font-medium text-slate-400">
+                    원 /월
+                  </span>
+                </div>
               </div>
               <div className="mt-4 space-y-2">
                 {plan.content.map((item) => (
