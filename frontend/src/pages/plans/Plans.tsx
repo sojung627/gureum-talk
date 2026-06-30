@@ -18,7 +18,7 @@ function Plans() {
   const getDisplayPrice = (price: number) => {
     if (price === 0) return 0
     return billingCycle === 'yearly'
-    ? Math.round(price * 0.8)
+    ? Math.round(price * 0.8) * 12
     : price
   }
 
@@ -122,18 +122,18 @@ function Plans() {
               </div>
               <h3 className="text-lg font-bold text-slate-800">{plan.name}</h3>
               <p className="mt-1 text-sm text-slate-400">{plan.description}</p>
-              <div className="mt-6">
-                { billingCycle === 'yearly' && plan.price > 0 && (
-                    <span className="text-sm text-slate-400 line-through">
-                      {plan.price.toLocaleString()}원
-                    </span>
-                )}
-                <div className="text-3xl font-bold text-violet-600">
+              <div className="mt-6 flex items-baseline gap-1 whitespace-nowrap">
+                <div className="text-xl font-bold text-violet-600 sm:text-2xl lg:text-3xl">
                   {getDisplayPrice(plan.price).toLocaleString()}
-                  <span className="text-base font-medium text-slate-400">
-                    원 /월
+                  <span className="text-xs font-medium text-slate-400 sm:text-sm lg:text-base">
+                    원 /{billingCycle === 'yearly' ? '년' : '월'}
                   </span>
                 </div>
+                {billingCycle === 'yearly' && plan.price > 0 && (
+                  <span className="text-[10px] text-slate-400 line-through">
+                    {(plan.price * 12).toLocaleString()}원
+                  </span>
+                )}
               </div>
               <div className="mt-4 space-y-2">
                 {plan.content.map((item) => (
