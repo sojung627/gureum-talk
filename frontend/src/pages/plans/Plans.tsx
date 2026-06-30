@@ -25,7 +25,7 @@ function Plans() {
   const plans: Plan[] = [
     {
         name: '무료',
-        description: '구름이를 자유롭게 만나보세요',
+        description: '편안한 만남을 원한다면',
         price: 0,
         image: '/images/gureum/GureumAI.png',
         content: ['AI 채팅 일일 10회', '음성 채팅 10분', '대화 히스토리 저장 7일', '파일 첨부 3개까지', 'AI 기억 기능', '광고 포함'],
@@ -33,7 +33,7 @@ function Plans() {
     },
     {
         name: '베이직',
-        description: '더 따뜻한 대화를 원한다면',
+        description: '더 따뜻한 만남을 원한다면',
         price: 4900,
         image: '/images/gureum/GureumAI_basic.png',
         content: ['AI 채팅 무제한', '음성 채팅 300분', '대화 히스토리 저장 30일', '파일 첨부 10개까지', 'AI 기억 기능', '광고 미포함'],
@@ -41,7 +41,7 @@ function Plans() {
     },
     {
         name: '프리미엄',
-        description: '가장 따뜻한 대화 경험',
+        description: '가장 따뜻한 만남을 원한다면',
         price: 9900,
         image: '/images/gureum/GureumAI_premium.png',
         content: ['AI 채팅 무제한', '음성 채팅 600분', '대화 히스토리 저장 무제한', '파일 첨부 15개까지', 'AI 기억 기능', '광고 미포함'],
@@ -49,7 +49,7 @@ function Plans() {
     },
     {
         name: '프로',
-        description: '보다 가까운 구름이와의 관계',
+        description: '따뜻한 관계를 원한다면',
         price: 19900,
         image: '/images/gureum/GureumAI_pro.png',
         content: ['AI 채팅 무제한', '음성 채팅 무제한', '대화 히스토리 저장 무제한', '파일 첨부 무제한', 'AI 기억 기능', '광고 미포함'],
