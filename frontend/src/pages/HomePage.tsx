@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function ChatAvatar({ small = false }: { small?: boolean }) {
   return (
@@ -102,6 +103,7 @@ export function VoiceWave({ size = 288 }: { size?: number }) {
 }
 
 function HomePage() {
+  const navigate = useNavigate()
   const [inputMessage, setInputMessage] = useState('')
   const [userMessage, setUserMessage] = useState('오늘 하루가 조금 힘들었어...')
 
@@ -145,6 +147,7 @@ function HomePage() {
           <div className="mt-8 flex flex-wrap gap-4">
             <button
               type="button"
+              onClick={() => navigate('/chat')}
               className="rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 px-7 py-4 font-semibold text-white shadow-xl shadow-violet-200 transition hover:-translate-y-0.5"
             >
               <i className="fa-regular fa-comment-dots" /> AI 채팅 시작
