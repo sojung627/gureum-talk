@@ -72,19 +72,19 @@ const helpCenter = [
 const fastLink = [
     {
         content: '서비스 이용약관',
-        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300" />,
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
     },
     {
         content: '개인정보처리방침',
-        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300" />,
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
     },
     {
         content: '청소년 보호 정책',
-        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300" />,
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
     },
     {
         content: '권리침해 신고 안내',
-        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300" />,
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
     },
 ]
 
@@ -215,7 +215,7 @@ const fastLink = [
                     {fastLink.map((item, index) => (
                       <button
                         key={index}
-                        className="flex items-center justify-between px-2 py-2 rounded-lg text-left text-sm text-slate-600 hover:bg-violet-50 hover:text-violet-600 transition-colors"
+                        className="group flex items-center justify-between px-2 py-2 rounded-lg text-left text-sm text-slate-600 hover:bg-violet-50 hover:text-violet-600 transition-colors"
                       >
                         <span>{item.content}</span>
                         {item.icon}
@@ -224,10 +224,39 @@ const fastLink = [
                   </div>
               </div>
               <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
-                카드 2
+                <div className='text-[15px] font-bold'>
+                  문제가 해결되지 않나요?
+                </div>
+                <span className="mt-2 block text-sm text-slate-600 leading-5">
+                  문의하기를 통해 직접 질문하시면 <br />
+                  더 빠르게 답변해드릴게요.
+                </span>
+                <button
+                  type="button"
+                  className="mt-5 w-[180px] h-[50px] bg-violet-500 rounded-xl px-4 py-3 text-left text-sm leading-5"
+                >
+                  <div className="flex justify-center text-white">
+                    <i className="fa-solid fa-comment-dots" /> {' '}
+                    문의하기
+                  </div>
+                </button>
               </div>
               <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
-                카드 3
+                <div className='text-[15px] font-bold'>
+                  고객센터
+                </div>
+                <span className="mt-2 block text-sm leading-5">
+                  평일 <br />
+                  점심 <br />
+                  주말 및 공휴일
+                </span>
+                <div className="mt-2 flex justify-center">
+                  <div className="w-[350px] bg-violet-50 rounded-xl px-4 py-3 text-left text-sm leading-5">
+                    이용 중 불편한 점이 있다면 <br />
+                    언제든 이야기 해주세요{' '}
+                    <i className="fa-solid fa-heart text-violet-500" />
+                  </div>
+                </div>
               </div>
             </div>
         </div>
