@@ -31,3 +31,17 @@ input {
 .scrollbar-custom::-webkit-scrollbar-thumb:hover {
   background: #a78bfa;
 }
+
+@keyframes caretBlink {
+  0% {
+    background-color: #c4b5fd;
+    opacity: 1;
+  }
+  50% {
+    background-color: #7c3aed;
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

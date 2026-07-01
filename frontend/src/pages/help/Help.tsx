@@ -2,6 +2,13 @@ import { useState } from 'react'
 
 function Help() {
 
+// 검색창 입력값을 관리하는 상태
+const [searchKeyword, setSearchKeyword] = useState('')
+const handleSearchSubmit = (event) => {
+  event.preventDefault()
+  console.log(searchKeyword)
+}
+
 const help = [
     {
        title: '구름톡 시작하기',
@@ -115,7 +122,7 @@ const fastLink = [
                   ))}
                 </div>
               </div>
-              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center gap-2">
                 <div className="flex justify-center">
                   <img
                     alt="구름이"
@@ -160,19 +167,39 @@ const fastLink = [
                       도움이 되는 정보를 모아두었어요.
                     </p>
                   </div>
-                  <div className="w-80 h-8 rounded-xl bg-white flex items-center justify-between px-4 text-slate-400 shadow-lg">
-                    <div className="text-[10px]">
-                      궁금한 내용을 검색해 보세요.
+                  <form
+                    onSubmit={handleSearchSubmit}
+                    className="w-80 h-7 rounded-full bg-white flex items-center justify-between px-4 text-slate-400 shadow-lg"
+                  >
+                    <div className="relative w-80 h-7 rounded-full bg-white flex items-center px-4 shadow-lg">
+                      <input
+                        type="text"
+                        value={searchKeyword}
+                        onChange={(event) => setSearchKeyword(event.target.value)}
+                        placeholder="궁금한 내용을 검색해 보세요."
+                        className="w-full bg-transparent text-xs leading-none text-slate-700 placeholder:text-xs placeholder:text-slate-400 outline-none caret-transparent"
+                      />
+                      {/* 커스텀 커서 - tailwind.config.js */}
+                      <span className="absolute left-4 w-[2px] h-[12px] animate-[caretBlink_0.8s_infinite]" />
                     </div>
-                    <i className="fa-solid fa-magnifying-glass text-[10px]" />
-                  </div>
+                    <button
+                      type="submit"
+                      className="flex items-center justify-center text-slate-400 hover:text-violet-600 transition-colors"
+                    >
+                      <i className="fa-solid fa-magnifying-glass text-xs" />
+                    </button>
+                  </form>
                 </div>
               </div>
               <div className="mt-6 flex items-center justify-between">
                 <span className="font-semibold">자주 찾는 도움말</span>
-                <div className="text-violet-500">
-                  전체보기
-                  <i className="fa-solid fa-chevron-right text-violet-500 text-xs text-slate-300" />
+                <div>
+                  <button
+                    className="text-violet-500"
+                  >
+                    전체보기
+                    <i className="fa-solid fa-chevron-right text-violet-500 text-xs text-slate-300" />
+                  </button>
                 </div>
               </div>
               <div className="mt-2 grid grid-cols-3 gap-6">
@@ -223,7 +250,7 @@ const fastLink = [
                     ))}
                   </div>
               </div>
-              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-center">
                 <div className='text-[15px] font-bold'>
                   문제가 해결되지 않나요?
                 </div>
@@ -233,29 +260,34 @@ const fastLink = [
                 </span>
                 <button
                   type="button"
-                  className="mt-5 w-[180px] h-[50px] bg-violet-500 rounded-xl px-4 py-3 text-left text-sm leading-5"
+                  className="mt-5 w-[180px] h-[50px] bg-violet-500 rounded-xl text-sm leading-5 flex items-center justify-center gap-2 text-white whitespace-nowrap"
                 >
-                  <div className="flex justify-center text-white">
-                    <i className="fa-solid fa-comment-dots" /> {' '}
-                    문의하기
-                  </div>
+                  <i className="fa-solid fa-comment-dots" />
+                  <span>문의하기</span>
                 </button>
               </div>
               <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className='text-[15px] font-bold'>
-                  고객센터
+                  운영 시간
                 </div>
-                <span className="mt-2 block text-sm leading-5">
-                  평일 <br />
-                  점심 <br />
-                  주말 및 공휴일
-                </span>
-                <div className="mt-2 flex justify-center">
-                  <div className="w-[350px] bg-violet-50 rounded-xl px-4 py-3 text-left text-sm leading-5">
-                    이용 중 불편한 점이 있다면 <br />
-                    언제든 이야기 해주세요{' '}
-                    <i className="fa-solid fa-heart text-violet-500" />
+                <div className="mt-2 flex flex-col gap-1 text-sm leading-5">
+                  <div className="flex justify-between">
+                    <span>평일</span>
+                    <span>09:00 - 18:00</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span>점심</span>
+                    <span>12:00 - 13:00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>주말 및 공휴일</span>
+                    <span>휴무</span>
+                  </div>
+                </div>
+                <div className="mt-2 bg-violet-50 rounded-xl px-4 py-3 text-left text-sm leading-5">
+                  불편한 점이 있다면 <br />
+                  편하게 연락주세요!{' '}
+                  <i className="fa-solid fa-heart text-violet-500" />
                 </div>
               </div>
             </div>
