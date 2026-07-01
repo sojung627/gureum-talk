@@ -69,6 +69,25 @@ const helpCenter = [
     },
 ]
 
+const fastLink = [
+    {
+        content: '서비스 이용약관',
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300" />,
+    },
+    {
+        content: '개인정보처리방침',
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300" />,
+    },
+    {
+        content: '청소년 보호 정책',
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300" />,
+    },
+    {
+        content: '권리침해 신고 안내',
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300" />,
+    },
+]
+
     return (
         <div className="mt-12 grid grid-cols-1 gap-6 px-6 md:grid-cols-9 lg:px-24 max-w-[1480px] mx-auto">
             <div className="md:col-span-2 flex flex-col gap-6">
@@ -88,7 +107,7 @@ const helpCenter = [
                   {helpCenter.map((item, index) => (
                     <button
                       key={index}
-                      className="flex items-center gap-3 px-2 py-2 rounded-lg text-left text-sm text-slate-600 hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-3 px-2 py-2 rounded-lg text-left text-sm text-slate-600 hover:bg-violet-50 hover:text-violet-600 transition-colors"
                     >
                       {item.icon}
                       <span>{item.title}</span>
@@ -97,7 +116,29 @@ const helpCenter = [
                 </div>
               </div>
               <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
-                카드 2
+                <div className="flex justify-center">
+                  <img
+                    alt="구름이"
+                    src="/images/gureum/GureumNomal.png"
+                    className="w-[100px] h-[100px]"
+                  />
+                </div>
+                <div className='text-center text-[15px] font-bold'>
+                  도움이 더 필요하신가요?
+                </div>
+                <span className="mt-1 text-center block text-sm text-slate-600 leading-5">
+                  1:1 문의하기를 통해 빠르게<br />
+                  도움을 받으실 수 있어요.
+                </span>
+                <div className="mt-2 flex justify-center">
+                  <button
+                    type="button"
+                    className="flex items-center gap-2 px-4 py-2 bg-violet-100 text-violet-600 rounded-lg text-sm"
+                  >
+                    1:1 문의하기
+                    <i className="fa-solid fa-chevron-right text-xs" />
+                  </button>
+                </div>
               </div>
             </div>
             <div className="md:col-span-5 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
@@ -149,7 +190,6 @@ const helpCenter = [
                   </div>
                 ))}
               </div>
-
               <div className="mt-6 grid grid-cols-3 gap-6">
                 {help2.map((item, index) => (
                   <div key={index} className="bg-white rounded-2xl border border-gray-200 p-6 min-h-40 flex flex-col items-center justify-center text-center gap-3">
@@ -168,7 +208,20 @@ const helpCenter = [
             </div>
             <div className="md:col-span-2 flex flex-col gap-6">
               <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
-                카드 1
+                <div className='text-[18px] font-bold'>
+                  빠른 링크
+                </div>
+                <div className="mt-3 flex flex-col gap-1">
+                    {fastLink.map((item, index) => (
+                      <button
+                        key={index}
+                        className="flex items-center justify-between px-2 py-2 rounded-lg text-left text-sm text-slate-600 hover:bg-violet-50 hover:text-violet-600 transition-colors"
+                      >
+                        <span>{item.content}</span>
+                        {item.icon}
+                      </button>
+                    ))}
+                  </div>
               </div>
               <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
                 카드 2
