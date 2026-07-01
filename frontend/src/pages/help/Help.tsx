@@ -167,25 +167,10 @@ const fastLink = [
                       도움이 되는 정보를 모아두었어요.
                     </p>
                   </div>
-                  <form
-                    onSubmit={handleSearchSubmit}
-                    className="w-80 h-7 rounded-full bg-white flex items-center justify-between px-4 text-slate-400 shadow-lg"
-                  >
-                    <div className="relative w-80 h-7 rounded-full bg-white flex items-center px-4 shadow-lg">
-                      <input
-                        type="text"
-                        value={searchKeyword}
-                        onChange={(event) => setSearchKeyword(event.target.value)}
-                        placeholder="궁금한 내용을 검색해 보세요."
-                        className="w-full bg-transparent text-xs leading-none text-slate-700 placeholder:text-xs placeholder:text-slate-400 outline-none caret-transparent"
-                      />
-                      {/* 커스텀 커서 - tailwind.config.js */}
-                      <span className="absolute left-4 w-[2px] h-[12px] animate-[caretBlink_0.8s_infinite]" />
-                    </div>
-                    <button
-                      type="submit"
-                      className="flex items-center justify-center text-slate-400 hover:text-violet-600 transition-colors"
-                    >
+                  <form onSubmit={handleSearchSubmit} className="relative w-80 h-9 rounded-full bg-white shadow-lg">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 w-[2px] h-[14px] animate-[caretBlink_0.8s_infinite]" />
+                    <input type="text" value={searchKeyword} onChange={(event) => setSearchKeyword(event.target.value)} placeholder="궁금한 내용을 검색해 보세요." className="relative -top-px block w-full h-full bg-transparent pl-4 pr-12 text-xs text-slate-700 placeholder:text-xs placeholder:text-slate-400 outline-none caret-transparent" />
+                    <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center text-slate-400 hover:text-violet-600 transition-colors">
                       <i className="fa-solid fa-magnifying-glass text-xs" />
                     </button>
                   </form>
