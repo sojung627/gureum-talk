@@ -227,12 +227,9 @@ function HomePage() {
                 className="grid grid-cols-[minmax(0,1fr)_56px] items-center gap-3 px-7 pb-5 pt-2"
                 onSubmit={(event) => event.preventDefault()}
               >
-                <div className="flex h-14 min-w-0 items-center rounded-full border border-violet-100 bg-white px-5">
-                  <input
-                    type="text"
-                    placeholder="메시지를 입력해주세요..."
-                    className="min-w-0 flex-1 bg-transparent text-[14px] text-slate-700 outline-none placeholder:text-slate-300"
-                  />
+                <div className="relative flex h-14 min-w-0 items-center rounded-full border border-violet-100 bg-white px-5">
+                  <span className="absolute left-5 top-1/2 h-[20px] w-[2px] -translate-y-1/2 animate-[caretBlink_0.8s_infinite]" />
+                  <input type="text" placeholder="메시지를 입력해주세요..." className="min-w-0 flex-1 bg-transparent text-[14px] text-slate-700 outline-none placeholder:text-slate-300 caret-transparent" />
                   <button type="button" aria-label="이모지 선택" className="ml-3 grid h-8 w-8 shrink-0 place-items-center text-slate-400">
                     <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="9" />

@@ -169,7 +169,13 @@ const fastLink = [
                   </div>
                   <form onSubmit={handleSearchSubmit} className="relative w-80 h-9 rounded-full bg-white shadow-lg">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 w-[2px] h-[14px] animate-[caretBlink_0.8s_infinite]" />
-                    <input type="text" value={searchKeyword} onChange={(event) => setSearchKeyword(event.target.value)} placeholder="궁금한 내용을 검색해 보세요." className="relative -top-px block w-full h-full bg-transparent pl-4 pr-12 text-xs text-slate-700 placeholder:text-xs placeholder:text-slate-400 outline-none caret-transparent" />
+                    <input
+                        type="text"
+                        value={searchKeyword}
+                        onChange={(event) => setSearchKeyword(event.target.value)}
+                        placeholder="궁금한 내용을 검색해 보세요." style={{ fontSize: '11px' }}
+                        className="relative -top-px block w-full h-full bg-transparent pl-4 pr-12 font-normal text-slate-400 placeholder:text-[12px] placeholder:font-normal placeholder:text-slate-400 outline-none caret-transparent"
+                    />
                     <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center text-slate-400 hover:text-violet-600 transition-colors">
                       <i className="fa-solid fa-magnifying-glass text-xs" />
                     </button>
