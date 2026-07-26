@@ -78,6 +78,7 @@ function App() {
              path="/chat"
              element={(
                <ChatRoom
+                 key={loginUser?.username ?? 'guest'}
                  isAuthenticated={loginUser !== null}
                  isSessionLoading={isSessionLoading}
                />

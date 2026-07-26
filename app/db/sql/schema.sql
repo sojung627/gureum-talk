@@ -20,6 +20,8 @@ CREATE TABLE chat_rooms (
                             chat_room_id BIGSERIAL PRIMARY KEY,
                             user_id BIGINT NOT NULL,
                             chat_title VARCHAR(150) NOT NULL DEFAULT '새로운 대화',
+                            chat_is_pinned BOOLEAN NOT NULL DEFAULT FALSE,
+                            chat_pinned_at TIMESTAMPTZ,
                             chat_created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
                             chat_updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -61,6 +63,14 @@ CREATE TABLE chat_messages (
 -- 조회 성능을 위한 인덱스
 CREATE INDEX idx_chat_rooms_user_id
     ON chat_rooms(user_id);
+
+CREATE INDEX idx_chat_rooms_user_pinned
+    ON chat_rooms(
+                  user_id,
+                  chat_is_pinned DESC,
+                  chat_pinned_at DESC,
+                  chat_updated_at DESC
+        );
 
 CREATE INDEX idx_chat_messages_room_created
     ON chat_messages(chat_room_id, chat_message_created_at);

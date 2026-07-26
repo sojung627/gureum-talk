@@ -34,6 +34,8 @@ class ChatResponse(BaseModel):
 class ChatRoomResponse(BaseModel):
     chat_room_id: int
     chat_title: str
+    chat_is_pinned: bool
+    chat_pinned_at: datetime | None
     chat_created_at: datetime
     chat_updated_at: datetime
 
@@ -43,6 +45,10 @@ class ChatRoomTitleUpdateRequest(BaseModel):
         min_length=1,
         max_length=150,
     )
+
+
+class ChatRoomPinUpdateRequest(BaseModel):
+    chat_is_pinned: bool
 
 
 class StoredChatMessageResponse(BaseModel):

@@ -36,6 +36,8 @@ def create_chat_room_response(chat_room) -> ChatRoomResponse:
         chat_title=chat_room.chat_title,
         chat_created_at=chat_room.chat_created_at,
         chat_updated_at=chat_room.chat_updated_at,
+        chat_is_pinned=chat_room.chat_is_pinned,
+        chat_pinned_at=chat_room.chat_pinned_at,
     )
 
 

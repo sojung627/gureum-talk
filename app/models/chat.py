@@ -1,4 +1,12 @@
-from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, String, Text
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    String,
+    Text,
+)
 from sqlalchemy.sql import func
 
 from app.db.database import Base
@@ -18,6 +26,16 @@ class ChatRoom(Base):
         String(150),
         nullable=False,
         default="새로운 대화",
+    )
+    chat_is_pinned = Column(
+        Boolean,
+        nullable=False,
+        default=False,
+        server_default="false",
+    )
+    chat_pinned_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
     )
     chat_created_at = Column(
         DateTime(timezone=True),
