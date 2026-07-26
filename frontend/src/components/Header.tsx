@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import UserRegisterModal from '../pages/users/UserRegisterModal'
-import UserLoginModal from '../pages/users/UserLoginModal'
+import { useLocation, useNavigate } from 'react-router-dom'
+
+import { type LoginUser } from '../api/user'
 import PasswordResetModal from '../pages/users/UserPasswordResetModal'
-import { useNavigate, useLocation } from 'react-router-dom'
+import UserLoginModal from '../pages/users/UserLoginModal'
+import UserRegisterModal from '../pages/users/UserRegisterModal'
 
 type ModalType = 'login' | 'register' | 'password-reset' | null
 
@@ -16,27 +18,38 @@ const PATH_TO_MENU: Record<string, string> = {
   '/help': '도움말',
 }
 
-function Header() {
+type HeaderProps = {
+  loginUser: LoginUser | null
+  isSessionLoading: boolean
+  onLoginSuccess: (loginUser: LoginUser) => void
+  onLogout: () => Promise<void>
+}
+
+function Header({
+  loginUser,
+  isSessionLoading,
+  onLoginSuccess,
+  onLogout,
+}: HeaderProps) {
   const navigate = useNavigate()
   const location = useLocation()
   const activeMenu = PATH_TO_MENU[location.pathname] ?? '홈'
   const [activeModal, setActiveModal] = useState<ModalType>(null)
-  const [loginUser, setLoginUser] = useState<{ username: string; name: string } | null>(null)
 
-    const handleMenuClick = (item: string) => {
-      if (item === '도움말') navigate('/help')
-      if (item === '기능') navigate('/features')
-      if (item === '요금제') navigate('/plans')
-      if (item === '홈') navigate('/')
-    }
+  const handleMenuClick = (item: string) => {
+    if (item === '도움말') navigate('/help')
+    if (item === '기능') navigate('/features')
+    if (item === '요금제') navigate('/plans')
+    if (item === '홈') navigate('/')
+  }
 
   const handleLoginSuccess = (username: string, name: string) => {
-    setLoginUser({ username, name })
+    onLoginSuccess({ username, name })
     setActiveModal(null)
   }
 
-  const handleLogout = () => {
-    setLoginUser(null)
+  const handleLogout = async () => {
+    await onLogout()
   }
 
   return (
@@ -76,7 +89,7 @@ function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
-            {loginUser ? (
+            {!isSessionLoading && loginUser ? (
               <>
                 <button
                   type="button"
@@ -86,7 +99,7 @@ function Header() {
                   로그아웃
                 </button>
               </>
-            ) : (
+            ) : !isSessionLoading ? (
               <>
                 <button
                   type="button"
@@ -103,7 +116,7 @@ function Header() {
                   회원가입
                 </button>
               </>
-            )}
+            ) : null}
           </div>
         </div>
       </header>

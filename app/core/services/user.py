@@ -2,7 +2,10 @@ from datetime import datetime, timedelta
 from itertools import count
 
 import bcrypt
+from fastapi import Request
 from sqlalchemy.orm import Session
+
+from app.core.error.exceptions import AuthenticationRequiredError
 from app.models.user import User
 import re
 
@@ -59,6 +62,39 @@ def login_user(db: Session, username: str, password: str):
     #로그인 성공 시 그동안 실패한 횟수 리셋
     _login_attempts[username] = {"count": 0, "locked_until": None}
     return user, None, False, 0, 0
+
+
+def get_session_user(
+    db: Session,
+    http_request: Request,
+) -> User | None:
+    """세션에 저장된 사용자 기본키로 로그인 사용자를 복구한다."""
+    user_id = http_request.session.get("user_id")
+    if user_id is None:
+        return None
+
+    user = db.get(User, user_id)
+    if user is None:
+        http_request.session.clear()
+        return None
+
+    return user
+
+
+def require_session_user(
+    db: Session,
+    http_request: Request,
+) -> User:
+    """로그인이 필요한 API에서 현재 사용자를 확인한다."""
+    user = get_session_user(
+        db=db,
+        http_request=http_request,
+    )
+
+    if user is None:
+        raise AuthenticationRequiredError()
+
+    return user
 
 #회원가입 - 비밀번호
 def hash_password(plain_password: str) -> str:

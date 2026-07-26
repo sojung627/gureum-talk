@@ -7,31 +7,52 @@ import Plans from './pages/plans/Plans'
 import Features from './pages/features/Features'
 import Help from './pages/help/Help'
 import ChatRoom from './pages/chat/ChatRoom'
-
-type ApiResponse = {
-  message: string
-}
+import {
+  getCurrentUser,
+  type LoginUser,
+  logoutCurrentUser,
+} from './api/user'
 
 function App() {
-  const [message, setMessage] = useState('백엔드 연결 확인 중...')
+  const [loginUser, setLoginUser] = useState<LoginUser | null>(null)
+  const [isSessionLoading, setIsSessionLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`서버 오류: ${response.status}`)
-        }
+    let isMounted = true
 
-        return response.json() as Promise<ApiResponse>
-      })
-      .then((data) => {
-        setMessage(data.message)
-      })
-      .catch((error) => {
-        console.error(error)
-        setMessage('백엔드 연결 실패')
-      })
+    const restoreLoginSession = async () => {
+      try {
+        const sessionUser = await getCurrentUser()
+
+        if (isMounted) {
+          setLoginUser(sessionUser)
+        }
+      } catch (error) {
+        console.error('로그인 세션 확인 실패', error)
+        if (isMounted) {
+          setLoginUser(null)
+        }
+      } finally {
+        if (isMounted) {
+          setIsSessionLoading(false)
+        }
+      }
+    }
+
+    void restoreLoginSession()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
+
+  const handleLogout = async () => {
+    try {
+      await logoutCurrentUser()
+    } finally {
+      setLoginUser(null)
+    }
+  }
 
   // 페이지 등록 + 기본 배경 설정
   return (
@@ -41,14 +62,27 @@ function App() {
         backgroundImage: "url('/images/background/backgroundMain.png')",
       }}
     >
-      <Header />
+      <Header
+        loginUser={loginUser}
+        isSessionLoading={isSessionLoading}
+        onLoginSuccess={setLoginUser}
+        onLogout={handleLogout}
+      />
       <main>
          <Routes>
-           <Route path="/" element={<HomePage apiMessage={message} />} />
+           <Route path="/" element={<HomePage />} />
            <Route path="/plans" element={<Plans />} />
            <Route path="/features" element={<Features />} />
            <Route path="/help" element={<Help />} />
-           <Route path="/chat" element={<ChatRoom />} />
+           <Route
+             path="/chat"
+             element={(
+               <ChatRoom
+                 isAuthenticated={loginUser !== null}
+                 isSessionLoading={isSessionLoading}
+               />
+             )}
+           />
          </Routes>
       </main>
       <Footer />

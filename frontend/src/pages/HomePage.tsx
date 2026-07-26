@@ -1,79 +1,4 @@
-import { FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-function ChatAvatar({ small = false }: { small?: boolean }) {
-  return (
-    <div
-      className={`relative grid shrink-0 place-items-center rounded-full bg-gradient-to-br from-violet-200 via-indigo-200 to-violet-500 shadow-[0_6px_18px_rgba(124,103,255,0.22)] ${
-        small ? 'h-9 w-9' : 'h-14 w-14'
-      }`}
-    >
-      <div
-        className={`absolute rounded-full bg-white ${
-          small ? 'bottom-2 h-4 w-6' : 'bottom-3 h-6 w-9'
-        }`}
-      >
-        <span
-          className={`absolute rounded-full bg-violet-500 ${
-            small
-              ? 'left-[7px] top-[7px] h-1 w-1'
-              : 'left-[10px] top-[10px] h-1.5 w-1.5'
-          }`}
-        />
-        <span
-          className={`absolute rounded-full bg-violet-500 ${
-            small
-              ? 'right-[7px] top-[7px] h-1 w-1'
-              : 'right-[10px] top-[10px] h-1.5 w-1.5'
-          }`}
-        />
-      </div>
-    </div>
-  )
-}
-
-function MoreIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor" aria-hidden="true">
-      <circle cx="5" cy="12" r="1.8" />
-      <circle cx="12" cy="12" r="1.8" />
-      <circle cx="19" cy="12" r="1.8" />
-    </svg>
-  )
-}
-
-function SettingsIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-      <path d="M4 7h7" />
-      <path d="M15 7h5" />
-      <circle cx="13" cy="7" r="2" />
-      <path d="M4 17h4" />
-      <path d="M12 17h8" />
-      <circle cx="10" cy="17" r="2" />
-    </svg>
-  )
-}
-
-function SmileIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M8.5 10h.01" />
-      <path d="M15.5 10h.01" />
-      <path d="M8.5 14a5 5 0 0 0 7 0" />
-    </svg>
-  )
-}
-
-function SendIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M22 2 11 13" />
-      <path d="m22 2-7 20-4-9-9-4Z" />
-    </svg>
-  )
-}
 
 export function VoiceWave({ size = 288 }: { size?: number }) {
   const barHeights = ['h-4', 'h-8', 'h-12', 'h-20', 'h-28', 'h-20', 'h-14', 'h-9', 'h-5']
@@ -104,16 +29,6 @@ export function VoiceWave({ size = 288 }: { size?: number }) {
 
 function HomePage() {
   const navigate = useNavigate()
-  const [inputMessage, setInputMessage] = useState('')
-  const [userMessage, setUserMessage] = useState('오늘 하루가 조금 힘들었어...')
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const trimmedMessage = inputMessage.trim()
-    if (!trimmedMessage) return
-    setUserMessage(trimmedMessage)
-    setInputMessage('')
-  }
 
   return (
     <section className="relative">
@@ -231,9 +146,16 @@ function HomePage() {
                 onSubmit={(event) => event.preventDefault()}
               >
                 <div className="relative flex h-14 min-w-0 items-center rounded-full border border-violet-100 bg-white px-5">
-                  <span className="absolute left-5 top-1/2 h-[20px] w-[2px] -translate-y-1/2 animate-[caretBlink_0.8s_infinite]" />
-                  <input type="text" placeholder="메시지를 입력해주세요..." className="min-w-0 flex-1 bg-transparent text-[14px] text-slate-700 outline-none placeholder:text-slate-300 caret-transparent" />
-                  <button type="button" aria-label="이모지 선택" className="ml-3 grid h-8 w-8 shrink-0 place-items-center text-slate-400">
+                  <input
+                    type="text"
+                    placeholder="메시지를 입력해주세요..."
+                    className="min-w-0 flex-1 bg-transparent text-[14px] text-slate-700 outline-none placeholder:text-slate-300 caret-violet-500"
+                  />
+                    <button
+                        type="button"
+                        aria-label="이모지 선택"
+                        className="ml-3 grid h-8 w-8 shrink-0 place-items-center text-slate-400"
+                    >
                     <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="9" />
                       <path d="M8.5 10h.01" />

@@ -3,16 +3,24 @@ name = "gureumtalk"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "ppoya",email = "temporary020627@gmail.com"}
+    {name = "ppoya", email = "temporary020627@gmail.com"}
 ]
-requires-python = "^3.12"
+requires-python = ">=3.12,<4.0"
 dependencies = [
     "fastapi[standard] (>=0.138.0,<0.139.0)",
     "sqlalchemy (>=2.0.51,<3.0.0)",
     "psycopg[binary] (>=3.3.4,<4.0.0)",
     "pydantic-settings (>=2.14.2,<3.0.0)",
-    "scikit-learn (>=1.9.0,<2.0.0)"
+    "scikit-learn (>=1.9.0,<2.0.0)",
+    "groq (>=1.6.0,<2.0.0)",
+    "python-dotenv (>=1.2.2,<2.0.0)",
+    "bcrypt (>=4.3.0,<6.0.0)",
+    "itsdangerous (>=2.2.0,<3.0.0)",
 ]
+
+
+[tool.poetry]
+package-mode = false
 
 
 [build-system]

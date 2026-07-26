@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import axios from 'axios'
 import apiClient from '../../api/axios'
 
 type UserLoginModalProps = {
@@ -6,6 +7,11 @@ type UserLoginModalProps = {
   onSwitchToRegister: () => void
   onSwitchToPasswordReset: () => void
   onLoginSuccess: (username: string, name: string) => void
+}
+
+type LoginErrorResponse = {
+  remaining_seconds?: number
+  attempt_count?: number
 }
 
 const SAVED_ID_KEY = 'gureum_saved_id'
@@ -35,7 +41,7 @@ function UserLoginModal({
   const [attemptCount, setAttemptCount] = useState(0)
 
   useEffect(() => {
-    if (!locked || remainingSeconds <= 0) return
+    if (!locked) return
 
     timerRef.current = setInterval(() => {
       setRemainingSeconds((prev) => {
@@ -90,11 +96,16 @@ function UserLoginModal({
 
       onLoginSuccess(data.username, data.name)
       onClose()
-    } catch (err: any) {
+    } catch (err: unknown) {
+      if (!axios.isAxiosError<LoginErrorResponse>(err)) {
+        setLoginError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.')
+        return
+      }
+
       const status = err.response?.status
       const data = err.response?.data
 
-      if (status === 423) {
+      if (status === 423 && data?.remaining_seconds !== undefined) {
         setLocked(true)
         setLockExpired(false)
         setRemainingSeconds(data.remaining_seconds)
@@ -104,7 +115,7 @@ function UserLoginModal({
       if (status === 401) {
         setUsernameError(' ')
         setPasswordError(' ')
-        setAttemptCount(data.attempt_count)
+        setAttemptCount(data?.attempt_count ?? 0)
         setLoginError('아이디 혹은 비밀번호가 올바르지 않습니다.')
         return
       }

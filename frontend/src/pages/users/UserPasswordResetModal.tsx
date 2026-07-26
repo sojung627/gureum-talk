@@ -1,11 +1,14 @@
 import { useState } from 'react'
 
-type UserRegisterModalProps = {
+type UserPasswordResetModalProps = {
   onClose: () => void // 닫힘 버튼
   onSwitchToLogin: () => void // 로그인 글자 버튼
 }
 
-function UserPasswordResetModal({ onClose, onSwitchToLogin }: UserLoginModalProps) {
+function UserPasswordResetModal({
+  onClose,
+  onSwitchToLogin,
+}: UserPasswordResetModalProps) {
 
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
@@ -14,7 +17,7 @@ function UserPasswordResetModal({ onClose, onSwitchToLogin }: UserLoginModalProp
   {/* 전화번호 포맷 */}
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, '') // 숫자만
-    let formatted = raw
+    let formatted: string
     if (raw.length <= 3) formatted = raw
     else if (raw.length <= 7) formatted = `${raw.slice(0, 3)}-${raw.slice(3)}`
     else formatted = `${raw.slice(0, 3)}-${raw.slice(3, 7)}-${raw.slice(7, 11)}`

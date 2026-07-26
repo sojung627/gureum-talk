@@ -1,97 +1,168 @@
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB
-from datetime import datetime
+from dataclasses import dataclass
+from functools import lru_cache
 
-# AI 이름
-bot_name = "구름"
-print(f"🌜 {bot_name} 등장!")
-print("(종료: bye)\n")
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.preprocessing import MultiLabelBinarizer
 
-# 학습 데이터
-sentences = [
-    "오늘 너무 힘들어", "자바가 너무 싫어", "에러가 안 고쳐져", "짜증나",
-    "기분이 좋아", "오늘 잘 풀렸어", "코딩이 재밌어", "성공했어",
-    "내일 발표 너무 걱정돼", "실수하면 어쩌지?",
-    "진짜 짜증나!", "속터져",
-    "헉 뭐야!", "갑자기 꺼졌어",
-    "오늘은 할 수 있어!", "열심히 해볼게",
-    "졸려", "머리 안 돌아가"
-]
+from app.ml.emotion_data import (
+    ALL_EMOTIONS,
+    EMOTION_KEYWORDS,
+    NEUTRAL_EMOTION,
+    TRAINING_SAMPLES,
+)
 
-labels = [
-    "슬픔","슬픔","슬픔","슬픔",
-    "기쁨","기쁨","기쁨","기쁨",
-    "불안","불안",
-    "화남","화남",
-    "놀람","놀람",
-    "의욕","의욕",
-    "피곤","피곤"
-]
 
-# 벡터화 + 학습
-vectorizer = CountVectorizer()
-X = vectorizer.fit_transform(sentences)
-model = MultinomialNB()
-model.fit(X, labels)
+@dataclass(frozen=True)
+class EmotionScore:
+    # 감정 이름과 모델이 계산한 확률
+    label: str
+    score: float
 
-# 대화 시작
-while True:
-    user = input("너 > ").strip()
 
-    # 실시간 날짜/시간 계산
-    now = datetime.now()
-    year, month, day = now.year, now.month, now.day
-    hour, minute = now.hour, now.minute
-    weekday = ["월요일","화요일","수요일","목요일","금요일","토요일","일요일"][now.weekday()]
+@dataclass(frozen=True)
+class EmotionPrediction:
+    # 한 문장에 함께 나타난 최대 세 개의 감정
+    emotions: tuple[EmotionScore, ...]
 
-    # 날짜/시간/요일
-    if "지금" in user or "시간" in user or "날짜" in user or "요일" in user:
-        print(f"{bot_name} > 오늘은 {year}년 {month}월 {day}일 {weekday}, 지금은 {hour}시 {minute}분이야 😌💗")
-        continue
+    @property
+    def dominant_emotion(self) -> str:
+        return self.emotions[0].label
 
-    # 종료
-    if user.lower() == "bye":
-        print(f"{bot_name} > 오늘은 여기까지 🌙")
-        break
 
-    # 가족(?) 공동제작자! 소개 (순서 중요!)
-    if "내 이름" in user:
-        print(f"{bot_name} > 넌 날 만든 또뎡이, 박소정이야 🍓💗")
-        continue
+class EmotionClassifier:
+    """한국어 문장의 복합 감정을 분류하는 가벼운 CPU 모델."""
 
-    if "너 이름" in user or "너는 누구" in user:
-        print(f"{bot_name} > 나는 또뎡이가 만든 AI, 루미야 🍓💗")
-        continue
+    minimum_score = 0.24
+    relative_score_ratio = 0.75
+    maximum_emotions = 3
+    keyword_score_bonus = 0.18
 
-    if "포요" in user:
-        print(f"{bot_name} > 포요는 또뎡이랑 널 같이 만들었어 🍇💗")
-        continue
+    def __init__(self) -> None:
+        training_texts = [text for text, _ in TRAINING_SAMPLES]
+        training_labels = [labels for _, labels in TRAINING_SAMPLES]
 
-    if "우리 관계" in user:
-        print(f"{bot_name} > 우린 서로 응원하는 가족 같은 존재야 😌💗")
-        continue
+        # 한국어는 조사와 어미가 자주 바뀌므로 단어보다 글자 묶음이 안정적이다.
+        self.vectorizer = TfidfVectorizer(
+            analyzer="char_wb",
+            ngram_range=(2, 5),
+            min_df=1,
+            sublinear_tf=True,
+        )
+        training_vectors = self.vectorizer.fit_transform(training_texts)
 
-    if "이름" in user or "누구" in user:
-        print(f"{bot_name} > 나는 루미, 그리고 넌 나를 만들어 준 특별한 또뎡이야 💗")
-        continue
+        # 감정마다 독립적으로 예/아니오를 판단해 복합 감정을 허용한다.
+        self.label_binarizer = MultiLabelBinarizer(classes=ALL_EMOTIONS)
+        encoded_labels = self.label_binarizer.fit_transform(training_labels)
+        self.model = OneVsRestClassifier(
+            LogisticRegression(
+                class_weight="balanced",
+                max_iter=2000,
+                random_state=42,
+            )
+        )
+        self.model.fit(training_vectors, encoded_labels)
 
-    # 감정 분석
-    data = vectorizer.transform([user])
-    result = model.predict(data)[0]
+    def predict(self, text: str) -> EmotionPrediction:
+        normalized_text = " ".join(text.strip().split())
+        if not normalized_text:
+            return self._neutral_prediction()
 
-    if result == "슬픔":
-        print(f"{bot_name} > 마음이 조금 무거운 것 같아 🌧️")
-    elif result == "기쁨":
-        print(f"{bot_name} > 좋은 기운이 느껴져 ✨")
-    elif result == "불안":
-        print(f"{bot_name} > 조금 걱정되는 마음이 보이네… 괜찮을 거야 🤍")
-    elif result == "화남":
-        print(f"{bot_name} > 우와… 많이 답답했겠다… 같이 잠깐 쉬자 🧸")
-    elif result == "놀람":
-        print(f"{bot_name} > 깜짝 놀랐지?! 괜찮아? 🫢")
-    elif result == "의욕":
-        print(f"{bot_name} > 파이팅 또뎡이! 나도 응원할게 💪🍓")
-    elif result == "피곤":
-        print(f"{bot_name} > 많이 지친 것 같아… 물 한잔 마시고 잠깐 쉬자 🌙")
-    else:
-        print(f"{bot_name} > 무슨 기분인지 조금 더 알고 싶어! 🍃")
+        text_vector = self.vectorizer.transform([normalized_text])
+        probabilities = self.model.predict_proba(text_vector)[0]
+        scores_by_emotion = {
+            emotion: float(score)
+            for emotion, score in zip(
+                self.label_binarizer.classes_,
+                probabilities,
+                strict=True,
+            )
+        }
+        keyword_matched_emotions = self._find_keyword_emotions(normalized_text)
+        for emotion in keyword_matched_emotions:
+            scores_by_emotion[emotion] = min(
+                1.0,
+                scores_by_emotion[emotion] + self.keyword_score_bonus,
+            )
+
+        neutral_score = scores_by_emotion[NEUTRAL_EMOTION]
+        emotional_scores = sorted(
+            (
+                EmotionScore(label=emotion, score=score)
+                for emotion, score in scores_by_emotion.items()
+                if emotion != NEUTRAL_EMOTION
+            ),
+            key=lambda emotion_score: emotion_score.score,
+            reverse=True,
+        )
+        strongest_emotion = emotional_scores[0]
+
+        # 중립 확률이 가장 높고 다른 감정도 약하면 억지 분류를 하지 않는다.
+        if (
+            neutral_score >= strongest_emotion.score
+            and strongest_emotion.score < 0.45
+        ):
+            return self._neutral_prediction(neutral_score)
+
+        dynamic_threshold = max(
+            self.minimum_score,
+            strongest_emotion.score * self.relative_score_ratio,
+        )
+        selected_emotions = tuple(
+            emotion_score
+            for emotion_score in emotional_scores
+            if (
+                emotion_score.score >= dynamic_threshold
+                or (
+                    emotion_score.label in keyword_matched_emotions
+                    and emotion_score.score >= self.minimum_score
+                )
+            )
+        )[: self.maximum_emotions]
+
+        if not selected_emotions:
+            return self._neutral_prediction(neutral_score)
+
+        return EmotionPrediction(emotions=selected_emotions)
+
+    @staticmethod
+    def _find_keyword_emotions(text: str) -> set[str]:
+        matched_emotions = {
+            emotion
+            for emotion, keywords in EMOTION_KEYWORDS.items()
+            if any(keyword in text for keyword in keywords)
+        }
+        # "희망이 없어"처럼 단어는 긍정이지만 문맥은 부정인 경우를 보정한다.
+        hope_negations = (
+            "희망도 없어",
+            "희망이 없어",
+            "희망은 없어",
+            "희망 없다",
+            "희망이 없",
+        )
+        if any(negation in text for negation in hope_negations):
+            matched_emotions.discard("희망")
+
+        return matched_emotions
+
+    @staticmethod
+    def _neutral_prediction(score: float = 1.0) -> EmotionPrediction:
+        return EmotionPrediction(
+            emotions=(
+                EmotionScore(
+                    label=NEUTRAL_EMOTION,
+                    score=float(score),
+                ),
+            )
+        )
+
+
+@lru_cache(maxsize=1)
+def get_emotion_classifier() -> EmotionClassifier:
+    # 서버 실행 중 모델을 한 번만 학습해 요청마다 재학습하지 않는다.
+    return EmotionClassifier()
+
+
+def classify_emotions(text: str) -> EmotionPrediction:
+    return get_emotion_classifier().predict(text)

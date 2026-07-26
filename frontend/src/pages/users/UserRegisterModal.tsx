@@ -1,9 +1,15 @@
 import { useState } from 'react'
+import axios from 'axios'
 import apiClient from '../../api/axios'
 
 type UserRegisterModalProps = {
   onClose: () => void
   onSwitchToLogin: () => void
+}
+
+type RegisterErrorResponse = {
+  field?: string
+  message?: string
 }
 
 function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps) {
@@ -35,7 +41,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, '')
-    let formatted = raw
+    let formatted: string
     if (raw.length <= 3) formatted = raw
     else if (raw.length <= 7) formatted = `${raw.slice(0, 3)}-${raw.slice(3)}`
     else formatted = `${raw.slice(0, 3)}-${raw.slice(3, 7)}-${raw.slice(7, 11)}`
@@ -173,12 +179,21 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
       })
 
       onSwitchToLogin()
-    } catch (err: any) {
+    } catch (err: unknown) {
+      if (!axios.isAxiosError<RegisterErrorResponse>(err)) {
+        setEmailError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.')
+        return
+      }
+
       const status = err.response?.status
       const data = err.response?.data
 
       if (status === 400 && data) {
         const { field, message } = data
+        if (!message) {
+          setEmailError('회원가입 요청을 처리하지 못했습니다.')
+          return
+        }
         if (field === 'name') setNameError(message)
         else if (field === 'username') setUserIdError(message)
         else if (field === 'password') setPasswordError(message)

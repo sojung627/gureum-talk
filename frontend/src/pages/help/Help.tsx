@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { type FormEvent, useState } from 'react'
 
 function Help() {
 
 // 검색창 입력값을 관리하는 상태
 const [searchKeyword, setSearchKeyword] = useState('')
-const handleSearchSubmit = (event) => {
+const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
   event.preventDefault()
   console.log(searchKeyword)
 }
