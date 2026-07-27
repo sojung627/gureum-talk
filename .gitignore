@@ -2,3 +2,4 @@ frontend/.env
 __pycache__/
 *.pyc
 .env
+knowledge_base/qdrant_data/

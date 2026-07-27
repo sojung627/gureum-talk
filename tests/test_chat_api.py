@@ -61,6 +61,10 @@ class ChatApiTest(unittest.TestCase):
             "app.core.routers.chat.create_chat_title",
             new=AsyncMock(return_value="짜증나는 상황"),
         )
+        self.retrieve_policy_patcher = patch(
+            "app.core.services.chat.retrieve_service_policy",
+            return_value=[],
+        )
         self.save_exchange_patcher = patch(
             "app.core.routers.chat.save_chat_exchange",
             return_value=SimpleNamespace(
@@ -69,6 +73,7 @@ class ChatApiTest(unittest.TestCase):
             ),
         )
         self.create_title_patcher.start()
+        self.retrieve_policy_patcher.start()
         self.save_exchange_patcher.start()
 
         self.client = TestClient(app)
@@ -87,6 +92,7 @@ class ChatApiTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.create_title_patcher.stop()
+        self.retrieve_policy_patcher.stop()
         self.save_exchange_patcher.stop()
         app.dependency_overrides.clear()
         self.client.close()

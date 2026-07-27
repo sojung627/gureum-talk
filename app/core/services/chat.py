@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 
 from groq import APIConnectionError, APIStatusError, AsyncGroq, RateLimitError
@@ -5,6 +6,7 @@ from groq import APIConnectionError, APIStatusError, AsyncGroq, RateLimitError
 from app.core.config import settings
 from app.core.error.exceptions import EmptyAIResponseError
 from app.core.prompts.chat import build_system_prompt
+from app.core.services.rag import build_knowledge_context, retrieve_service_policy
 from app.core.services.safety import SAFETY_RESPONSE, has_safety_risk
 from app.ml.gureum import EmotionPrediction, classify_emotions
 
@@ -23,8 +25,8 @@ groq_client = AsyncGroq(
 
 # 사용자 질문을 AI에게 전달
 async def create_chat_response(
-    message: str,
-    history: list[dict[str, str]],
+        message: str,
+        history: list[dict[str, str]],
 ) -> ChatServiceResult:
     normalized_message = message.strip()
     emotion_prediction = classify_emotions(normalized_message)
@@ -37,10 +39,21 @@ async def create_chat_response(
             safety_detected=True,
         )
 
+    try:
+        retrieved_chunks = retrieve_service_policy(normalized_message)
+    except (OSError, RuntimeError, ValueError):
+        # 지식베이스가 비어 있거나 잠긴 경우에도 일반 대화는 계속한다.
+        retrieved_chunks = []
+
+    knowledge_context = build_knowledge_context(retrieved_chunks)
+
     request_messages = [
         {
             "role": "system",
-            "content": build_system_prompt(emotion_prediction),
+            "content": build_system_prompt(
+                emotion_prediction=emotion_prediction,
+                knowledge_context=knowledge_context,
+            ),
         }
     ]
 
@@ -53,7 +66,7 @@ async def create_chat_response(
             }
         )
 
-    # 반복문 밖에서 현재 질문을 한 번만 추가한다.
+    # 반복문 밖에서 현재 질문을 한 번만 추가
     request_messages.append(
         {
             "role": "user",
@@ -67,7 +80,10 @@ async def create_chat_response(
         messages=request_messages,
         temperature=0.7,
         max_completion_tokens=512,
-        reasoning_format="hidden",
+        # Qwen 3.6의 생각 모드를 끄고 답변 본문만 생성
+        # reasoning_format="hidden"만 사용하면 제한된 출력 토큰을
+        # 숨겨진 생각에 모두 사용해 content가 비는 경우가 있음
+        reasoning_effort="none",
     )
     answer = chat_completion.choices[0].message.content
 
@@ -82,7 +98,7 @@ async def create_chat_response(
 
 
 def create_fallback_chat_title(message: str) -> str:
-    """제목 생성"""
+    """AI 제목 생성에 실패하면 사용자의 첫 질문을 제목으로 사용"""
     normalized_message = " ".join(message.strip().split())
     if len(normalized_message) <= 30:
         return normalized_message
@@ -90,8 +106,50 @@ def create_fallback_chat_title(message: str) -> str:
     return f"{normalized_message[:30].rstrip()}…"
 
 
+def normalize_generated_chat_title(
+        generated_title: str,
+        fallback_title: str,
+) -> str:
+    """AI의 생각 태그와 불필요한 표현을 제거하고 제목만 반환"""
+    title_without_thinking = re.sub(
+        r"<think\b[^>]*>.*?</think>",
+        "",
+        generated_title,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    title_without_tags = re.sub(
+        r"</?[^>]+>",
+        "",
+        title_without_thinking,
+    )
+    normalized_title = " ".join(
+        title_without_tags.strip().strip("\"'“”").split()
+    )
+
+    # 생각 태그만 반환됐거나 제목이 비어 있으면 첫 질문을 사용
+    if not normalized_title:
+        return fallback_title
+
+    # 모델이 지시문 형태로 붙인 접두어는 제목에서 제외
+    normalized_title = re.sub(
+        r"^(?:제목|대화\s*제목)\s*[:：]\s*",
+        "",
+        normalized_title,
+        flags=re.IGNORECASE,
+    ).strip()
+
+    if not normalized_title:
+        return fallback_title
+
+    # 대화 목록에서 읽기 쉽도록 제목 길이를 제한
+    if len(normalized_title) <= 20:
+        return normalized_title
+
+    return f"{normalized_title[:20].rstrip()}…"
+
+
 async def create_chat_title(message: str) -> str:
-    """첫 대화 바탕으로 짧은 제목 생성"""
+    """사용자의 첫 질문을 바탕으로 짧은 제목 생성"""
     fallback_title = create_fallback_chat_title(message)
 
     try:
@@ -101,8 +159,10 @@ async def create_chat_title(message: str) -> str:
                 {
                     "role": "system",
                     "content": (
-                        "사용자의 첫 메시지를 바탕으로 한국어 대화 제목을 만들어. "
-                        "핵심 주제만 담아 20자 이내로 작성하고 따옴표, 마침표, 설명은 출력하지마."
+                        "사용자의 첫 메시지에서 핵심 단어나 문장을 뽑아 "
+                        "한국어 대화 제목 하나만 만들어. "
+                        "20자 이내로 작성하고 따옴표, 마침표, 설명, "
+                        "생각 과정, 태그는 절대 출력하지 마."
                     ),
                 },
                 {
@@ -112,6 +172,8 @@ async def create_chat_title(message: str) -> str:
             ],
             temperature=0.2,
             max_completion_tokens=30,
+            # 짧은 제목에는 추론이 필요하지 않으므로 생각 모드 끔
+            reasoning_effort="none",
         )
     except (APIConnectionError, APIStatusError, RateLimitError):
         return fallback_title
@@ -120,10 +182,7 @@ async def create_chat_title(message: str) -> str:
     if not generated_title:
         return fallback_title
 
-    normalized_title = " ".join(
-        generated_title.strip().strip("\"'“”").split()
+    return normalize_generated_chat_title(
+        generated_title=generated_title,
+        fallback_title=fallback_title,
     )
-    if not normalized_title:
-        return fallback_title
-
-    return normalized_title[:150]
