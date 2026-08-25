@@ -46,6 +46,7 @@ function Header({
   const handleLoginSuccess = (username: string, name: string) => {
     onLoginSuccess({ username, name })
     setActiveModal(null)
+    navigate('/')
   }
 
   const handleLogout = async () => {
