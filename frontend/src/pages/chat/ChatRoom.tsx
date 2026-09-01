@@ -1,10 +1,4 @@
-import {
-  type FormEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import {
@@ -20,6 +14,9 @@ import {
   updateChatRoomPin,
 } from '../../api/chat'
 import ChatRoomListItem from './ChatRoomListItem'
+// md를 위해 추가
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 
 type DisplayMessage = ChatHistoryMessage & {
@@ -439,7 +436,7 @@ function ChatRoom({
   return (
     <>
       <div className="mx-auto mt-12 grid max-w-[1480px] grid-cols-1 items-stretch gap-6 px-6 md:grid-cols-9 lg:px-24">
-        <div className="flex flex-col rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:col-span-2 md:h-[496px]">
+        <div className="flex flex-col rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:col-span-2 md:h-[700px]">
           <div className="flex min-h-0 w-full flex-1 flex-col">
             <button
               type="button"
@@ -516,7 +513,7 @@ function ChatRoom({
           </div>
         </div>
 
-        <div className="flex min-h-[445px] flex-col rounded-2xl border border-violet-100 bg-white p-4 shadow-sm md:col-span-5 md:h-[496px]">
+        <div className="flex min-h-[445px] flex-col rounded-2xl border border-violet-100 bg-white p-4 shadow-sm md:col-span-5 md:h-[700px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img
@@ -579,7 +576,13 @@ function ChatRoom({
                         : 'max-w-[80%] whitespace-pre-wrap break-words rounded-2xl rounded-bl-md border border-violet-100 bg-violet-50 px-4 py-2.5 text-sm leading-relaxed text-gray-700'
                     }
                   >
-                    {chatMessage.content}
+                    {chatMessage.role === 'assistant' ? (
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {chatMessage.content}
+                      </ReactMarkdown>
+                    ) : (
+                      chatMessage.content  
+                    )}
                   </div>
                 </div>
               ))}
@@ -655,7 +658,7 @@ function ChatRoom({
           </form>
         </div>
 
-        <div className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:col-span-2 md:h-[496px]">
+        <div className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:col-span-2 md:h-[700px]">
           <div className="flex items-center justify-between">
             <span className="font-semibold text-gray-800">
               음성 채팅
