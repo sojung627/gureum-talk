@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  type FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
 
 import {
@@ -14,6 +22,11 @@ import {
   updateChatRoomPin,
 } from '../../api/chat'
 import ChatRoomListItem from './ChatRoomListItem'
+import { queryKeys } from '../../queries/queryKeys'
+import {
+  activeChatRoomIdAtom,
+  activeModalAtom,
+} from '../../state/uiAtoms'
 // md를 위해 추가
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -34,28 +47,98 @@ function ChatRoom({
   isSessionLoading,
 }: ChatRoomProps) {
   const navigate = useNavigate()
-
-  const [chatRooms, setChatRooms] = useState<ChatRoomSummary[]>([])
-  const [activeChatRoomId, setActiveChatRoomId] =
-    useState<number | null>(null)
-  const [messages, setMessages] = useState<DisplayMessage[]>([])
+  const queryClient = useQueryClient()
+  const [activeChatRoomId, setActiveChatRoomId] = useAtom(
+    activeChatRoomIdAtom,
+  )
+  const [activeModal, setActiveModal] = useAtom(activeModalAtom)
   const [inputMessage, setInputMessage] = useState('')
-  const [isSending, setIsSending] = useState(false)
-  const [isRoomListLoading, setIsRoomListLoading] = useState(false)
-  const [loadingChatRoomId, setLoadingChatRoomId] =
-    useState<number | null>(null)
   const [actionChatRoomId, setActionChatRoomId] =
     useState<number | null>(null)
-  const [pendingDeleteChatRoom, setPendingDeleteChatRoom] =
-    useState<ChatRoomSummary | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
   const [noticeMessage, setNoticeMessage] = useState('')
-  const [serverStatus, setServerStatus] =
-    useState<ChatServerStatus | 'checking'>('checking')
 
   const nextLocalMessageId = useRef(1)
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
   const noticeTimerRef = useRef<number | null>(null)
+
+  const serverStatusQuery = useQuery({
+    queryKey: queryKeys.chat.status,
+    queryFn: getChatServerStatus,
+    refetchInterval: 30_000,
+  })
+  const chatRoomsQuery = useQuery({
+    queryKey: queryKeys.chat.rooms,
+    queryFn: getChatRooms,
+    enabled: isAuthenticated && !isSessionLoading,
+  })
+  const messagesQuery = useQuery({
+    queryKey: queryKeys.chat.messages(activeChatRoomId),
+    queryFn: async (): Promise<DisplayMessage[]> => {
+      const storedMessages = await getChatRoomMessages(
+        activeChatRoomId as number,
+      )
+      return storedMessages.map((storedMessage) => ({
+        id: `stored-${storedMessage.chat_message_id}`,
+        role: storedMessage.role,
+        content: storedMessage.content,
+      }))
+    },
+    enabled: (
+      activeChatRoomId !== null
+      && isAuthenticated
+      && !isSessionLoading
+    ),
+    initialData: [],
+  })
+  const sendMessageMutation = useMutation({
+    mutationFn: ({
+      message,
+      chatRoomId,
+    }: {
+      message: string
+      chatRoomId: number | null
+    }) => sendChatMessage(message, chatRoomId),
+  })
+  const pinChatRoomMutation = useMutation({
+    mutationFn: ({
+      chatRoomId,
+      chatIsPinned,
+    }: {
+      chatRoomId: number
+      chatIsPinned: boolean
+    }) => updateChatRoomPin(chatRoomId, chatIsPinned),
+  })
+  const renameChatRoomMutation = useMutation({
+    mutationFn: ({
+      chatRoomId,
+      chatTitle,
+    }: {
+      chatRoomId: number
+      chatTitle: string
+    }) => renameChatRoom(chatRoomId, chatTitle),
+  })
+  const deleteChatRoomMutation = useMutation({
+    mutationFn: deleteChatRoom,
+  })
+
+  const chatRooms = chatRoomsQuery.data ?? []
+  const messages = messagesQuery.data
+  const isSending = sendMessageMutation.isPending
+  const isRoomListLoading = (
+    isAuthenticated
+    && !isSessionLoading
+    && chatRoomsQuery.isPending
+  )
+  const loadingChatRoomId = messagesQuery.isFetching
+    ? activeChatRoomId
+    : null
+  const pendingDeleteChatRoom =
+    activeModal?.type === 'delete-chat-room'
+      ? activeModal.chatRoom
+      : null
+  const serverStatus: ChatServerStatus | 'checking' =
+    serverStatusQuery.data ?? 'checking'
 
   const showNotice = useCallback((message: string) => {
     setNoticeMessage(message)
@@ -79,73 +162,6 @@ function ChatRoom({
     }
   }, [])
 
-  // 고정 문구가 아니라 실제 백엔드 연결 결과로 상태를 표시한다.
-  useEffect(() => {
-    let isMounted = true
-
-    const updateServerStatus = async () => {
-      const currentStatus = await getChatServerStatus()
-      if (isMounted) {
-        setServerStatus(currentStatus)
-      }
-    }
-
-    void updateServerStatus()
-    const statusCheckTimer = window.setInterval(
-      updateServerStatus,
-      30_000,
-    )
-
-    return () => {
-      isMounted = false
-      window.clearInterval(statusCheckTimer)
-    }
-  }, [])
-
-  const loadChatRooms = useCallback(async () => {
-    if (isSessionLoading || !isAuthenticated) {
-      return
-    }
-
-    setIsRoomListLoading(true)
-
-    try {
-      const loadedChatRooms = await getChatRooms()
-      setChatRooms(loadedChatRooms)
-    } catch (error: unknown) {
-      const readableErrorMessage =
-        error instanceof Error
-          ? error.message
-          : '대화 목록을 불러오지 못했어요.'
-      setErrorMessage(readableErrorMessage)
-    } finally {
-      setIsRoomListLoading(false)
-    }
-  }, [isAuthenticated, isSessionLoading])
-
-  // 로그인 세션이 확인되면 저장된 대화방 목록을 불러온다.
-  useEffect(() => {
-    if (isSessionLoading) {
-      return
-    }
-
-    if (!isAuthenticated) {
-      return
-    }
-
-    const roomListTimer = window.setTimeout(() => {
-      void loadChatRooms()
-    }, 0)
-
-    return () => {
-      window.clearTimeout(roomListTimer)
-    }
-  }, [
-    isAuthenticated,
-    isSessionLoading,
-    loadChatRooms,
-  ])
-
   // 새 메시지가 추가되면 가장 최근 대화가 보이도록 이동한다.
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -168,14 +184,19 @@ function ChatRoom({
 
   const startNewChat = () => {
     setActiveChatRoomId(null)
-    setMessages([])
+    queryClient.setQueryData<DisplayMessage[]>(
+      queryKeys.chat.messages(null),
+      [],
+    )
     setInputMessage('')
     setErrorMessage('')
-    setPendingDeleteChatRoom(null)
+    if (activeModal?.type === 'delete-chat-room') {
+      setActiveModal(null)
+    }
     navigate('/chat')
   }
 
-  const selectChatRoom = async (chatRoomId: number) => {
+  const selectChatRoom = (chatRoomId: number) => {
     if (
       isSending
       || loadingChatRoomId !== null
@@ -184,28 +205,8 @@ function ChatRoom({
       return
     }
 
-    setLoadingChatRoomId(chatRoomId)
     setErrorMessage('')
-
-    try {
-      const storedMessages = await getChatRoomMessages(chatRoomId)
-      setMessages(
-        storedMessages.map((storedMessage) => ({
-          id: `stored-${storedMessage.chat_message_id}`,
-          role: storedMessage.role,
-          content: storedMessage.content,
-        })),
-      )
-      setActiveChatRoomId(chatRoomId)
-    } catch (error: unknown) {
-      const readableErrorMessage =
-        error instanceof Error
-          ? error.message
-          : '저장된 대화를 불러오지 못했어요.'
-      setErrorMessage(readableErrorMessage)
-    } finally {
-      setLoadingChatRoomId(null)
-    }
+    setActiveChatRoomId(chatRoomId)
   }
 
   const handleChatSubmit = async (
@@ -227,44 +228,47 @@ function ChatRoom({
       'user',
       trimmedMessage,
     )
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      userMessage,
-    ])
+    const sourceChatRoomId = activeChatRoomId
+    const sourceMessageKey = queryKeys.chat.messages(sourceChatRoomId)
+    queryClient.setQueryData<DisplayMessage[]>(
+      sourceMessageKey,
+      (currentMessages = []) => [...currentMessages, userMessage],
+    )
     setInputMessage('')
     setErrorMessage('')
-    setIsSending(true)
 
     try {
-      const chatResponse = await sendChatMessage(
-        trimmedMessage,
-        activeChatRoomId,
-      )
+      const chatResponse = await sendMessageMutation.mutateAsync({
+        message: trimmedMessage,
+        chatRoomId: sourceChatRoomId,
+      })
       const assistantMessage = createDisplayMessage(
         'assistant',
         chatResponse.answer,
       )
-
-      setMessages((currentMessages) => [
-        ...currentMessages,
+      const completedMessages = [
+        ...(queryClient.getQueryData<DisplayMessage[]>(sourceMessageKey) ?? []),
         assistantMessage,
-      ])
+      ]
+      queryClient.setQueryData(sourceMessageKey, completedMessages)
+      queryClient.setQueryData(
+        queryKeys.chat.messages(chatResponse.chat_room_id),
+        completedMessages,
+      )
       setActiveChatRoomId(chatResponse.chat_room_id)
-      setServerStatus('online')
+      queryClient.setQueryData(queryKeys.chat.status, 'online')
 
       // 첫 대화에서 생성된 AI 제목과 최근 대화 순서를 목록에 반영한다.
-      await loadChatRooms()
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.chat.rooms,
+      })
     } catch (error: unknown) {
       const readableErrorMessage =
         error instanceof Error
           ? error.message
           : '채팅 요청 중 오류가 발생했어요.'
       setErrorMessage(readableErrorMessage)
-
-      const currentStatus = await getChatServerStatus()
-      setServerStatus(currentStatus)
-    } finally {
-      setIsSending(false)
+      await serverStatusQuery.refetch()
     }
   }
 
@@ -275,11 +279,13 @@ function ChatRoom({
     setErrorMessage('')
 
     try {
-      await updateChatRoomPin(
-        chatRoom.chat_room_id,
-        !chatRoom.chat_is_pinned,
-      )
-      await loadChatRooms()
+      await pinChatRoomMutation.mutateAsync({
+        chatRoomId: chatRoom.chat_room_id,
+        chatIsPinned: !chatRoom.chat_is_pinned,
+      })
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.chat.rooms,
+      })
     } catch (error: unknown) {
       const readableErrorMessage =
         error instanceof Error
@@ -299,11 +305,13 @@ function ChatRoom({
     setErrorMessage('')
 
     try {
-      await renameChatRoom(
-        chatRoom.chat_room_id,
+      await renameChatRoomMutation.mutateAsync({
+        chatRoomId: chatRoom.chat_room_id,
         chatTitle,
-      )
-      await loadChatRooms()
+      })
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.chat.rooms,
+      })
       showNotice('대화방 이름을 변경했어요.')
     } catch (error: unknown) {
       const readableErrorMessage =
@@ -341,9 +349,11 @@ function ChatRoom({
     setErrorMessage('')
 
     try {
-      const storedMessages = await getChatRoomMessages(
-        chatRoom.chat_room_id,
-      )
+      const storedMessages = await queryClient.fetchQuery({
+        queryKey: queryKeys.chat.shareMessages(chatRoom.chat_room_id),
+        queryFn: () => getChatRoomMessages(chatRoom.chat_room_id),
+        staleTime: 0,
+      })
       const conversationText = storedMessages
         .map((storedMessage) => {
           const speakerName =
@@ -396,16 +406,24 @@ function ChatRoom({
     setErrorMessage('')
 
     try {
-      await deleteChatRoom(chatRoomId)
+      await deleteChatRoomMutation.mutateAsync(chatRoomId)
 
       if (activeChatRoomId === chatRoomId) {
         setActiveChatRoomId(null)
-        setMessages([])
+        queryClient.setQueryData<DisplayMessage[]>(
+          queryKeys.chat.messages(null),
+          [],
+        )
         setInputMessage('')
       }
 
-      setPendingDeleteChatRoom(null)
-      await loadChatRooms()
+      queryClient.removeQueries({
+        queryKey: queryKeys.chat.messages(chatRoomId),
+      })
+      setActiveModal(null)
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.chat.rooms,
+      })
       showNotice('대화방을 삭제했어요.')
     } catch (error: unknown) {
       const readableErrorMessage =
@@ -432,6 +450,10 @@ function ChatRoom({
       dotClassName: 'bg-slate-300',
     },
   }[serverStatus]
+  const queryError = chatRoomsQuery.error ?? messagesQuery.error
+  const displayedErrorMessage = errorMessage || (
+    queryError instanceof Error ? queryError.message : ''
+  )
 
   return (
     <>
@@ -482,7 +504,12 @@ function ChatRoom({
                     onPin={changeChatRoomPin}
                     onRename={changeChatRoomTitle}
                     onShare={shareChatRoom}
-                    onDelete={setPendingDeleteChatRoom}
+                    onDelete={(chatRoom) => {
+                      setActiveModal({
+                        type: 'delete-chat-room',
+                        chatRoom,
+                      })
+                    }}
                   />
                 ))
               )}
@@ -601,12 +628,12 @@ function ChatRoom({
             </div>
           </div>
 
-          {errorMessage && (
+          {displayedErrorMessage && (
             <p
               className="mb-2 px-2 text-xs text-rose-500"
               role="alert"
             >
-              {errorMessage}
+              {displayedErrorMessage}
             </p>
           )}
 
@@ -695,7 +722,7 @@ function ChatRoom({
               <button
                 type="button"
                 onClick={() => {
-                  setPendingDeleteChatRoom(null)
+                  setActiveModal(null)
                 }}
                 disabled={actionChatRoomId !== null}
                 className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-500 hover:bg-slate-50"

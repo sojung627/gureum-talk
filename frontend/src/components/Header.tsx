@@ -1,12 +1,11 @@
-import { useState } from 'react'
+import { useAtom } from 'jotai'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { type LoginUser } from '../api/user'
 import PasswordResetModal from '../pages/users/UserPasswordResetModal'
 import UserLoginModal from '../pages/users/UserLoginModal'
 import UserRegisterModal from '../pages/users/UserRegisterModal'
-
-type ModalType = 'login' | 'register' | 'password-reset' | null
+import { activeModalAtom } from '../state/uiAtoms'
 
 const navigationItems = ['홈', '기능', '요금제', '도움말']
 
@@ -34,7 +33,7 @@ function Header({
   const navigate = useNavigate()
   const location = useLocation()
   const activeMenu = PATH_TO_MENU[location.pathname] ?? '홈'
-  const [activeModal, setActiveModal] = useState<ModalType>(null)
+  const [activeModal, setActiveModal] = useAtom(activeModalAtom)
 
   const handleMenuClick = (item: string) => {
     if (item === '도움말') navigate('/help')
@@ -104,14 +103,14 @@ function Header({
               <>
                 <button
                   type="button"
-                  onClick={() => setActiveModal('login')}
+                  onClick={() => setActiveModal({ type: 'login' })}
                   className="rounded-2xl border border-slate-100 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
                 >
                   로그인
                 </button>
                 <button
                   type="button"
-                  onClick={() => setActiveModal('register')}
+                  onClick={() => setActiveModal({ type: 'register' })}
                   className="rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5"
                 >
                   회원가입
@@ -122,26 +121,26 @@ function Header({
         </div>
       </header>
 
-      {activeModal === 'login' && (
+      {activeModal?.type === 'login' && (
         <UserLoginModal
           onClose={() => setActiveModal(null)}
-          onSwitchToRegister={() => setActiveModal('register')}
-          onSwitchToPasswordReset={() => setActiveModal('password-reset')}
+          onSwitchToRegister={() => setActiveModal({ type: 'register' })}
+          onSwitchToPasswordReset={() => setActiveModal({ type: 'password-reset' })}
           onLoginSuccess={handleLoginSuccess}
         />
       )}
 
-      {activeModal === 'register' && (
+      {activeModal?.type === 'register' && (
         <UserRegisterModal
           onClose={() => setActiveModal(null)}
-          onSwitchToLogin={() => setActiveModal('login')}
+          onSwitchToLogin={() => setActiveModal({ type: 'login' })}
         />
       )}
 
-      {activeModal === 'password-reset' && (
+      {activeModal?.type === 'password-reset' && (
         <PasswordResetModal
           onClose={() => setActiveModal(null)}
-          onSwitchToLogin={() => setActiveModal('login')}
+          onSwitchToLogin={() => setActiveModal({ type: 'login' })}
         />
       )}
     </>

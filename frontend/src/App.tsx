@@ -1,60 +1,58 @@
-import { useEffect, useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import HomePage from './pages/HomePage'
-import Plans from './pages/plans/Plans'
-import Features from './pages/features/Features'
-import Help from './pages/help/Help'
-import ChatRoom from './pages/chat/ChatRoom'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useSetAtom } from 'jotai'
+import { Route, Routes } from 'react-router-dom'
+
 import {
   getCurrentUser,
   type LoginUser,
   logoutCurrentUser,
 } from './api/user'
+import Footer from './components/Footer'
+import Header from './components/Header'
+import HomePage from './pages/HomePage'
+import ChatRoom from './pages/chat/ChatRoom'
+import Features from './pages/features/Features'
+import Help from './pages/help/Help'
+import Plans from './pages/plans/Plans'
+import { queryKeys } from './queries/queryKeys'
+import {
+  activeChatRoomIdAtom,
+  activeModalAtom,
+} from './state/uiAtoms'
+
 
 function App() {
-  const [loginUser, setLoginUser] = useState<LoginUser | null>(null)
-  const [isSessionLoading, setIsSessionLoading] = useState(true)
+  const queryClient = useQueryClient()
+  const setActiveChatRoomId = useSetAtom(activeChatRoomIdAtom)
+  const setActiveModal = useSetAtom(activeModalAtom)
+  const sessionQuery = useQuery({
+    queryKey: queryKeys.session,
+    queryFn: getCurrentUser,
+    retry: false,
+    staleTime: 5 * 60_000,
+  })
+  const logoutMutation = useMutation({
+    mutationFn: logoutCurrentUser,
+  })
+  const loginUser = sessionQuery.data ?? null
+  const isSessionLoading = sessionQuery.isPending
 
-  useEffect(() => {
-    let isMounted = true
-
-    const restoreLoginSession = async () => {
-      try {
-        const sessionUser = await getCurrentUser()
-
-        if (isMounted) {
-          setLoginUser(sessionUser)
-        }
-      } catch (error) {
-        console.error('로그인 세션 확인 실패', error)
-        if (isMounted) {
-          setLoginUser(null)
-        }
-      } finally {
-        if (isMounted) {
-          setIsSessionLoading(false)
-        }
-      }
-    }
-
-    void restoreLoginSession()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
+  const handleLoginSuccess = (nextLoginUser: LoginUser) => {
+    queryClient.setQueryData(queryKeys.session, nextLoginUser)
+    setActiveChatRoomId(null)
+  }
 
   const handleLogout = async () => {
     try {
-      await logoutCurrentUser()
+      await logoutMutation.mutateAsync()
     } finally {
-      setLoginUser(null)
+      queryClient.setQueryData(queryKeys.session, null)
+      queryClient.removeQueries({ queryKey: queryKeys.chat.all })
+      setActiveChatRoomId(null)
+      setActiveModal(null)
     }
   }
 
-  // 페이지 등록 + 기본 배경 설정
   return (
     <div
       className="relative min-h-screen overflow-hidden bg-[#fbfaff] bg-cover bg-center bg-no-repeat text-slate-800"
@@ -65,30 +63,31 @@ function App() {
       <Header
         loginUser={loginUser}
         isSessionLoading={isSessionLoading}
-        onLoginSuccess={setLoginUser}
+        onLoginSuccess={handleLoginSuccess}
         onLogout={handleLogout}
       />
       <main>
-         <Routes>
-           <Route path="/" element={<HomePage />} />
-           <Route path="/plans" element={<Plans />} />
-           <Route path="/features" element={<Features />} />
-           <Route path="/help" element={<Help />} />
-           <Route
-             path="/chat"
-             element={(
-               <ChatRoom
-                 key={loginUser?.username ?? 'guest'}
-                 isAuthenticated={loginUser !== null}
-                 isSessionLoading={isSessionLoading}
-               />
-             )}
-           />
-         </Routes>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/plans" element={<Plans />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/help" element={<Help />} />
+          <Route
+            path="/chat"
+            element={(
+              <ChatRoom
+                key={loginUser?.username ?? 'guest'}
+                isAuthenticated={loginUser !== null}
+                isSessionLoading={isSessionLoading}
+              />
+            )}
+          />
+        </Routes>
       </main>
       <Footer />
     </div>
   )
 }
+
 
 export default App
