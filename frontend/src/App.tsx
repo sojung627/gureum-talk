@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSetAtom } from 'jotai'
-import { Route, Routes } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 import {
   getCurrentUser,
@@ -19,6 +20,17 @@ import {
   activeChatRoomIdAtom,
   activeModalAtom,
 } from './state/uiAtoms'
+
+
+function LoginRequiredRedirect() {
+  const setActiveModal = useSetAtom(activeModalAtom)
+
+  useEffect(() => {
+    setActiveModal({ type: 'login', returnTo: '/chat' })
+  }, [setActiveModal])
+
+  return <Navigate to="/" replace />
+}
 
 
 function App() {
@@ -74,13 +86,13 @@ function App() {
           <Route path="/help" element={<Help />} />
           <Route
             path="/chat"
-            element={(
+            element={isSessionLoading ? null : loginUser ? (
               <ChatRoom
-                key={loginUser?.username ?? 'guest'}
-                isAuthenticated={loginUser !== null}
-                isSessionLoading={isSessionLoading}
+                key={loginUser.username}
+                isAuthenticated
+                isSessionLoading={false}
               />
-            )}
+            ) : <LoginRequiredRedirect />}
           />
         </Routes>
       </main>

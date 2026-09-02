@@ -643,7 +643,7 @@ function ChatRoom({
           >
             <div className="flex h-[45px] w-full items-center gap-3 rounded-full border border-violet-100 pl-5 pr-2 shadow-sm focus-within:border-violet-300">
               <input
-                className="flex-1 bg-transparent text-gray-700 outline-none caret-violet-500 placeholder:text-gray-300"
+                className="flex-1 bg-transparent text-gray-700 outline-none caret-violet-500 placeholder:text-gray-300 disabled:cursor-not-allowed"
                 type="text"
                 value={inputMessage}
                 onChange={(event) => {

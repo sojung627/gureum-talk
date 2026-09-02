@@ -43,9 +43,13 @@ function Header({
   }
 
   const handleLoginSuccess = (username: string, name: string) => {
+    const returnTo = activeModal?.type === 'login'
+      ? activeModal.returnTo
+      : undefined
+
     onLoginSuccess({ username, name })
     setActiveModal(null)
-    navigate('/')
+    navigate(returnTo ?? '/')
   }
 
   const handleLogout = async () => {

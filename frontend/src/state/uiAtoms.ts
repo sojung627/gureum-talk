@@ -4,7 +4,7 @@ import { type ChatRoomSummary } from '../api/chat'
 
 
 export type AppModal =
-  | { type: 'login' }
+  | { type: 'login'; returnTo?: string }
   | { type: 'register' }
   | { type: 'password-reset' }
   | { type: 'delete-chat-room'; chatRoom: ChatRoomSummary }
