@@ -28,6 +28,7 @@ import {
 } from '../../api/user'
 import ChatRoomHeaderMenu from './ChatRoomHeaderMenu'
 import ChatRoomListItem from './ChatRoomListItem'
+import VoiceVisualizer from './VoiceVisualizer'
 import { queryKeys } from '../../queries/queryKeys'
 import {
   activeChatRoomIdAtom,
@@ -63,6 +64,7 @@ function ChatRoom({
     useState<number | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
   const [noticeMessage, setNoticeMessage] = useState('')
+  const [isVoiceListening, setIsVoiceListening] = useState(false)
 
   const nextLocalMessageId = useRef(1)
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
@@ -217,6 +219,30 @@ function ChatRoom({
     updateVoicePreferenceMutation.mutate(!isVoiceChatOpen)
   }
 
+  const toggleVoiceListening = () => {
+    if (updateVoicePreferenceMutation.isPending) {
+      return
+    }
+
+    setErrorMessage('')
+    if (!isVoiceChatOpen) {
+      updateVoicePreferenceMutation.mutate(true)
+    }
+    setIsVoiceListening((currentValue) => !currentValue)
+  }
+
+  const closeVoiceChatPanel = () => {
+    setIsVoiceListening(false)
+    toggleVoiceChatPanel()
+  }
+
+  const handleMicrophoneError = useCallback(() => {
+    setIsVoiceListening(false)
+    setErrorMessage(
+      '마이크를 사용할 수 없습니다. 브라우저의 마이크 권한을 확인해주세요.',
+    )
+  }, [])
+
   const showNotice = useCallback((message: string) => {
     setNoticeMessage(message)
 
@@ -305,6 +331,7 @@ function ChatRoom({
       'user',
       trimmedMessage,
     )
+    setIsVoiceListening(false)
     const sourceChatRoomId = activeChatRoomId
     const sourceMessageKey = queryKeys.chat.messages(sourceChatRoomId)
     queryClient.setQueryData<DisplayMessage[]>(
@@ -763,13 +790,24 @@ function ChatRoom({
               <div className="ml-auto flex items-center gap-1">
                 <button
                   type="button"
-                  className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-gray-100 text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={toggleVoiceListening}
+                  className={`flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                    isVoiceListening
+                      ? 'bg-violet-500 text-white shadow-sm shadow-violet-300'
+                      : 'bg-gray-100 text-gray-400 hover:text-violet-500'
+                  }`}
                   disabled={
                     isSending
                     || isSessionLoading
                     || !isAuthenticated
+                    || updateVoicePreferenceMutation.isPending
                   }
-                  aria-label="음성 입력"
+                  aria-label={
+                    isVoiceListening
+                      ? '음성 입력 중지'
+                      : '음성 입력 시작'
+                  }
+                  aria-pressed={isVoiceListening}
                 >
                   <i className="fa-solid fa-microphone text-[12px]" />
                 </button>
@@ -792,7 +830,7 @@ function ChatRoom({
         </div>
 
         {isVoiceChatOpen && (
-          <div className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:h-[700px]">
+          <div className="flex flex-col rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:h-[700px]">
             <div className="flex items-center justify-between">
               <span className="font-semibold text-gray-800">
                 음성 채팅
@@ -800,7 +838,7 @@ function ChatRoom({
               <div className="flex items-center gap-3">
                 <button
                   type="button"
-                  onClick={toggleVoiceChatPanel}
+                  onClick={closeVoiceChatPanel}
                   disabled={updateVoicePreferenceMutation.isPending}
                   className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-gray-100 disabled:cursor-wait disabled:opacity-50"
                   aria-label="음성 채팅 닫기"
@@ -814,6 +852,12 @@ function ChatRoom({
                   <i className="fa-solid fa-sliders text-gray-400" />
                 </button>
               </div>
+            </div>
+            <div className="flex min-h-0 flex-1 items-center justify-center py-6">
+              <VoiceVisualizer
+                isListening={isVoiceListening}
+                onMicrophoneError={handleMicrophoneError}
+              />
             </div>
           </div>
         )}

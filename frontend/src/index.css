@@ -45,3 +45,202 @@ input {
     opacity: 0;
   }
 }
+
+@keyframes voiceRingSpin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes voiceRingSpinReverse {
+  to {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+@keyframes voiceGradientShift {
+  0% {
+    filter: hue-rotate(0deg) saturate(0.92);
+    opacity: 0.42;
+  }
+  50% {
+    filter: hue-rotate(10deg) saturate(1.05);
+    opacity: 0.68;
+  }
+  100% {
+    filter: hue-rotate(-8deg) saturate(0.98);
+    opacity: 0.5;
+  }
+}
+
+@keyframes voiceOrbitSpin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes voiceOrbitSpinReverse {
+  to {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+@keyframes voiceDotColorShift {
+  0%, 100% {
+    filter: hue-rotate(0deg) brightness(1);
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.45);
+  }
+  50% {
+    filter: hue-rotate(55deg) brightness(1.18);
+    box-shadow: 0 0 14px rgba(236, 72, 153, 0.65);
+  }
+}
+
+.voice-visualizer {
+  --voice-energy: 0;
+  position: relative;
+  width: min(100%, 280px);
+  aspect-ratio: 1;
+  isolation: isolate;
+}
+
+.voice-ring,
+.voice-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+}
+
+.voice-ring {
+  background: conic-gradient(
+    from 20deg,
+    rgba(196, 181, 253, 0.18),
+    rgba(167, 139, 250, 0.78),
+    rgba(244, 190, 232, 0.52),
+    rgba(165, 180, 252, 0.64),
+    rgba(196, 181, 253, 0.18)
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 2px),
+    #000 calc(100% - 1.5px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 2px),
+    #000 calc(100% - 1.5px)
+  );
+  animation:
+    voiceRingSpin 13s linear infinite,
+    voiceGradientShift 6s ease-in-out infinite;
+}
+
+.voice-ring--outer {
+  width: 96%;
+  height: 96%;
+}
+
+.voice-ring--middle {
+  width: 76%;
+  height: 76%;
+  animation-name: voiceRingSpinReverse, voiceGradientShift;
+  animation-duration: 9s, 5s;
+}
+
+.voice-orbit--outer {
+  width: 91%;
+  height: 91%;
+  animation: voiceOrbitSpin 10s linear infinite;
+}
+
+.voice-orbit--middle {
+  width: 76%;
+  height: 76%;
+  animation: voiceOrbitSpinReverse 7s linear infinite;
+}
+
+.voice-orbit-dot {
+  position: absolute;
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #f5d0fe 0%,
+    #c084fc 42%,
+    #7c3aed 100%
+  );
+  animation: voiceDotColorShift 3.2s ease-in-out infinite;
+}
+
+.voice-orbit-dot--one {
+  top: -4px;
+  left: 50%;
+}
+
+.voice-orbit-dot--two {
+  right: 5%;
+  bottom: 20%;
+  width: 6px;
+  height: 6px;
+  animation-delay: -1.4s;
+}
+
+.voice-orbit-dot--three {
+  top: 45%;
+  left: -3px;
+  width: 7px;
+  height: 7px;
+  animation-delay: -2.1s;
+}
+
+.voice-visualizer-orb {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 58%;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 9999px;
+  background: transparent;
+  box-shadow:
+    0 0 32px rgba(180, 139, 255, 0.55),
+    0 0 70px rgba(211, 183, 255, 0.45);
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  transition: box-shadow 100ms linear, transform 100ms linear;
+}
+
+.voice-visualizer-orb-surface {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to bottom right,
+    #ddd6fe 0%,
+    #d8b4fe 50%,
+    #a78bfa 100%
+  );
+  box-shadow: inset 0 0 28px rgba(255, 255, 255, 0.75);
+  pointer-events: none;
+}
+
+.voice-visualizer-bars {
+  position: relative;
+  z-index: 3;
+  display: block;
+  width: 78%;
+  height: 68%;
+  overflow: visible;
+}
+
+.voice-visualizer-bar {
+  fill: #fff;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.72));
+}
