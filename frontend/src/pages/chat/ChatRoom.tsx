@@ -526,7 +526,7 @@ function ChatRoom({
       })
       setActiveModal(null)
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.chat.rooms,
+        queryKey: queryKeys.chat.rooms, 
       })
       showNotice('대화방을 삭제했어요.')
     } catch (error: unknown) {
