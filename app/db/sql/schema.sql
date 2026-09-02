@@ -1,6 +1,7 @@
 -- 테이블 삭제
 DROP TABLE IF EXISTS chat_messages CASCADE;
 DROP TABLE IF EXISTS chat_rooms CASCADE;
+DROP TABLE IF EXISTS password_reset_verifications CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 
@@ -13,6 +14,25 @@ CREATE TABLE users (
                        user_email VARCHAR(100) NOT NULL UNIQUE,
                        user_password_hash VARCHAR(255) NOT NULL,
                        user_created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 비밀번호 재설정 인증
+CREATE TABLE password_reset_verifications (
+    request_id VARCHAR(64) PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    code_hash VARCHAR(64) NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    attempt_count INTEGER NOT NULL DEFAULT 0,
+    is_verified BOOLEAN NOT NULL DEFAULT FALSE,
+    reset_token_hash VARCHAR(64) UNIQUE,
+    reset_token_expires_at TIMESTAMPTZ,
+    used_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_password_reset_user
+        FOREIGN KEY (user_id)
+            REFERENCES users(user_id)
+            ON DELETE CASCADE
 );
 
 -- 2. 대화방
@@ -74,3 +94,6 @@ CREATE INDEX idx_chat_rooms_user_pinned
 
 CREATE INDEX idx_chat_messages_room_created
     ON chat_messages(chat_room_id, chat_message_created_at);
+
+CREATE INDEX idx_password_reset_user_created
+    ON password_reset_verifications(user_id, created_at DESC);

@@ -46,3 +46,34 @@ class UserRegisterRequest(BaseModel):
 class UserRegisterResponse(BaseModel):
     message: str
     username: str
+
+
+class PasswordResetCodeRequest(BaseModel):
+    username: str
+    phone: str
+
+
+class PasswordResetCodeSentResponse(BaseModel):
+    message: str
+    request_id: str
+    expires_in_seconds: int
+
+
+class PasswordResetCodeVerifyRequest(BaseModel):
+    request_id: str
+    code: str
+
+
+class PasswordResetCodeVerifyResponse(BaseModel):
+    message: str
+    reset_token: str
+
+
+class PasswordResetRequest(BaseModel):
+    reset_token: str
+    password: str
+    password_confirm: str
+
+
+class PasswordResetResponse(BaseModel):
+    message: str

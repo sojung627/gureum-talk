@@ -2786,6 +2786,25 @@ files = [
 ]
 
 [[package]]
+name = "solapi"
+version = "5.0.3"
+description = "SOLAPI SDK for Python"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "solapi-5.0.3-py3-none-any.whl", hash = "sha256:45b0d29267291026141d1472fc73539fb7dc0509202f56047f4af87a273af709"},
+    {file = "solapi-5.0.3.tar.gz", hash = "sha256:3090cf2e760885197ca18cccc3f6c2f21c32f99d3afdb948ff486f355b37e297"},
+]
+
+[package.dependencies]
+httpx = ">=0.28.1,<0.29.0"
+pydantic = ">=2.11.4,<3.0.0"
+
+[package.extras]
+dev = ["pytest (>=7.0.0)", "ruff (>=0.11.0)", "ty (>=0.0.1)"]
+
+[[package]]
 name = "sqlalchemy"
 version = "2.0.51"
 description = "Database Abstraction Library"
@@ -3492,4 +3511,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<4.0"
-content-hash = "928e8854f61f47b847de10b3c45e681066de54e25f66125824043a0bd5266ad9"
+content-hash = "5bdbebfcef0623ff0bf8cd0b10e7ef341f8d78d525bb1f007ac53b82d204c8a2"

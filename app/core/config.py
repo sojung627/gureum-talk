@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     groq_model: str = "qwen/qwen3.6-27b"
     # 로그인 세션
     session_secret_key: str
+    # SOLAPI 문자 인증
+    solapi_api_key: str = ""
+    solapi_api_secret: str = ""
+    solapi_sender_number: str = ""
     # 로컬 임베딩 모델
     embedding_model: str = "intfloat/multilingual-e5-small"
     # 로컬 Qdrant 데이터 저장 경로

@@ -18,6 +18,7 @@ dependencies = [
     "itsdangerous (>=2.2.0,<3.0.0)",
     "qdrant-client (>=1.15.0,<2.0.0)",
     "sentence-transformers (>=5.6.1,<6.0.0)",
+    "solapi (>=5.0.3,<6.0.0)",
 ]
 
 
