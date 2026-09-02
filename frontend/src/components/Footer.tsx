@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom'
+
+
 function Footer() {
   return (
     <footer className="relative z-50 bg-transparent">
@@ -14,17 +17,17 @@ function Footer() {
         </div>
 
         <div className="flex gap-6">
-          <button type="button" className="hover:text-violet-500">
+          <Link to="/help" className="hover:text-violet-500">
             이용약관
-          </button>
+          </Link>
 
-          <button type="button" className="hover:text-violet-500">
+          <Link to="/help" className="hover:text-violet-500">
             개인정보처리방침
-          </button>
+          </Link>
 
-          <button type="button" className="hover:text-violet-500">
+          <Link to="/help" className="hover:text-violet-500">
             문의하기
-          </button>
+          </Link>
         </div>
       </div>
     </footer>

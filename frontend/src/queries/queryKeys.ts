@@ -1,5 +1,6 @@
 export const queryKeys = {
   session: ['session'] as const,
+  userPreferences: ['user', 'preferences'] as const,
   chat: {
     all: ['chat'] as const,
     status: ['chat', 'status'] as const,

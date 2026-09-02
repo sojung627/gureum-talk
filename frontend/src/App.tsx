@@ -59,6 +59,7 @@ function App() {
       await logoutMutation.mutateAsync()
     } finally {
       queryClient.setQueryData(queryKeys.session, null)
+      queryClient.removeQueries({ queryKey: queryKeys.userPreferences })
       queryClient.removeQueries({ queryKey: queryKeys.chat.all })
       setActiveChatRoomId(null)
       setActiveModal(null)

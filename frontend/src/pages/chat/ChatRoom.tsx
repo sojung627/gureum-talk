@@ -21,6 +21,12 @@ import {
   sendChatMessage,
   updateChatRoomPin,
 } from '../../api/chat'
+import {
+  getUserPreferences,
+  updateVoiceChatPanelPreference,
+  type UserPreferences,
+} from '../../api/user'
+import ChatRoomHeaderMenu from './ChatRoomHeaderMenu'
 import ChatRoomListItem from './ChatRoomListItem'
 import { queryKeys } from '../../queries/queryKeys'
 import {
@@ -72,6 +78,12 @@ function ChatRoom({
     queryFn: getChatRooms,
     enabled: isAuthenticated && !isSessionLoading,
   })
+  const userPreferencesQuery = useQuery({
+    queryKey: queryKeys.userPreferences,
+    queryFn: getUserPreferences,
+    enabled: isAuthenticated && !isSessionLoading,
+    retry: false,
+  })
   const messagesQuery = useQuery({
     queryKey: queryKeys.chat.messages(activeChatRoomId),
     queryFn: async (): Promise<DisplayMessage[]> => {
@@ -121,9 +133,52 @@ function ChatRoom({
   const deleteChatRoomMutation = useMutation({
     mutationFn: deleteChatRoom,
   })
+  const updateVoicePreferenceMutation = useMutation({
+    mutationFn: updateVoiceChatPanelPreference,
+    onMutate: async (voiceChatPanelOpen: boolean) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.userPreferences,
+      })
+      const previousPreferences =
+        queryClient.getQueryData<UserPreferences>(
+          queryKeys.userPreferences,
+        )
+      queryClient.setQueryData<UserPreferences>(
+        queryKeys.userPreferences,
+        { voice_chat_panel_open: voiceChatPanelOpen },
+      )
+      return { previousPreferences }
+    },
+    onError: (error, _voiceChatPanelOpen, context) => {
+      if (context?.previousPreferences) {
+        queryClient.setQueryData(
+          queryKeys.userPreferences,
+          context.previousPreferences,
+        )
+      }
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : '음성 채팅 설정을 저장하지 못했어요.',
+      )
+    },
+    onSuccess: (preferences) => {
+      queryClient.setQueryData(
+        queryKeys.userPreferences,
+        preferences,
+      )
+    },
+  })
 
   const chatRooms = chatRoomsQuery.data ?? []
   const messages = messagesQuery.data
+  const isVoiceChatOpen =
+    userPreferencesQuery.data?.voice_chat_panel_open ?? true
+  const activeChatRoom = activeChatRoomId === null
+    ? null
+    : chatRooms.find(
+      (chatRoom) => chatRoom.chat_room_id === activeChatRoomId,
+    ) ?? null
   const isSending = sendMessageMutation.isPending
   const isRoomListLoading = (
     isAuthenticated
@@ -139,6 +194,14 @@ function ChatRoom({
       : null
   const serverStatus: ChatServerStatus | 'checking' =
     serverStatusQuery.data ?? 'checking'
+
+  const toggleVoiceChatPanel = () => {
+    if (updateVoicePreferenceMutation.isPending) {
+      return
+    }
+    setErrorMessage('')
+    updateVoicePreferenceMutation.mutate(!isVoiceChatOpen)
+  }
 
   const showNotice = useCallback((message: string) => {
     setNoticeMessage(message)
@@ -450,7 +513,9 @@ function ChatRoom({
       dotClassName: 'bg-slate-300',
     },
   }[serverStatus]
-  const queryError = chatRoomsQuery.error ?? messagesQuery.error
+  const queryError = chatRoomsQuery.error
+    ?? messagesQuery.error
+    ?? userPreferencesQuery.error
   const displayedErrorMessage = errorMessage || (
     queryError instanceof Error ? queryError.message : ''
   )
@@ -540,7 +605,9 @@ function ChatRoom({
           </div>
         </div>
 
-        <div className="flex min-h-[445px] flex-col rounded-2xl border border-violet-100 bg-white p-4 shadow-sm md:col-span-5 md:h-[700px]">
+        <div className={`flex min-h-[445px] flex-col rounded-2xl border border-violet-100 bg-white p-4 shadow-sm md:h-[700px] ${
+          isVoiceChatOpen ? 'md:col-span-5' : 'md:col-span-7'
+        }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img
@@ -560,12 +627,23 @@ function ChatRoom({
                 </div>
               </div>
             </div>
-            <button
-              type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-gray-100"
-            >
-              <i className="fa-solid fa-ellipsis text-gray-400" />
-            </button>
+            <ChatRoomHeaderMenu
+              chatRoom={activeChatRoom}
+              isBusy={actionChatRoomId !== null || isSending}
+              isVoiceChatOpen={isVoiceChatOpen}
+              isVoicePreferenceUpdating={
+                updateVoicePreferenceMutation.isPending
+              }
+              onShare={shareChatRoom}
+              onRename={changeChatRoomTitle}
+              onToggleVoiceChat={toggleVoiceChatPanel}
+              onDelete={(chatRoom) => {
+                setActiveModal({
+                  type: 'delete-chat-room',
+                  chatRoom,
+                })
+              }}
+            />
           </div>
           <hr className="-mx-4 mt-3 border-gray-200" />
 
@@ -660,10 +738,13 @@ function ChatRoom({
               <div className="ml-auto flex items-center gap-1">
                 <button
                   type="button"
-                  className="flex h-7 w-7 cursor-not-allowed items-center justify-center rounded-full bg-gray-100 text-gray-400"
-                  disabled
-                  title="음성 입력은 다음 단계에서 연결할 예정이에요"
-                  aria-label="음성 입력 준비 중"
+                  className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-gray-100 text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={
+                    isSending
+                    || isSessionLoading
+                    || !isAuthenticated
+                  }
+                  aria-label="음성 입력"
                 >
                   <i className="fa-solid fa-microphone text-[12px]" />
                 </button>
@@ -685,27 +766,32 @@ function ChatRoom({
           </form>
         </div>
 
-        <div className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:col-span-2 md:h-[700px]">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-gray-800">
-              음성 채팅
-            </span>
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-gray-100"
-              >
-                <i className="fa-solid fa-minus text-gray-400" />
-              </button>
-              <button
-                type="button"
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-gray-100"
-              >
-                <i className="fa-solid fa-sliders text-gray-400" />
-              </button>
+        {isVoiceChatOpen && (
+          <div className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:col-span-2 md:h-[700px]">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-gray-800">
+                음성 채팅
+              </span>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={toggleVoiceChatPanel}
+                  disabled={updateVoicePreferenceMutation.isPending}
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-gray-100 disabled:cursor-wait disabled:opacity-50"
+                  aria-label="음성 채팅 닫기"
+                >
+                  <i className="fa-solid fa-minus text-gray-400" />
+                </button>
+                <button
+                  type="button"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-gray-100"
+                >
+                  <i className="fa-solid fa-sliders text-gray-400" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {pendingDeleteChatRoom && (

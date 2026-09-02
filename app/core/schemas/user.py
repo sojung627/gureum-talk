@@ -32,6 +32,14 @@ class UserLogoutResponse(BaseModel):
     message: str
 
 
+class UserPreferenceResponse(BaseModel):
+    voice_chat_panel_open: bool
+
+
+class UserPreferenceUpdateRequest(BaseModel):
+    voice_chat_panel_open: bool
+
+
 # 회원가입 요청
 class UserRegisterRequest(BaseModel):
     name: str

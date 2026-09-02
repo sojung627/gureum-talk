@@ -12,6 +12,8 @@ from app.core.schemas.user import (
     UserLoginRequest,
     UserLoginResponse,
     UserLogoutResponse,
+    UserPreferenceResponse,
+    UserPreferenceUpdateRequest,
     UserRegisterRequest,
     UserRegisterResponse,
     UserSessionResponse,
@@ -25,7 +27,11 @@ from app.core.services.password_reset import (
     reset_user_password,
     verify_password_reset_code,
 )
-from app.core.services.user import login_user, register_user
+from app.core.services.user import login_user, register_user, require_session_user
+from app.core.services.user_preference import (
+    get_or_create_user_preference,
+    update_voice_chat_panel_preference,
+)
 from app.db.database import get_db
 from app.models.user import User
 
@@ -122,6 +128,49 @@ def logout(
     http_request.session.clear()
     return UserLogoutResponse(
         message="로그아웃 성공",
+    )
+
+
+@router.get(
+    "/preferences",
+    response_model=UserPreferenceResponse,
+)
+def get_user_preferences(
+    http_request: Request,
+    db: Session = Depends(get_db),
+) -> UserPreferenceResponse:
+    user = require_session_user(
+        db=db,
+        http_request=http_request,
+    )
+    preference = get_or_create_user_preference(db, user.user_id)
+    return UserPreferenceResponse(
+        voice_chat_panel_open=preference.voice_chat_panel_open,
+    )
+
+
+@router.patch(
+    "/preferences",
+    response_model=UserPreferenceResponse,
+)
+def update_user_preferences(
+    preference_request: UserPreferenceUpdateRequest,
+    http_request: Request,
+    db: Session = Depends(get_db),
+) -> UserPreferenceResponse:
+    user = require_session_user(
+        db=db,
+        http_request=http_request,
+    )
+    preference = update_voice_chat_panel_preference(
+        db=db,
+        user_id=user.user_id,
+        voice_chat_panel_open=(
+            preference_request.voice_chat_panel_open
+        ),
+    )
+    return UserPreferenceResponse(
+        voice_chat_panel_open=preference.voice_chat_panel_open,
     )
 
 

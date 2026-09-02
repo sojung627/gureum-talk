@@ -7,6 +7,10 @@ export type LoginUser = {
   name: string
 }
 
+export type UserPreferences = {
+  voice_chat_panel_open: boolean
+}
+
 type UserSessionResponse = {
   authenticated: boolean
   username: string | null
@@ -101,6 +105,25 @@ export async function getCurrentUser(): Promise<LoginUser | null> {
 
 export async function logoutCurrentUser(): Promise<void> {
   await apiClient.post('/api/users/logout')
+}
+
+
+export async function getUserPreferences(): Promise<UserPreferences> {
+  const response = await apiClient.get<UserPreferences>(
+    '/api/users/preferences',
+  )
+  return response.data
+}
+
+
+export async function updateVoiceChatPanelPreference(
+  voiceChatPanelOpen: boolean,
+): Promise<UserPreferences> {
+  const response = await apiClient.patch<UserPreferences>(
+    '/api/users/preferences',
+    { voice_chat_panel_open: voiceChatPanelOpen },
+  )
+  return response.data
 }
 
 

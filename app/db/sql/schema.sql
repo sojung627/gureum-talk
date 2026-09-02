@@ -2,6 +2,7 @@
 DROP TABLE IF EXISTS chat_messages CASCADE;
 DROP TABLE IF EXISTS chat_rooms CASCADE;
 DROP TABLE IF EXISTS password_reset_verifications CASCADE;
+DROP TABLE IF EXISTS user_preferences CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 
@@ -14,6 +15,17 @@ CREATE TABLE users (
                        user_email VARCHAR(100) NOT NULL UNIQUE,
                        user_password_hash VARCHAR(255) NOT NULL,
                        user_created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_preferences (
+    user_id BIGINT PRIMARY KEY,
+    voice_chat_panel_open BOOLEAN NOT NULL DEFAULT TRUE,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_user_preferences_user
+        FOREIGN KEY (user_id)
+            REFERENCES users(user_id)
+            ON DELETE CASCADE
 );
 
 -- 비밀번호 재설정 인증
