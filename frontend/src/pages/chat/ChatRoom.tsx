@@ -171,6 +171,20 @@ function ChatRoom({
   })
 
   const chatRooms = chatRoomsQuery.data ?? []
+  const chatRoomSections = [
+    {
+      label: '고정됨',
+      chatRooms: chatRooms.filter(
+        (chatRoom) => chatRoom.chat_is_pinned,
+      ),
+    },
+    {
+      label: '최근',
+      chatRooms: chatRooms.filter(
+        (chatRoom) => !chatRoom.chat_is_pinned,
+      ),
+    },
+  ].filter((section) => section.chatRooms.length > 0)
   const messages = messagesQuery.data
   const isVoiceChatOpen =
     userPreferencesQuery.data?.voice_chat_panel_open ?? true
@@ -522,8 +536,12 @@ function ChatRoom({
 
   return (
     <>
-      <div className="mx-auto mt-12 grid max-w-[1480px] grid-cols-1 items-stretch gap-6 px-6 md:grid-cols-9 lg:px-24">
-        <div className="flex flex-col rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:col-span-2 md:h-[700px]">
+      <div className={`mx-auto mt-12 grid max-w-[1480px] grid-cols-1 items-stretch gap-6 px-6 lg:px-12 ${
+        isVoiceChatOpen
+          ? 'md:grid-cols-[2.3fr_7fr_3fr]'
+          : 'md:grid-cols-[2.3fr_10fr]'
+      }`}>
+        <div className="flex flex-col rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:h-[700px]">
           <div className="flex min-h-0 w-full flex-1 flex-col">
             <button
               type="button"
@@ -548,36 +566,45 @@ function ChatRoom({
                   <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-violet-400 [animation-delay:120ms]" />
                   <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-violet-500 [animation-delay:240ms]" />
                 </div>
-              ) : (
-                chatRooms.map((chatRoom) => (
-                  <ChatRoomListItem
-                    key={chatRoom.chat_room_id}
-                    chatRoom={chatRoom}
-                    isActive={
-                      activeChatRoomId
-                      === chatRoom.chat_room_id
-                    }
-                    isBusy={
-                      isSending
-                      || loadingChatRoomId !== null
-                      || actionChatRoomId
+              ) : chatRoomSections.map((section, sectionIndex) => (
+                <section
+                  key={section.label}
+                  className={sectionIndex === 0 ? '' : 'mt-3'}
+                  aria-label={section.label}
+                >
+                  <h2 className="mb-1 px-2 text-xs font-semibold text-slate-400">
+                    {section.label}
+                  </h2>
+                  {section.chatRooms.map((chatRoom) => (
+                    <ChatRoomListItem
+                      key={chatRoom.chat_room_id}
+                      chatRoom={chatRoom}
+                      isActive={
+                        activeChatRoomId
                         === chatRoom.chat_room_id
-                    }
-                    onSelect={(chatRoomId) => {
-                      void selectChatRoom(chatRoomId)
-                    }}
-                    onPin={changeChatRoomPin}
-                    onRename={changeChatRoomTitle}
-                    onShare={shareChatRoom}
-                    onDelete={(chatRoom) => {
-                      setActiveModal({
-                        type: 'delete-chat-room',
-                        chatRoom,
-                      })
-                    }}
-                  />
-                ))
-              )}
+                      }
+                      isBusy={
+                        isSending
+                        || loadingChatRoomId !== null
+                        || actionChatRoomId
+                          === chatRoom.chat_room_id
+                      }
+                      onSelect={(chatRoomId) => {
+                        void selectChatRoom(chatRoomId)
+                      }}
+                      onPin={changeChatRoomPin}
+                      onRename={changeChatRoomTitle}
+                      onShare={shareChatRoom}
+                      onDelete={(chatRoom) => {
+                        setActiveModal({
+                          type: 'delete-chat-room',
+                          chatRoom,
+                        })
+                      }}
+                    />
+                  ))}
+                </section>
+              ))}
             </div>
 
             <div className="mt-3 shrink-0 rounded-2xl bg-violet-100 p-4 text-center shadow-sm">
@@ -605,9 +632,7 @@ function ChatRoom({
           </div>
         </div>
 
-        <div className={`flex min-h-[445px] flex-col rounded-2xl border border-violet-100 bg-white p-4 shadow-sm md:h-[700px] ${
-          isVoiceChatOpen ? 'md:col-span-5' : 'md:col-span-7'
-        }`}>
+        <div className="flex min-h-[445px] flex-col rounded-2xl border border-violet-100 bg-white p-4 shadow-sm md:h-[700px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img
@@ -767,7 +792,7 @@ function ChatRoom({
         </div>
 
         {isVoiceChatOpen && (
-          <div className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:col-span-2 md:h-[700px]">
+          <div className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:h-[700px]">
             <div className="flex items-center justify-between">
               <span className="font-semibold text-gray-800">
                 음성 채팅

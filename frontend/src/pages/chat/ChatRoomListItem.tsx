@@ -243,25 +243,13 @@ function ChatRoomListItem({
               <button
                 type="button"
                 onClick={() => {
-                  onSelect(chatRoom.chat_room_id)
-                }}
-                disabled={isBusy}
-                className="min-w-0 flex-1 truncate py-2 text-left text-sm font-medium disabled:cursor-wait"
-                title={chatRoom.chat_title}
-              >
-                {chatRoom.chat_title}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
                   void onPin(chatRoom)
                 }}
                 disabled={isBusy}
-                className={`grid h-7 w-7 shrink-0 place-items-center transition ${
+                className={`grid h-7 shrink-0 place-items-center overflow-hidden transition-all duration-150 ${
                   chatRoom.chat_is_pinned
-                    ? 'text-violet-600 opacity-100'
-                    : 'text-slate-400 opacity-0 hover:text-violet-500 group-hover:opacity-100 group-focus-within:opacity-100'
+                    ? 'w-7 text-violet-600 opacity-100'
+                    : 'w-7 text-slate-400 opacity-100 hover:text-violet-500'
                 }`}
                 aria-label={
                   chatRoom.chat_is_pinned
@@ -275,6 +263,18 @@ function ChatRoomListItem({
                 }
               >
                 <i className="fa-solid fa-thumbtack text-xs" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  onSelect(chatRoom.chat_room_id)
+                }}
+                disabled={isBusy}
+                className="min-w-0 flex-1 truncate py-2 text-left text-sm font-medium disabled:cursor-wait"
+                title={chatRoom.chat_title}
+              >
+                {chatRoom.chat_title}
               </button>
 
               <button
