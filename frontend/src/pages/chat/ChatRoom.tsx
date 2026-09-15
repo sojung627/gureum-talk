@@ -68,6 +68,7 @@ function ChatRoom({
 
   const nextLocalMessageId = useRef(1)
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  const messageInputRef = useRef<HTMLTextAreaElement | null>(null)
   const noticeTimerRef = useRef<number | null>(null)
 
   const serverStatusQuery = useQuery({
@@ -285,7 +286,10 @@ function ChatRoom({
     return displayMessage
   }
 
-  const startNewChat = () => {
+  const startNewChat = useCallback(() => {
+    if (isSending || isSessionLoading || !isAuthenticated || actionChatRoomId !== null) {
+      return
+    }
     setActiveChatRoomId(null)
     queryClient.setQueryData<DisplayMessage[]>(
       queryKeys.chat.messages(null),
@@ -297,7 +301,34 @@ function ChatRoom({
       setActiveModal(null)
     }
     navigate('/chat')
-  }
+    messageInputRef.current?.focus()
+  }, [isSending, isSessionLoading, isAuthenticated, actionChatRoomId,
+    setActiveChatRoomId, queryClient, activeModal, setActiveModal, navigate])
+
+  useEffect(() => {
+    const handleNewChatShortcut = (event: KeyboardEvent) => {
+      if (
+        !event.ctrlKey || !event.shiftKey || event.altKey || event.metaKey
+        || event.code !== 'KeyO' || event.isComposing
+      ) {
+        return
+      }
+      event.preventDefault()
+      if (!event.repeat) {
+        startNewChat()
+      }
+    }
+    window.addEventListener('keydown', handleNewChatShortcut)
+    return () => window.removeEventListener('keydown', handleNewChatShortcut)
+  }, [startNewChat])
+
+  useEffect(() => {
+    const input = messageInputRef.current
+    if (input) {
+      input.style.height = 'auto'
+      input.style.height = `${Math.min(input.scrollHeight, 144)}px`
+    }
+  }, [inputMessage])
 
   const selectChatRoom = (chatRoomId: number) => {
     if (
@@ -573,6 +604,9 @@ function ChatRoom({
             <button
               type="button"
               onClick={startNewChat}
+              title="새 대화 (Ctrl + Shift + O)"
+              aria-keyshortcuts="Control+Shift+O"
+              disabled={isSending || isSessionLoading || !isAuthenticated || actionChatRoomId !== null}
               className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-400 px-7 font-semibold text-white shadow-xl shadow-violet-200 transition hover:-translate-y-0.5"
             >
               <i className="fa-solid fa-plus" />
@@ -771,11 +805,24 @@ function ChatRoom({
             className="mt-auto"
             onSubmit={handleChatSubmit}
           >
-            <div className="flex h-[45px] w-full items-center gap-3 rounded-full border border-violet-100 pl-5 pr-2 shadow-sm focus-within:border-violet-300">
-              <input
-                className="flex-1 bg-transparent text-gray-700 outline-none caret-violet-500 placeholder:text-gray-300 disabled:cursor-not-allowed"
-                type="text"
+            <div className="flex min-h-[45px] w-full items-center gap-3 rounded-3xl border border-violet-100 py-2 pl-5 pr-2 shadow-sm focus-within:border-violet-300">
+              <textarea
+                ref={messageInputRef}
+                rows={1}
+                className="min-w-0 flex-1 resize-none bg-transparent leading-6 text-gray-700 outline-none caret-violet-500 placeholder:text-gray-300 disabled:cursor-not-allowed"
                 value={inputMessage}
+                onKeyDown={(event) => {
+                  if (
+                    event.key !== 'Enter' || event.shiftKey
+                    || event.nativeEvent.isComposing || event.keyCode === 229
+                  ) {
+                    return
+                  }
+                  event.preventDefault()
+                  if (!event.repeat) {
+                    event.currentTarget.form?.requestSubmit()
+                  }
+                }}
                 onChange={(event) => {
                   setInputMessage(event.target.value)
                 }}
