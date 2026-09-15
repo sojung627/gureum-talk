@@ -523,7 +523,7 @@ function ChatRoom({
 
       queryClient.removeQueries({
         queryKey: queryKeys.chat.messages(chatRoomId),
-      })
+      }) 
       setActiveModal(null)
       await queryClient.invalidateQueries({
         queryKey: queryKeys.chat.rooms, 
