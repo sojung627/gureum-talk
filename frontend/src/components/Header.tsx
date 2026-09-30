@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useAtom } from 'jotai'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -7,15 +8,12 @@ import UserLoginModal from '../pages/users/UserLoginModal'
 import UserRegisterModal from '../pages/users/UserRegisterModal'
 import { activeModalAtom } from '../state/uiAtoms'
 
-const navigationItems = ['홈', '기능', '요금제', '도움말']
-
-//경로 매핑
-const PATH_TO_MENU: Record<string, string> = {
-  '/': '홈',
-  '/plans': '요금제',
-  '/features': '기능',
-  '/help': '도움말',
-}
+const navigationItems = [
+  { path: '/', label: 'home' },
+  { path: '/features', label: 'features' },
+  { path: '/plans', label: 'plans' },
+  { path: '/help', label: 'help' },
+]
 
 type HeaderProps = {
   loginUser: LoginUser | null
@@ -30,16 +28,14 @@ function Header({
   onLoginSuccess,
   onLogout,
 }: HeaderProps) {
+  const { t } = useTranslation()
+
   const navigate = useNavigate()
   const location = useLocation()
-  const activeMenu = PATH_TO_MENU[location.pathname] ?? '홈'
   const [activeModal, setActiveModal] = useAtom(activeModalAtom)
 
   const handleMenuClick = (item: string) => {
-    if (item === '도움말') navigate('/help')
-    if (item === '기능') navigate('/features')
-    if (item === '요금제') navigate('/plans')
-    if (item === '홈') navigate('/')
+    navigate(item)
   }
 
   const handleLoginSuccess = (username: string, name: string) => {
@@ -65,7 +61,7 @@ function Header({
             className="flex items-center gap-3"
             onClick={() => navigate('/')}
           >
-            <img className="w-15 h-15 object-contain" src="/images/gureum/GureumAI.png" alt="구름AI" />
+            <img className="w-15 h-15 object-contain" src="/images/gureum/GureumAI.png" alt={t('gureumAI')} />
             <span className="text-2xl font-bold tracking-tight text-slate-800">
               Gureum<span className="text-violet-500">Talk</span>
             </span> 
@@ -73,17 +69,17 @@ function Header({
 
           <nav className="hidden items-center gap-12 md:flex">
             {navigationItems.map((item) => {
-              const isActive = activeMenu === item
+              const isActive = location.pathname === item.path
               return (
                 <button
-                  key={item}
+                  key={item.path}
                   type="button"
-                  onClick={() => handleMenuClick(item)}
+                  onClick={() => handleMenuClick(item.path)}
                   className={`relative py-4 text-[15px] font-medium transition-colors ${
                     isActive ? 'text-slate-900' : 'text-slate-500 hover:text-violet-500'
                   }`}
                 >
-                  {item}
+                  {t(item.label)}
                   {isActive && (
                     <span className="absolute bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-violet-500" />
                   )}
@@ -100,8 +96,7 @@ function Header({
                   onClick={handleLogout}
                   className="rounded-2xl border border-slate-100 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
                 >
-                  로그아웃
-                </button>
+                  {t('logout')}</button>
               </>
             ) : !isSessionLoading ? (
               <>
@@ -110,15 +105,13 @@ function Header({
                   onClick={() => setActiveModal({ type: 'login' })}
                   className="rounded-2xl border border-slate-100 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
                 >
-                  로그인
-                </button>
+                  {t('login')}</button>
                 <button
                   type="button"
                   onClick={() => setActiveModal({ type: 'register' })}
                   className="rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5"
                 >
-                  회원가입
-                </button>
+                  {t('register')}</button>
               </>
             ) : null}
           </div>

@@ -1,3 +1,4 @@
+import { t } from 'i18next'
 import apiClient from './axios'
 import axios from 'axios'
 
@@ -140,7 +141,7 @@ export async function requestPasswordResetCode(
   } catch (error: unknown) {
     throw createPasswordResetApiError(
       error,
-      '인증번호를 발송할 수 없습니다.',
+      t('codeSendFailed'),
     )
   }
 }
@@ -159,7 +160,7 @@ export async function verifyPasswordResetCode(
   } catch (error: unknown) {
     throw createPasswordResetApiError(
       error,
-      '인증에 실패하였습니다.',
+      t('verificationFailed'),
     )
   }
 }
@@ -183,7 +184,7 @@ export async function changePasswordWithResetToken(
   } catch (error: unknown) {
     throw createPasswordResetApiError(
       error,
-      '비밀번호 변경에 실패하였습니다.',
+      t('passwordChangeFailed'),
     )
   }
 }

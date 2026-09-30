@@ -1,3 +1,5 @@
+import { translateMessage } from '../../i18n'
+import { useTranslation } from 'react-i18next'
 import {
   type FormEvent,
   useCallback,
@@ -53,6 +55,8 @@ function ChatRoom({
   isAuthenticated,
   isSessionLoading,
 }: ChatRoomProps) {
+  const { t } = useTranslation()
+
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [activeChatRoomId, setActiveChatRoomId] = useAtom(
@@ -162,7 +166,7 @@ function ChatRoom({
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : '음성 채팅 설정을 저장하지 못했어요.',
+          : t('voiceSettingsFailed'),
       )
     },
     onSuccess: (preferences) => {
@@ -176,13 +180,13 @@ function ChatRoom({
   const chatRooms = chatRoomsQuery.data ?? []
   const chatRoomSections = [
     {
-      label: '고정됨',
+      label: t('pinned'),
       chatRooms: chatRooms.filter(
         (chatRoom) => chatRoom.chat_is_pinned,
       ),
     },
     {
-      label: '최근',
+      label: t('recent'),
       chatRooms: chatRooms.filter(
         (chatRoom) => !chatRoom.chat_is_pinned,
       ),
@@ -240,9 +244,9 @@ function ChatRoom({
   const handleMicrophoneError = useCallback(() => {
     setIsVoiceListening(false)
     setErrorMessage(
-      '마이크를 사용할 수 없습니다. 브라우저의 마이크 권한을 확인해주세요.',
+      t('microphoneFailed'),
     )
-  }, [])
+  }, [t])
 
   const showNotice = useCallback((message: string) => {
     setNoticeMessage(message)
@@ -401,7 +405,7 @@ function ChatRoom({
       const readableErrorMessage =
         error instanceof Error
           ? error.message
-          : '채팅 요청 중 오류가 발생했어요.'
+          : t('chatFailed')
       setErrorMessage(readableErrorMessage)
       await serverStatusQuery.refetch()
     }
@@ -425,7 +429,7 @@ function ChatRoom({
       const readableErrorMessage =
         error instanceof Error
           ? error.message
-          : '대화방 고정 상태를 변경하지 못했어요.'
+          : t('pinFailed')
       setErrorMessage(readableErrorMessage)
     } finally {
       setActionChatRoomId(null)
@@ -447,12 +451,12 @@ function ChatRoom({
       await queryClient.invalidateQueries({
         queryKey: queryKeys.chat.rooms,
       })
-      showNotice('대화방 이름을 변경했어요.')
+      showNotice(t('renamed'))
     } catch (error: unknown) {
       const readableErrorMessage =
         error instanceof Error
           ? error.message
-          : '대화방 이름을 변경하지 못했어요.'
+          : t('renameFailed')
       setErrorMessage(readableErrorMessage)
       throw error
     } finally {
@@ -493,8 +497,8 @@ function ChatRoom({
         .map((storedMessage) => {
           const speakerName =
             storedMessage.role === 'user'
-              ? '나'
-              : '구름이'
+              ? t('me')
+              : t('gureum')
           return `${speakerName}: ${storedMessage.content}`
         })
         .join('\n\n')
@@ -506,7 +510,7 @@ function ChatRoom({
             title: chatRoom.chat_title,
             text: shareText,
           })
-          showNotice('공유 창을 열었어요.')
+          showNotice(t('shareOpened'))
           return
         } catch (shareError: unknown) {
           if (
@@ -519,12 +523,12 @@ function ChatRoom({
       }
 
       await copyTextToClipboard(shareText)
-      showNotice('대화 내용을 클립보드에 복사했어요.')
+      showNotice(t('copied'))
     } catch (error: unknown) {
       const readableErrorMessage =
         error instanceof Error
           ? error.message
-          : '대화 내용을 공유하지 못했어요.'
+          : t('shareFailed')
       setErrorMessage(readableErrorMessage)
     } finally {
       setActionChatRoomId(null)
@@ -559,12 +563,12 @@ function ChatRoom({
       await queryClient.invalidateQueries({
         queryKey: queryKeys.chat.rooms, 
       })
-      showNotice('대화방을 삭제했어요.')
+      showNotice(t('deleted'))
     } catch (error: unknown) {
       const readableErrorMessage =
         error instanceof Error
           ? error.message
-          : '대화방을 삭제하지 못했어요.'
+          : t('deleteFailed')
       setErrorMessage(readableErrorMessage)
     } finally {
       setActionChatRoomId(null)
@@ -573,15 +577,15 @@ function ChatRoom({
 
   const statusInformation = {
     checking: {
-      label: '연결 확인 중',
+      label: t('connecting'),
       dotClassName: 'bg-amber-300',
     },
     online: {
-      label: '연결됨',
+      label: t('connected'),
       dotClassName: 'bg-green-400',
     },
     offline: {
-      label: '연결 끊김',
+      label: t('disconnected'),
       dotClassName: 'bg-slate-300',
     },
   }[serverStatus]
@@ -604,24 +608,22 @@ function ChatRoom({
             <button
               type="button"
               onClick={startNewChat}
-              title="새 대화 (Ctrl + Shift + O)"
+              title={t('newChatShortcut')}
               aria-keyshortcuts="Control+Shift+O"
               disabled={isSending || isSessionLoading || !isAuthenticated || actionChatRoomId !== null}
               className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-400 px-7 font-semibold text-white shadow-xl shadow-violet-200 transition hover:-translate-y-0.5"
             >
               <i className="fa-solid fa-plus" />
-              새 대화
-            </button>
+              {t('newChat')}</button>
 
             <div className="mt-5 font-semibold">
-              대화 목록
-            </div>
+              {t('conversations')}</div>
 
             <div className="mt-2 min-h-0 flex-1 overflow-y-auto scrollbar-custom">
               {isRoomListLoading ? (
                 <div
                   className="flex h-10 items-center justify-center gap-1"
-                  aria-label="대화 목록 불러오는 중"
+                  aria-label={t('loadingConversations')}
                 >
                   <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-violet-300" />
                   <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-violet-400 [animation-delay:120ms]" />
@@ -671,15 +673,14 @@ function ChatRoom({
             <div className="mt-3 shrink-0 rounded-2xl bg-violet-100 p-4 text-center shadow-sm">
               <div className="flex justify-center">
                 <img
-                  alt="구름이"
+                  alt={t('gureum')}
                   src="/images/gureum/Gureum_img01.png"
                   className="h-[92px] w-[92px] object-contain"
                 />
               </div>
               <p className="text-sm leading-5 text-slate-700">
-                구름이와 함께
-                <br />
-                하루를 보내세요{' '}
+                {t('withGureum')}<br />
+                {t('spendYourDay')}{' '}
                 <i className="fa-solid fa-heart text-violet-500" />
               </p>
               <button
@@ -687,8 +688,7 @@ function ChatRoom({
                 className="mt-3 h-9 w-full rounded-xl border border-violet-500 font-bold text-violet-500"
                 onClick={() => navigate('/help')}
               >
-                더 알아보기
-              </button>
+                {t('learnMore')}</button>
             </div>
           </div>
         </div>
@@ -745,8 +745,7 @@ function ChatRoom({
                   className="mb-3 h-16 w-16 rounded-full object-cover opacity-90"
                 />
                 <p className="font-medium text-gray-400">
-                  구름이에게 마음을 전달해보세요.
-                </p>
+                  {t('chatEmpty')}</p>
               </div>
             )}
 
@@ -797,7 +796,7 @@ function ChatRoom({
               className="mb-2 px-2 text-xs text-rose-500"
               role="alert"
             >
-              {displayedErrorMessage}
+              {translateMessage(displayedErrorMessage)}
             </p>
           )}
 
@@ -826,13 +825,13 @@ function ChatRoom({
                 onChange={(event) => {
                   setInputMessage(event.target.value)
                 }}
-                placeholder="구름이에게 연락해보세요..."
+                placeholder={t('chatPlaceholder')}
                 disabled={
                   isSending
                   || isSessionLoading
                   || !isAuthenticated
                 }
-                aria-label="채팅 메시지"
+                aria-label={t('chatMessage')}
               />
               <div className="ml-auto flex items-center gap-1">
                 <button
@@ -851,8 +850,8 @@ function ChatRoom({
                   }
                   aria-label={
                     isVoiceListening
-                      ? '음성 입력 중지'
-                      : '음성 입력 시작'
+                      ? t('stopVoiceInput')
+                      : t('startVoiceInput')
                   }
                   aria-pressed={isVoiceListening}
                 >
@@ -867,7 +866,7 @@ function ChatRoom({
                     || isSessionLoading
                     || !isAuthenticated
                   }
-                  aria-label="메시지 전송"
+                  aria-label={t('sendMessage')}
                 >
                   <i className="fa-solid fa-paper-plane translate-y-[1px] text-[13px]" />
                 </button>
@@ -880,15 +879,14 @@ function ChatRoom({
           <div className="flex flex-col rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:h-[700px]">
             <div className="flex items-center justify-between">
               <span className="font-semibold text-gray-800">
-                음성 채팅
-              </span>
+                {t('voiceChat')}</span>
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={closeVoiceChatPanel}
                   disabled={updateVoicePreferenceMutation.isPending}
                   className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-gray-100 disabled:cursor-wait disabled:opacity-50"
-                  aria-label="음성 채팅 닫기"
+                  aria-label={t('closeVoiceChat')}
                 >
                   <i className="fa-solid fa-minus text-gray-400" />
                 </button>
@@ -914,11 +912,9 @@ function ChatRoom({
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/35 px-6 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl">
             <h2 className="text-lg font-bold text-slate-800">
-              대화방 삭제
-            </h2>
+              {t('deleteConversation')}</h2>
             <p className="mt-3 break-words text-sm leading-6 text-slate-500">
-              ‘{pendingDeleteChatRoom.chat_title}’ 대화방과
-              저장된 메시지를 모두 삭제할까요?
+              {t('deleteConfirmation', { title: pendingDeleteChatRoom.chat_title })}
             </p>
             <div className="mt-6 flex justify-end gap-2">
               <button
@@ -929,8 +925,7 @@ function ChatRoom({
                 disabled={actionChatRoomId !== null}
                 className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-500 hover:bg-slate-50"
               >
-                취소
-              </button>
+                {t('cancel')}</button>
               <button
                 type="button"
                 onClick={() => {
@@ -939,8 +934,7 @@ function ChatRoom({
                 disabled={actionChatRoomId !== null}
                 className="rounded-xl bg-rose-500 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-600 disabled:cursor-wait disabled:bg-rose-300"
               >
-                삭제하기
-              </button>
+                {t('delete')}</button>
             </div>
           </div>
         </div>
@@ -951,7 +945,7 @@ function ChatRoom({
           className="fixed bottom-6 left-1/2 z-[1100] -translate-x-1/2 rounded-full bg-slate-800 px-5 py-2.5 text-sm font-medium text-white shadow-xl"
           role="status"
         >
-          {noticeMessage}
+          {translateMessage(noticeMessage)}
         </div>
       )}
     </>

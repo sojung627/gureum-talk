@@ -1,3 +1,5 @@
+import { translateMessage } from '../../i18n'
+import { useTranslation } from 'react-i18next'
 import { useEffect, useRef, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 
@@ -14,14 +16,15 @@ type UserPasswordResetModalProps = {
   onSwitchToLogin: () => void
 }
 
-const PASSWORD_ERROR_MESSAGE =
-  '비밀번호는 영문 소문자와 숫자를 포함하여 5자 이상 15자 이내로 작성해주세요.'
 
 
 function UserPasswordResetModal({
   onClose,
   onSwitchToLogin,
 }: UserPasswordResetModalProps) {
+  const { t } = useTranslation()
+  const PASSWORD_ERROR_MESSAGE = t('passwordRule')
+
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
   const [username, setUsername] = useState('')
@@ -70,7 +73,7 @@ function UserPasswordResetModal({
     onError: (error) => {
       const message = error instanceof PasswordResetApiError
         ? error.message
-        : '인증번호를 발송할 수 없습니다.'
+        : t('codeSendFailed')
 
       if (
         error instanceof PasswordResetApiError
@@ -100,11 +103,11 @@ function UserPasswordResetModal({
     onError: (error) => {
       const message = error instanceof PasswordResetApiError
         ? error.message
-        : '인증에 실패하였습니다.'
+        : t('verificationFailed')
       setVerificationCodeError(' ')
       setVerificationMessage(message)
       setVerificationMessageIsSuccess(false)
-      if (message === '인증 유효시간이 지났습니다.') {
+      if (error instanceof PasswordResetApiError && error.field === 'expired') {
         setRemainingSeconds(0)
       }
     },
@@ -128,7 +131,7 @@ function UserPasswordResetModal({
     onError: (error) => {
       const message = error instanceof PasswordResetApiError
         ? error.message
-        : '비밀번호 변경에 실패하였습니다.'
+        : t('passwordChangeFailed')
       const field = error instanceof PasswordResetApiError
         ? error.field
         : undefined
@@ -204,11 +207,11 @@ function UserPasswordResetModal({
 
     let isValid = true
     if (!username.trim()) {
-      setUsernameError('아이디를 입력해주세요.')
+      setUsernameError(t('usernameRequired'))
       isValid = false
     }
     if (!phone.trim()) {
-      setPhoneError('전화번호를 입력해주세요.')
+      setPhoneError(t('phoneRequired'))
       isValid = false
     }
     if (!isValid) {
@@ -234,16 +237,16 @@ function UserPasswordResetModal({
     setVerificationMessageIsSuccess(false)
 
     if (!requestId) {
-      setVerificationCodeError('인증번호를 먼저 요청해주세요.')
+      setVerificationCodeError(t('requestCodeFirst'))
       return
     }
     if (remainingSeconds <= 0) {
       setVerificationCodeError(' ')
-      setVerificationMessage('인증 유효시간이 지났습니다.')
+      setVerificationMessage(t('codeExpired'))
       return
     }
     if (verificationCode.length !== 6) {
-      setVerificationCodeError('6자리 인증번호를 입력해주세요.')
+      setVerificationCodeError(t('codeSixRequired'))
       return
     }
 
@@ -267,7 +270,7 @@ function UserPasswordResetModal({
     setPasswordChangeMessage('')
     if (passwordConfirm) {
       setPasswordConfirmError(
-        value === passwordConfirm ? '' : '비밀번호가 일치하지 않습니다.',
+        value === passwordConfirm ? '' : t('passwordMismatch'),
       )
     }
   }
@@ -278,7 +281,7 @@ function UserPasswordResetModal({
     const value = event.target.value.replace(/\s/g, '').slice(0, 15)
     setPasswordConfirm(value)
     setPasswordConfirmError(
-      value === password ? '' : '비밀번호가 일치하지 않습니다.',
+      value === password ? '' : t('passwordMismatch'),
     )
     setPasswordChangeMessage('')
   }
@@ -290,13 +293,13 @@ function UserPasswordResetModal({
     setPasswordChangeSucceeded(false)
 
     if (!isVerified || !resetToken) {
-      setPasswordChangeMessage('본인 인증을 완료해주세요.')
+      setPasswordChangeMessage(t('verifyIdentityFirst'))
       return
     }
 
     let isValid = true
     if (!password) {
-      setPasswordError('비밀번호를 입력해주세요.')
+      setPasswordError(t('passwordRequired'))
       isValid = false
     } else {
       const validationError = validatePassword(password)
@@ -307,10 +310,10 @@ function UserPasswordResetModal({
     }
 
     if (!passwordConfirm) {
-      setPasswordConfirmError('비밀번호 확인을 입력해주세요.')
+      setPasswordConfirmError(t('confirmPasswordRequired'))
       isValid = false
     } else if (password !== passwordConfirm) {
-      setPasswordConfirmError('비밀번호가 일치하지 않습니다.')
+      setPasswordConfirmError(t('passwordMismatch'))
       isValid = false
     }
 
@@ -339,7 +342,7 @@ function UserPasswordResetModal({
           type="button"
           onClick={onClose}
           className="absolute right-6 top-6 text-3xl text-slate-400 hover:text-slate-700"
-          aria-label="비밀번호 찾기 닫기"
+          aria-label={t('closeResetPassword')}
         >
           <i className="fa-solid fa-x" />
         </button>
@@ -348,25 +351,21 @@ function UserPasswordResetModal({
           <img
             className="h-25 w-25 object-contain"
             src="/images/gureum/GureumAI.png"
-            alt="구름AI"
+            alt={t('gureumAI')}
           />
         </div>
 
         <h2 className="text-center text-3xl font-bold text-slate-800">
-          비밀번호 찾기
-        </h2>
+          {t('resetPassword')}</h2>
         <p className="mt-3 text-center text-slate-500">
-          GureumTalk와 함께 안전한 비밀번호를 재설정해보세요.
-        </p>
+          {t('resetIntro')}</p>
 
         <div className="mt-6 font-semibold text-violet-500">
-          <i className="bi bi-1-circle-fill" /> 본인 확인
-        </div>
+          <i className="bi bi-1-circle-fill" /> {t('verifyIdentity')}</div>
 
         <div className="mt-3">
           <label className="mb-1 block text-base font-semibold text-slate-700">
-            아이디
-          </label>
+            {t('username')}</label>
           <div className="relative">
             <input
               type="text"
@@ -378,22 +377,21 @@ function UserPasswordResetModal({
                 setIdentityMessage('')
                 resetVerificationState()
               }}
-              placeholder="아이디를 입력해주세요"
+              placeholder={t('usernamePlaceholder')}
               className={inputClassName(Boolean(usernameError))}
             />
             <i className="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
           </div>
           {usernameError.trim() && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
-              <i className="bi bi-info-circle" /> {usernameError}
+              <i className="bi bi-info-circle" /> {translateMessage(usernameError)}
             </p>
           )}
         </div>
 
         <div className="mt-3">
           <label className="mb-1 block text-base font-semibold text-slate-700">
-            전화번호
-          </label>
+            {t('phone')}</label>
           <div className="relative">
             <input
               type="text"
@@ -402,14 +400,14 @@ function UserPasswordResetModal({
               disabled={isVerified}
               onChange={handlePhoneChange}
               maxLength={13}
-              placeholder="전화번호를 입력해주세요"
+              placeholder={t('phonePlaceholder')}
               className={inputClassName(Boolean(phoneError))}
             />
             <i className="fa-solid fa-phone-flip absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
           </div>
           {phoneError.trim() && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
-              <i className="bi bi-info-circle" /> {phoneError}
+              <i className="bi bi-info-circle" /> {translateMessage(phoneError)}
             </p>
           )}
         </div>
@@ -418,7 +416,7 @@ function UserPasswordResetModal({
           <p className={`mt-2 flex items-center gap-1.5 text-xs ${
             identityMessageIsSuccess ? 'text-emerald-500' : 'text-red-400'
           }`}>
-            <i className="bi bi-info-circle" /> {identityMessage}
+            <i className="bi bi-info-circle" /> {translateMessage(identityMessage)}
           </p>
         )}
 
@@ -429,15 +427,14 @@ function UserPasswordResetModal({
             disabled={sendCodeMutation.isPending || isVerified}
             className="h-14 w-full rounded-2xl bg-gradient-to-r from-violet-100 to-indigo-100 font-semibold text-violet-600 shadow-sm shadow-violet-100 transition hover:-translate-y-0.5 hover:from-violet-600 hover:to-indigo-400 hover:text-white hover:shadow-lg hover:shadow-violet-200 disabled:cursor-wait disabled:opacity-60 disabled:hover:translate-y-0"
           >
-            {sendCodeMutation.isPending ? '발송 중...' : '인증번호 받기'}
+            {sendCodeMutation.isPending ? t('sending') : t('getCode')}
           </button>
         </div>
 
         <div className="my-8 border-t border-dashed border-slate-200" />
 
         <div className="font-semibold text-violet-500">
-          <i className="bi bi-2-circle-fill" /> 인증번호 확인
-        </div>
+          <i className="bi bi-2-circle-fill" /> {t('verifyCode')}</div>
 
         <div className="mt-3 flex gap-3">
           <div className="relative flex-[7.5]">
@@ -448,7 +445,7 @@ function UserPasswordResetModal({
               disabled={isVerified}
               onChange={handleVerificationCodeChange}
               maxLength={6}
-              placeholder="6자리 인증번호를 입력해주세요"
+              placeholder={t('codePlaceholder')}
               className={inputClassName(Boolean(verificationCodeError))}
             />
             <i className="fa-solid fa-shield-halved absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -460,27 +457,26 @@ function UserPasswordResetModal({
             disabled={verifyCodeMutation.isPending || isVerified}
             className="h-14 flex-[2.5] whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-100 to-indigo-100 font-semibold text-violet-600 shadow-sm shadow-violet-100 transition hover:-translate-y-0.5 hover:from-violet-600 hover:to-indigo-400 hover:text-white hover:shadow-lg hover:shadow-violet-200 disabled:cursor-wait disabled:opacity-60"
           >
-            {verifyCodeMutation.isPending ? '확인 중...' : '인증하기'}
+            {verifyCodeMutation.isPending ? t('checking') : t('verify')}
           </button>
         </div>
 
         {verificationCodeError.trim() && (
           <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
-            <i className="bi bi-info-circle" /> {verificationCodeError}
+            <i className="bi bi-info-circle" /> {translateMessage(verificationCodeError)}
           </p>
         )}
         {verificationMessage && (
           <p className={`mt-1.5 flex items-center gap-1.5 text-xs ${
             verificationMessageIsSuccess ? 'text-emerald-500' : 'text-red-400'
           }`}>
-            <i className="bi bi-info-circle" /> {verificationMessage}
+            <i className="bi bi-info-circle" /> {translateMessage(verificationMessage)}
           </p>
         )}
 
         <div className="mt-5 flex items-center justify-between text-sm text-slate-500">
           <span>
-            <i className="bi bi-info-circle" /> 인증번호는 3분간 유효합니다.
-          </span>
+            <i className="bi bi-info-circle" /> {t('codeValidity')}</span>
           {requestId && !isVerified && (
             <span className={remainingSeconds > 0 ? 'text-violet-500' : 'text-red-400'}>
               {formattedRemainingTime}
@@ -491,13 +487,11 @@ function UserPasswordResetModal({
         <div className="my-8 border-t border-dashed border-slate-200" />
 
         <div className="font-semibold text-violet-500">
-          <i className="bi bi-3-circle-fill" /> 새 비밀번호 설정
-        </div>
+          <i className="bi bi-3-circle-fill" /> {t('setNewPassword')}</div>
 
         <div className="mt-3">
           <label className="mb-1 block text-base font-semibold text-slate-700">
-            새 비밀번호
-          </label>
+            {t('newPassword')}</label>
           <div className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -505,7 +499,7 @@ function UserPasswordResetModal({
               disabled={!isVerified}
               onChange={handlePasswordChange}
               maxLength={15}
-              placeholder="비밀번호를 입력해주세요"
+              placeholder={t('passwordPlaceholder')}
               className={inputClassName(Boolean(passwordError))}
             />
             <button
@@ -513,22 +507,21 @@ function UserPasswordResetModal({
               onClick={() => setShowPassword((current) => !current)}
               disabled={!isVerified}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500"
-              aria-label="새 비밀번호 표시 전환"
+              aria-label={t('toggleNewPassword')}
             >
               <i className={showPassword ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'} />
             </button>
           </div>
           {passwordError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
-              <i className="bi bi-info-circle" /> {passwordError}
+              <i className="bi bi-info-circle" /> {translateMessage(passwordError)}
             </p>
           )}
         </div>
 
         <div className="mt-3">
           <label className="mb-1 block text-base font-semibold text-slate-700">
-            새 비밀번호 확인
-          </label>
+            {t('confirmNewPassword')}</label>
           <div className="relative">
             <input
               type={showPasswordConfirm ? 'text' : 'password'}
@@ -536,7 +529,7 @@ function UserPasswordResetModal({
               disabled={!isVerified}
               onChange={handlePasswordConfirmChange}
               maxLength={15}
-              placeholder="비밀번호를 다시 입력해주세요"
+              placeholder={t('confirmPasswordPlaceholder')}
               className={inputClassName(Boolean(passwordConfirmError))}
             />
             <button
@@ -544,14 +537,14 @@ function UserPasswordResetModal({
               onClick={() => setShowPasswordConfirm((current) => !current)}
               disabled={!isVerified}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500"
-              aria-label="새 비밀번호 확인 표시 전환"
+              aria-label={t('toggleConfirmPassword')}
             >
               <i className={showPasswordConfirm ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'} />
             </button>
           </div>
           {passwordConfirmError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
-              <i className="bi bi-info-circle" /> {passwordConfirmError}
+              <i className="bi bi-info-circle" /> {translateMessage(passwordConfirmError)}
             </p>
           )}
         </div>
@@ -560,7 +553,7 @@ function UserPasswordResetModal({
           <p className={`mt-2 flex items-center gap-1.5 text-xs ${
             passwordChangeSucceeded ? 'text-emerald-500' : 'text-red-400'
           }`}>
-            <i className="bi bi-info-circle" /> {passwordChangeMessage}
+            <i className="bi bi-info-circle" /> {translateMessage(passwordChangeMessage)}
           </p>
         )}
 
@@ -571,19 +564,18 @@ function UserPasswordResetModal({
             disabled={changePasswordMutation.isPending || passwordChangeSucceeded}
             className="h-14 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 font-semibold text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:shadow-xl disabled:cursor-wait disabled:opacity-60"
           >
-            {changePasswordMutation.isPending ? '변경 중...' : '비밀번호 변경'}
+            {changePasswordMutation.isPending ? t('changing') : t('changePassword')}
           </button>
         </div>
 
         <div className="mt-5 text-center text-sm text-slate-500">
-          기억 나셨나요?{' '}
+          {t('rememberedPassword')}{' '}
           <button
             type="button"
             onClick={onSwitchToLogin}
             className="font-semibold text-violet-500 hover:underline"
           >
-            로그인
-          </button>
+            {t('login')}</button>
         </div>
       </div>
     </div>

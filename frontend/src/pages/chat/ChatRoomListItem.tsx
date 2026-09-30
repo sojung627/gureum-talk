@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import {
   type KeyboardEvent,
   useEffect,
@@ -40,6 +41,8 @@ function ChatRoomListItem({
   onShare,
   onDelete,
 }: ChatRoomListItemProps) {
+  const { t } = useTranslation()
+
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isRenaming, setIsRenaming] = useState(false)
   const [titleDraft, setTitleDraft] = useState(chatRoom.chat_title)
@@ -215,7 +218,7 @@ function ChatRoomListItem({
                 }}
                 onKeyDown={handleRenameKeyDown}
                 className="h-8 min-w-0 flex-1 rounded-lg border border-violet-300 bg-white px-2 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-violet-100"
-                aria-label="대화방 이름"
+                aria-label={t('conversationName')}
               />
               <button
                 type="button"
@@ -224,7 +227,7 @@ function ChatRoomListItem({
                 }}
                 disabled={!titleDraft.trim() || isBusy}
                 className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-violet-500 hover:bg-white disabled:cursor-not-allowed disabled:text-slate-300"
-                aria-label="이름 저장"
+                aria-label={t('saveName')}
               >
                 <i className="fa-solid fa-check text-xs" />
               </button>
@@ -233,7 +236,7 @@ function ChatRoomListItem({
                 onClick={cancelRenaming}
                 disabled={isBusy}
                 className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-slate-400 hover:bg-white"
-                aria-label="이름 변경 취소"
+                aria-label={t('cancelRename')}
               >
                 <i className="fa-solid fa-xmark text-xs" />
               </button>
@@ -253,13 +256,13 @@ function ChatRoomListItem({
                 }`}
                 aria-label={
                   chatRoom.chat_is_pinned
-                    ? '대화방 고정 해제'
-                    : '대화방 맨 위에 고정'
+                    ? t('unpinConversation')
+                    : t('pinConversation')
                 }
                 title={
                   chatRoom.chat_is_pinned
-                    ? '고정 해제'
-                    : '맨 위에 고정'
+                    ? t('unpin')
+                    : t('pinToTop')
                 }
               >
                 <i className="fa-solid fa-thumbtack text-xs" />
@@ -285,7 +288,7 @@ function ChatRoomListItem({
                 className={`grid h-7 shrink-0 place-items-center overflow-hidden text-slate-400 transition hover:text-violet-500 group-hover:w-7 group-hover:opacity-100 group-focus-within:w-7 group-focus-within:opacity-100 [@media(hover:none)]:w-7 [@media(hover:none)]:opacity-100 ${
                   isMenuOpen ? 'w-7 opacity-100' : 'w-0 opacity-0'
                 }`}
-                aria-label="대화방 메뉴"
+                aria-label={t('conversationMenu')}
                 aria-expanded={isMenuOpen}
               >
                 <i className="fa-solid fa-ellipsis text-xs" />
@@ -315,16 +318,14 @@ function ChatRoomListItem({
               className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-slate-600 hover:bg-violet-50 hover:text-violet-600"
             >
               <i className="fa-solid fa-share-nodes" />
-              공유하기
-            </button>
+              {t('share')}</button>
             <button
               type="button"
               onClick={startRenaming}
               className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-slate-600 hover:bg-violet-50 hover:text-violet-600"
             >
               <i className="fa-solid fa-pen" />
-              이름 바꾸기
-            </button>
+              {t('rename')}</button>
             <button
               type="button"
               onClick={() => {
@@ -334,8 +335,7 @@ function ChatRoomListItem({
               className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-rose-500 hover:bg-rose-50"
             >
               <i className="fa-solid fa-trash-can" />
-              삭제하기
-            </button>
+              {t('delete')}</button>
           </div>,
           document.body,
         )}

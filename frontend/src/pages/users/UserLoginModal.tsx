@@ -1,3 +1,5 @@
+import { translateMessage } from '../../i18n'
+import { useTranslation } from 'react-i18next'
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import apiClient from '../../api/axios'
@@ -22,6 +24,8 @@ function UserLoginModal({
   onSwitchToPasswordReset,
   onLoginSuccess,
 }: UserLoginModalProps) {
+  const { t } = useTranslation()
+
   const savedId = localStorage.getItem(SAVED_ID_KEY) ?? ''
 
   const [username, setUsername] = useState(savedId)
@@ -61,7 +65,7 @@ function UserLoginModal({
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
     const s = seconds % 60
-    return `${m}분 ${String(s).padStart(2, '0')}초`
+    return t('remainingTime', { minutes: m, seconds: String(s).padStart(2, '0') })
   }
 
   const handleLogin = async () => {
@@ -73,11 +77,11 @@ function UserLoginModal({
 
     let valid = true
     if (!username.trim()) {
-      setUsernameError('아이디를 입력해주세요.')
+      setUsernameError(t('usernameRequired'))
       valid = false
     }
     if (!password.trim()) {
-      setPasswordError('비밀번호를 입력해주세요.')
+      setPasswordError(t('passwordRequired'))
       valid = false
     }
     if (!valid) return
@@ -98,7 +102,7 @@ function UserLoginModal({
       onClose()
     } catch (err: unknown) {
       if (!axios.isAxiosError<LoginErrorResponse>(err)) {
-        setLoginError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.')
+        setLoginError(t('serverUnavailable'))
         return
       }
 
@@ -116,11 +120,11 @@ function UserLoginModal({
         setUsernameError(' ')
         setPasswordError(' ')
         setAttemptCount(data?.attempt_count ?? 0)
-        setLoginError('아이디 혹은 비밀번호가 올바르지 않습니다.')
+        setLoginError(t('invalidCredentials'))
         return
       }
 
-      setLoginError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.')
+      setLoginError(t('serverUnavailable'))
     }
   }
 
@@ -138,18 +142,17 @@ function UserLoginModal({
         </button>
 
         <div className="flex justify-center">
-          <img className="w-25 h-25 object-contain" src="/images/gureum/GureumAI.png" alt="구름AI" />
+          <img className="w-25 h-25 object-contain" src="/images/gureum/GureumAI.png" alt={t('gureumAI')} />
         </div>
 
-        <h2 className="text-center text-3xl font-bold text-slate-800">로그인</h2>
+        <h2 className="text-center text-3xl font-bold text-slate-800">{t('login')}</h2>
 
         <p className="mt-3 text-center text-slate-500">
-          GureumTalk와 함께 따뜻한 대화를 시작해보세요.
-        </p>
+          {t('authIntro')}</p>
 
         {/* 아이디 */}
         <div className="mt-8">
-          <label className="mb-1 block text-base font-semibold text-slate-700">아이디</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700">{t('username')}</label>
 
           <div className="relative">
             <input
@@ -160,7 +163,7 @@ function UserLoginModal({
                 setUsernameError('')
                 setLoginError('')
               }}
-              placeholder="아이디를 입력해주세요"
+              placeholder={t('usernamePlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition focus:border-violet-400 ${
                 usernameError ? 'border-red-400 focus:border-red-400' : 'border-slate-200'
               }`}
@@ -171,7 +174,7 @@ function UserLoginModal({
           {usernameError && usernameError.trim() && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
-              {usernameError}
+              {translateMessage(usernameError)}
             </p>
           )}
 
@@ -186,14 +189,14 @@ function UserLoginModal({
               <div className="flex h-5 w-5 items-center justify-center rounded-md border border-slate-300 transition peer-checked:border-violet-500 peer-checked:bg-violet-500">
                 <i className="fa-solid fa-check text-xs text-white opacity-0 transition group-has-[:checked]:opacity-100" />
               </div>
-              <span>아이디 저장</span>
+              <span>{t('rememberUsername')}</span>
             </label>
           </div>
         </div>
 
         {/* 비밀번호 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">비밀번호</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700">{t('password')}</label>
 
           <div className="relative">
             <input
@@ -204,7 +207,7 @@ function UserLoginModal({
                 setPasswordError('')
                 setLoginError('')
               }}
-              placeholder="비밀번호를 입력해주세요"
+              placeholder={t('passwordPlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition focus:border-violet-400 ${
                 passwordError ? 'border-red-400 focus:border-red-400' : 'border-slate-200'
               }`}
@@ -221,14 +224,14 @@ function UserLoginModal({
           {passwordError && passwordError.trim() && !loginError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
-              {passwordError}
+              {translateMessage(passwordError)}
             </p>
           )}
 
           {loginError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
-              {loginError}{' '}
+              {translateMessage(loginError)}{' '}
               <span className="font-semibold">({attemptCount} / 5)</span>
             </p>
           )}
@@ -236,15 +239,14 @@ function UserLoginModal({
           {locked && remainingSeconds > 0 && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
-              로그인이 잠겼습니다. {formatTime(remainingSeconds)} 후 다시 시도해주세요.
+              {t('loginLockNotice', { time: formatTime(remainingSeconds) })}
             </p>
           )}
 
           {lockExpired && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-400">
               <i className="bi bi-info-circle" />
-              로그인할 수 있습니다.
-            </p>
+              {t('loginUnlocked')}</p>
           )}
         </div>
 
@@ -260,20 +262,17 @@ function UserLoginModal({
                 : 'bg-gradient-to-r from-violet-600 to-indigo-400 shadow-violet-200 hover:-translate-y-0.5 hover:shadow-xl'
             }`}
           >
-            로그인
-          </button>
+            {t('login')}</button>
 
           <div className="mt-5 text-center text-sm text-slate-500">
-            아직 계정이 없으신가요?{' '}
+            {t('noAccount')}{' '}
             <button type="button" onClick={onSwitchToRegister} className="font-semibold text-violet-500 hover:underline">
-              회원가입
-            </button>
+              {t('register')}</button>
           </div>
           <div className="mt-5 text-center text-sm text-slate-500">
-            비밀번호를 잊으셨나요?{' '}
+            {t('forgotPassword')}{' '}
             <button type="button" onClick={onSwitchToPasswordReset} className="font-semibold text-violet-500 hover:underline">
-              비밀번호 찾기
-            </button>
+              {t('resetPassword')}</button>
           </div>
         </div>
       </div>

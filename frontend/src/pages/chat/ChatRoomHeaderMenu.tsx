@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import {
   type KeyboardEvent,
   useEffect,
@@ -33,6 +34,8 @@ function ChatRoomHeaderMenu({
   onToggleVoiceChat,
   onDelete,
 }: ChatRoomHeaderMenuProps) {
+  const { t } = useTranslation()
+
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isRenaming, setIsRenaming] = useState(false)
   const [titleDraft, setTitleDraft] = useState('')
@@ -109,7 +112,7 @@ function ChatRoomHeaderMenu({
           setIsRenaming(false)
         }}
         className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-gray-100"
-        aria-label="채팅방 메뉴"
+        aria-label={t('chatRoomMenu')}
         aria-expanded={isMenuOpen}
       >
         <i className="fa-solid fa-ellipsis text-gray-400" />
@@ -123,8 +126,7 @@ function ChatRoomHeaderMenu({
                 htmlFor="active-chat-room-title"
                 className="mb-1.5 block text-xs font-semibold text-slate-600"
               >
-                이름 바꾸기
-              </label>
+                {t('rename')}</label>
               <input
                 id="active-chat-room-title"
                 ref={renameInputRef}
@@ -143,16 +145,14 @@ function ChatRoomHeaderMenu({
                   disabled={isBusy}
                   className="rounded-lg px-2.5 py-1.5 text-xs text-slate-500 hover:bg-slate-50"
                 >
-                  취소
-                </button>
+                  {t('cancel')}</button>
                 <button
                   type="button"
                   onClick={() => void saveRenamedTitle()}
                   disabled={!titleDraft.trim() || isBusy}
                   className="rounded-lg bg-violet-500 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-violet-600 disabled:cursor-not-allowed disabled:bg-violet-200"
                 >
-                  저장
-                </button>
+                  {t('save')}</button>
               </div>
             </div>
           ) : (
@@ -169,8 +169,7 @@ function ChatRoomHeaderMenu({
                 className={roomActionClassName}
               >
                 <i className="fa-solid fa-share-nodes w-4" />
-                공유하기
-              </button>
+                {t('share')}</button>
               <button
                 type="button"
                 onClick={startRenaming}
@@ -178,8 +177,7 @@ function ChatRoomHeaderMenu({
                 className={roomActionClassName}
               >
                 <i className="fa-solid fa-pen w-4" />
-                이름 바꾸기
-              </button>
+                {t('rename')}</button>
               {!isVoiceChatOpen && (
                 <button
                   type="button"
@@ -191,8 +189,7 @@ function ChatRoomHeaderMenu({
                   className={roomActionClassName}
                 >
                   <i className="fa-solid fa-microphone w-4" />
-                  음성 채팅 열기
-                </button>
+                  {t('openVoiceChat')}</button>
               )}
               <button
                 type="button"
@@ -206,8 +203,7 @@ function ChatRoomHeaderMenu({
                 className={`${roomActionClassName} text-rose-500 hover:bg-rose-50 hover:text-rose-600`}
               >
                 <i className="fa-solid fa-trash-can w-4" />
-                삭제하기
-              </button>
+                {t('delete')}</button>
             </>
           )}
         </div>

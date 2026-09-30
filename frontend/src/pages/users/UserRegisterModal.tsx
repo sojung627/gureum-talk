@@ -1,3 +1,5 @@
+import { translateMessage } from '../../i18n'
+import { Trans, useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import axios from 'axios'
 import apiClient from '../../api/axios'
@@ -13,6 +15,8 @@ type RegisterErrorResponse = {
 }
 
 function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps) {
+  const { t } = useTranslation()
+
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
 
@@ -51,8 +55,8 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
   const validateUserId = (value: string) => {
     if (value.length === 0) return ''
-    if (!/^[a-z0-9]+$/.test(value)) return '영문 소문자와 숫자만 입력해주세요.'
-    if (value.length < 5) return '5자 이상 작성해주세요.'
+    if (!/^[a-z0-9]+$/.test(value)) return t('lowercaseNumbersOnly')
+    if (value.length < 5) return t('minFive')
     return ''
   }
 
@@ -66,7 +70,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
   const handleCheckUserId = async () => {
     const error = validateUserId(userId)
     if (!userId.trim()) {
-      setUserIdError('아이디를 입력해주세요.')
+      setUserIdError(t('usernameRequired'))
       return
     }
     if (error) {
@@ -83,11 +87,11 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
         setUserIdError('')
         setUserIdChecked(true)
       } else {
-        setUserIdError('이미 사용 중인 아이디입니다.')
+        setUserIdError(t('usernameTaken'))
         setUserIdChecked(false)
       }
     } catch {
-      setUserIdError('확인 중 오류가 발생했습니다.')
+      setUserIdError(t('checkFailed'))
     } finally {
       setCheckingUserId(false)
     }
@@ -95,8 +99,8 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
   const validatePassword = (value: string) => {
     if (value.length === 0) return ''
-    if (!/^[a-z0-9]+$/.test(value)) return '영문 소문자와 숫자만 입력해주세요.'
-    if (value.length < 5 || value.length > 15) return '5자 이상 15자 이내로 작성해주세요.'
+    if (!/^[a-z0-9]+$/.test(value)) return t('lowercaseNumbersOnly')
+    if (value.length < 5 || value.length > 15) return t('lengthFiveFifteen')
     return ''
   }
 
@@ -107,7 +111,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
     //비밀번호 확인란에 이미 값이 있는 경우, 비밀번호를 다시 칠 때도 실시간으로 일치 여부 재검사
     if (passwordConfirm) {
-      setPasswordConfirmError(value !== passwordConfirm ? '비밀번호가 일치하지 않습니다.' : '')
+      setPasswordConfirmError(value !== passwordConfirm ? t('passwordMismatch') : '')
     }
   }
 
@@ -116,12 +120,12 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
     setPasswordConfirm(value)
 
     //비밀번호 확인란 입력 중 실시간으로 비밀번호와 일치하는지 검사
-    setPasswordConfirmError(value && value !== password ? '비밀번호가 일치하지 않습니다.' : '')
+    setPasswordConfirmError(value && value !== password ? t('passwordMismatch') : '')
   }
 
   const validateEmail = (value: string) => {
     if (value.length === 0) return ''
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) return '올바른 이메일 형식이 아닙니다.'
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) return t('invalidEmail')
     return ''
   }
 
@@ -150,19 +154,19 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
     let valid = true
 
-    if (!name.trim()) { setNameError('이름을 입력해주세요.'); valid = false }
-    if (!phone.trim()) { setPhoneError('전화번호를 입력해주세요.'); valid = false }
-    if (!userId.trim()) { setUserIdError('아이디를 입력해주세요.'); valid = false }
-    if (!password.trim()) { setPasswordError('비밀번호를 입력해주세요.'); valid = false }
-    if (!passwordConfirm.trim()) { setPasswordConfirmError('비밀번호 확인을 입력해주세요.'); valid = false }
-    if (!email.trim()) { setEmailError('이메일을 입력해주세요.'); valid = false }
+    if (!name.trim()) { setNameError(t('nameRequired')); valid = false }
+    if (!phone.trim()) { setPhoneError(t('phoneRequired')); valid = false }
+    if (!userId.trim()) { setUserIdError(t('usernameRequired')); valid = false }
+    if (!password.trim()) { setPasswordError(t('passwordRequired')); valid = false }
+    if (!passwordConfirm.trim()) { setPasswordConfirmError(t('confirmPasswordRequired')); valid = false }
+    if (!email.trim()) { setEmailError(t('emailRequired')); valid = false }
 
     if (userIdError) valid = false
     if (passwordError) valid = false
     if (emailError) valid = false
 
     if (password && passwordConfirm && password !== passwordConfirm) {
-      setPasswordConfirmError('비밀번호가 일치하지 않습니다.')
+      setPasswordConfirmError(t('passwordMismatch'))
       valid = false
     }
 
@@ -181,7 +185,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
       onSwitchToLogin()
     } catch (err: unknown) {
       if (!axios.isAxiosError<RegisterErrorResponse>(err)) {
-        setEmailError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.')
+        setEmailError(t('serverUnavailable'))
         return
       }
 
@@ -191,7 +195,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
       if (status === 400 && data) {
         const { field, message } = data
         if (!message) {
-          setEmailError('회원가입 요청을 처리하지 못했습니다.')
+          setEmailError(t('registrationFailed'))
           return
         }
         if (field === 'name') setNameError(message)
@@ -204,7 +208,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
         return
       }
 
-      setEmailError('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.')
+      setEmailError(t('serverUnavailable'))
     }
   }
 
@@ -220,23 +224,22 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
         </button>
 
         <div className="flex justify-center">
-          <img className="w-25 h-25 object-contain" src="/images/gureum/GureumAI.png" alt="구름AI" />
+          <img className="w-25 h-25 object-contain" src="/images/gureum/GureumAI.png" alt={t('gureumAI')} />
         </div>
 
-        <h2 className="text-3xl font-bold text-center text-slate-800">회원가입</h2>
+        <h2 className="text-3xl font-bold text-center text-slate-800">{t('register')}</h2>
         <p className="mt-3 text-center text-slate-500">
-          GureumTalk와 함께 따뜻한 대화를 시작해보세요.
-        </p>
+          {t('authIntro')}</p>
 
         {/* 이름 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">이름</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700">{t('name')}</label>
           <div className="relative">
             <input
               type="text"
               value={name}
               onChange={handleNameChange}
-              placeholder="이름을 입력해주세요"
+              placeholder={t('namePlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition focus:border-violet-400 ${
                 nameError ? 'border-red-400 focus:border-red-400' : 'border-slate-200'
               }`}
@@ -246,18 +249,18 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
           {nameError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
-              {nameError}
+              {translateMessage(nameError)}
             </p>
           )}
         </div>
 
         {/* 전화번호 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">전화번호</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700">{t('phone')}</label>
           <div className="mt-3 relative">
             <input
               type="text"
-              placeholder="전화번호를 입력해주세요"
+              placeholder={t('phonePlaceholder')}
               onChange={handlePhoneChange}
               value={phone}
               maxLength={13}
@@ -270,21 +273,21 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
           {phoneError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
-              {phoneError}
+              {translateMessage(phoneError)}
             </p>
           )}
         </div>
 
         {/* 아이디 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">아이디</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700">{t('username')}</label>
           <div className="flex gap-3">
             <div className="relative flex-[7.5]">
               <input
                 type="text"
                 value={userId}
                 onChange={handleUserIdChange}
-                placeholder="아이디를 입력해주세요"
+                placeholder={t('usernamePlaceholder')}
                 maxLength={15}
                 className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition ${
                   userIdError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 focus:border-violet-400'
@@ -299,34 +302,33 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
               disabled={checkingUserId}
               className="flex-[2.5] h-14 rounded-2xl bg-gradient-to-r from-violet-100 to-indigo-100 font-semibold text-violet-600 shadow-sm shadow-violet-100 transition hover:-translate-y-0.5 hover:from-violet-600 hover:to-indigo-400 hover:text-white hover:shadow-lg hover:shadow-violet-200 whitespace-nowrap disabled:opacity-50"
             >
-              {checkingUserId ? '확인 중...' : '중복 체크'}
+              {checkingUserId ? t('checking') : t('checkAvailability')}
             </button>
           </div>
 
           {userIdError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
-              {userIdError}
+              {translateMessage(userIdError)}
             </p>
           )}
 
           {userIdChecked && !userIdError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-violet-500">
               <i className="bi bi-check-circle" />
-              사용 가능한 아이디입니다.
-            </p>
+              {t('usernameAvailable')}</p>
           )}
         </div>
 
         {/* 비밀번호 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">비밀번호</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700">{t('password')}</label>
           <div className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={handlePasswordChange}
-              placeholder="비밀번호를 입력해주세요"
+              placeholder={t('passwordPlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition focus:border-violet-400 ${
                 passwordError ? 'border-red-400 focus:border-red-400' : 'border-slate-200'
               }`}
@@ -342,20 +344,20 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
           {passwordError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
-              {passwordError}
+              {translateMessage(passwordError)}
             </p>
           )}
         </div>
 
         {/* 비밀번호 확인 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">비밀번호 확인</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700">{t('confirmPassword')}</label>
           <div className="relative">
             <input
               type={showPasswordConfirm ? 'text' : 'password'}
               value={passwordConfirm}
               onChange={handlePasswordConfirmChange}
-              placeholder="비밀번호를 다시 입력해주세요"
+              placeholder={t('confirmPasswordPlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition focus:border-violet-400 ${
                 passwordConfirmError ? 'border-red-400 focus:border-red-400' : 'border-slate-200'
               }`}
@@ -371,20 +373,20 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
           {passwordConfirmError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
-              {passwordConfirmError}
+              {translateMessage(passwordConfirmError)}
             </p>
           )}
         </div>
 
         {/* 이메일 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">이메일</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700">{t('email')}</label>
           <div className="relative">
             <input
               type="text"
               value={email}
               onChange={handleEmailChange}
-              placeholder="이메일을 입력해주세요"
+              placeholder={t('emailPlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition ${
                 emailError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 focus:border-violet-400'
               }`}
@@ -394,7 +396,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
           {emailError && (
             <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
               <i className="bi bi-info-circle" />
-              {emailError}
+              {translateMessage(emailError)}
             </p>
           )}
         </div>
@@ -407,10 +409,10 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
               <i className="fa-solid fa-check text-xs" />
             </span>
             <span>
-              <button type="button" className="font-semibold text-violet-500 hover:underline">이용약관</button>
-              {' '}및{' '}
-              <button type="button" className="font-semibold text-violet-500 hover:underline">개인정보처리방침</button>
-              에 동의합니다.
+              <Trans i18nKey="consent" components={{
+                terms: <button type="button" className="font-semibold text-violet-500 hover:underline" />,
+                privacy: <button type="button" className="font-semibold text-violet-500 hover:underline" />,
+              }} />
             </span>
           </label>
         </div>
@@ -427,14 +429,12 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
                 : 'cursor-not-allowed bg-slate-300 shadow-none'
             }`}
           >
-            회원가입
-          </button>
+            {t('register')}</button>
 
           <div className="mt-5 text-center text-sm text-slate-500">
-            이미 계정이 있으신가요?{' '}
+            {t('alreadyAccount')}{' '}
             <button type="button" onClick={onSwitchToLogin} className="font-semibold text-violet-500 hover:underline">
-              로그인
-            </button>
+              {t('login')}</button>
           </div>
         </div>
       </div>

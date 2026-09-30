@@ -1,3 +1,4 @@
+import { t } from 'i18next'
 import axios from 'axios'
 
 import apiClient from './axios'
@@ -72,7 +73,7 @@ function createChatApiError(
 
   if (!error.response) {
     return new Error(
-      '백엔드 서버에 연결할 수 없어요. FastAPI 서버가 실행 중인지 확인해 주세요.',
+      t('connectionFailed'),
       { cause: error },
     )
   }
@@ -116,7 +117,7 @@ export async function sendChatMessage(
   } catch (error: unknown) {
     throw createChatApiError(
       error,
-      '구름이의 답변을 받아오지 못했어요.',
+      t('answerFailed'),
     )
   }
 }
@@ -131,7 +132,7 @@ export async function getChatRooms(): Promise<ChatRoomSummary[]> {
   } catch (error: unknown) {
     throw createChatApiError(
       error,
-      '대화 목록을 불러오지 못했어요.',
+      t('roomsFailed'),
     )
   }
 }
@@ -148,7 +149,7 @@ export async function getChatRoomMessages(
   } catch (error: unknown) {
     throw createChatApiError(
       error,
-      '저장된 대화를 불러오지 못했어요.',
+      t('historyFailed'),
     )
   }
 }
@@ -169,7 +170,7 @@ export async function renameChatRoom(
   } catch (error: unknown) {
     throw createChatApiError(
       error,
-      '대화방 이름을 변경하지 못했어요.',
+      t('renameFailed'),
     )
   }
 }
@@ -190,7 +191,7 @@ export async function updateChatRoomPin(
   } catch (error: unknown) {
     throw createChatApiError(
       error,
-      '대화방 고정 상태를 변경하지 못했어요.',
+      t('pinFailed'),
     )
   }
 }
@@ -206,7 +207,7 @@ export async function deleteChatRoom(
   } catch (error: unknown) {
     throw createChatApiError(
       error,
-      '대화방을 삭제하지 못했어요.',
+      t('deleteFailed'),
     )
   }
 }

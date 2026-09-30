@@ -1,6 +1,9 @@
+import { useTranslation } from 'react-i18next'
 import { type FormEvent, useState } from 'react'
 
 function Help() {
+  const { t } = useTranslation()
+
 
 // 검색창 입력값을 관리하는 상태
 const [searchKeyword, setSearchKeyword] = useState('')
@@ -11,86 +14,86 @@ const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
 
 const help = [
     {
-       title: '구름톡 시작하기',
+       title: t('gettingStartedGureum'),
        icon: <i className="fa-solid fa-rocket text-2xl text-violet-500" />,
-       content: ['회원가입 부터', '기본 사용법 까지'],
+       content: [t('fromSignup'), t('toBasics')],
     },
     {
-       title: '음성 채팅 사용법',
+       title: t('voiceGuide'),
        icon: <i className="fa-solid fa-microphone text-2xl text-violet-500" />,
-       content: ['음성 채팅을 시작하고', '설정하는 방법'],
+       content: [t('startVoice'), t('configureVoice')],
     },
     {
-       title: '대화 기능 알아보기',
+       title: t('exploreChat'),
        icon: <i className="fa-solid fa-heart text-2xl text-violet-500" />,
-       content: ['안전하고', '편리한 대화 하는 방법'],
+       content: [t('safely'), t('convenientChat')],
     },
 ]
 
 const help2 = [
     {
-       title: '요금제 & 결제 안내',
+       title: t('billingGuide'),
        icon: <i className="fa-solid fa-credit-card text-2xl text-violet-500" />,
-       content: ['요금제 종류와 결제 방법을', '확인해보세요'],
+       content: [t('planTypes'), t('checkOptions')],
     },
     {
-       title: '계정 보안 설정',
+       title: t('accountSecurity'),
        icon: <i className="fa-solid fa-shield text-2xl text-violet-500" />,
-       content: ['계정 보안을 강화하고', '개인정보를 보호하세요'],
+       content: [t('secureAccount'), t('protectPrivacy')],
     },
     {
-       title: '자주 묻는 질문',
+       title: t('faq'),
        icon: <i className="fa-solid fa-question text-2xl text-violet-500" />,
-       content: ['많은 분들이 궁금해하는', '질문과 답변 모음'],
+       content: [t('commonQuestions'), t('answersCollection')],
     },
 ]
 
 const helpCenter = [
     {
         icon: <i className="fa-regular fa-house" />,
-        title: '시작하기',
+        title: t('gettingStarted'),
     },
     {
         icon: <i className="fa-regular fa-star" />,
-        title: '주요 기능',
+        title: t('mainFeatures'),
     },
     {
         icon: <i className="fa-regular fa-house" />,
-        title: '음성 채팅',
+        title: t('voiceChat'),
     },
     {
         icon: <i className="fa-regular fa-credit-card" />,
-        title: '요금제 안내',
+        title: t('plansGuide'),
     },
     {
         icon: <i className="fa-solid fa-shield-heart" />,
-        title: '계정 & 보완',
+        title: t('accountAndSecurity'),
     },
     {
         icon: <i className="fa-regular fa-circle-question" />,
-        title: '자주 묻는 질문',
+        title: t('faq'),
     },
     {
         icon: <i className="fa-regular fa-bell" />,
-        title: '공지사항',
+        title: t('announcements'),
     },
 ]
 
 const fastLink = [
     {
-        content: '서비스 이용약관',
+        content: t('serviceTerms'),
         icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
     },
     {
-        content: '개인정보처리방침',
+        content: t('privacy'),
         icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
     },
     {
-        content: '청소년 보호 정책',
+        content: t('youthPolicy'),
         icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
     },
     {
-        content: '권리침해 신고 안내',
+        content: t('reportRights'),
         icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
     },
 ]
@@ -102,11 +105,9 @@ const fastLink = [
                 <div className="flex items-center justify-between">
                   <div>
                     <div className='text-[18px] font-bold'>
-                      도움말 센터
-                    </div>
+                      {t('helpCenter')}</div>
                     <span className="block text-sm text-slate-600 leading-5">
-                      어떻게 도와드릴까요?
-                    </span>
+                      {t('howCanWeHelp')}</span>
                   </div>
                 </div>
                 <div className="mt-3 border-b border-gray-100" />
@@ -125,25 +126,22 @@ const fastLink = [
               <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center gap-2">
                 <div className="flex justify-center">
                   <img
-                    alt="구름이"
+                    alt={t('gureum')}
                     src="/images/gureum/GureumNomal.png"
                     className="w-[100px] h-[100px]"
                   />
                 </div>
                 <div className='text-center text-[15px] font-bold'>
-                  도움이 더 필요하신가요?
-                </div>
+                  {t('needMoreHelp')}</div>
                 <span className="mt-1 text-center block text-sm text-slate-600 leading-5">
-                  1:1 문의하기를 통해 빠르게<br />
-                  도움을 받으실 수 있어요.
-                </span>
+                  {t('directSupport')}<br />
+                  {t('getHelp')}</span>
                 <div className="mt-2 flex justify-center">
                   <button
                     type="button"
                     className="flex items-center gap-2 px-4 py-2 bg-violet-100 text-violet-600 rounded-lg text-sm"
                   >
-                    1:1 문의하기
-                    <i className="fa-solid fa-chevron-right text-xs" />
+                    {t('contactSupport')}<i className="fa-solid fa-chevron-right text-xs" />
                   </button>
                 </div>
               </div>
@@ -157,15 +155,13 @@ const fastLink = [
                 <div className="absolute inset-0 flex flex-col justify-center gap-3 px-8">
                   <div>
                     <h1 className="text-xl font-bold text-slate-800">
-                      안녕하세요! 👋
-                    </h1>
+                      {t('hello')}</h1>
                     <h2 className="mt-1 text-xl font-bold text-violet-600">
-                      GureumTalk 도움말 센터<span className="text-slate-800">입니다.</span>
+                      {t('gureumHelpCenter')}<span className="text-slate-800">{t('welcomeSuffix')}</span>
                     </h2>
                     <p className="mt-2 text-xs text-slate-600 leading-5">
-                      GureumTalk을 더 편리하게 사용하실 수 있도록<br />
-                      도움이 되는 정보를 모아두었어요.
-                    </p>
+                      {t('useMoreEasily')}<br />
+                      {t('usefulInformation')}</p>
                   </div>
                   <form onSubmit={handleSearchSubmit} className="relative w-80 h-9 rounded-full bg-white shadow-lg">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 w-[2px] h-[14px] animate-[caretBlink_0.8s_infinite]" />
@@ -173,7 +169,7 @@ const fastLink = [
                         type="text"
                         value={searchKeyword}
                         onChange={(event) => setSearchKeyword(event.target.value)}
-                        placeholder="궁금한 내용을 검색해 보세요." style={{ fontSize: '11px' }}
+                        placeholder={t('searchHelp')} style={{ fontSize: '11px' }}
                         className="relative -top-px block w-full h-full bg-transparent pl-4 pr-12 font-normal text-slate-400 placeholder:text-[12px] placeholder:font-normal placeholder:text-slate-400 outline-none caret-transparent"
                     />
                     <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center text-slate-400 hover:text-violet-600 transition-colors">
@@ -183,13 +179,12 @@ const fastLink = [
                 </div>
               </div>
               <div className="mt-6 flex items-center justify-between">
-                <span className="font-semibold">자주 찾는 도움말</span>
+                <span className="font-semibold">{t('popularHelp')}</span>
                 <div>
                   <button
                     className="text-violet-500"
                   >
-                    전체보기
-                    <i className="fa-solid fa-chevron-right text-violet-500 text-xs text-slate-300" />
+                    {t('viewAllCompact')}<i className="fa-solid fa-chevron-right text-violet-500 text-xs text-slate-300" />
                   </button>
                 </div>
               </div>
@@ -227,8 +222,7 @@ const fastLink = [
             <div className="md:col-span-2 flex flex-col gap-6">
               <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className='text-[18px] font-bold'>
-                  빠른 링크
-                </div>
+                  {t('quickLinks')}</div>
                 <div className="mt-3 flex flex-col gap-1">
                     {fastLink.map((item, index) => (
                       <button
@@ -243,41 +237,38 @@ const fastLink = [
               </div>
               <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-center">
                 <div className='text-[15px] font-bold'>
-                  문제가 해결되지 않나요?
-                </div>
+                  {t('stillNeedHelp')}</div>
                 <span className="mt-2 block text-sm text-slate-600 leading-5">
-                  문의하기를 통해 직접 질문하시면 <br />
-                  더 빠르게 답변해드릴게요.
-                </span>
+                  {t('askDirectly')}<br />
+                  {t('replySooner')}</span>
                 <button
                   type="button"
                   className="mt-5 w-[180px] h-[50px] bg-violet-500 rounded-xl text-sm leading-5 flex items-center justify-center gap-2 text-white whitespace-nowrap"
                 >
                   <i className="fa-solid fa-comment-dots" />
-                  <span>문의하기</span>
+                  <span>{t('contact')}</span>
                 </button>
               </div>
               <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className='text-[15px] font-bold'>
-                  운영 시간
-                </div>
+                  {t('openingHours')}</div>
                 <div className="mt-2 flex flex-col gap-1 text-sm leading-5">
                   <div className="flex justify-between">
-                    <span>평일</span>
+                    <span>{t('weekdays')}</span>
                     <span>09:00 - 18:00</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>점심</span>
+                    <span>{t('lunch')}</span>
                     <span>12:00 - 13:00</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>주말 및 공휴일</span>
-                    <span>휴무</span>
+                    <span>{t('weekendsHolidays')}</span>
+                    <span>{t('closed')}</span>
                   </div>
                 </div>
                 <div className="mt-2 bg-violet-50 rounded-xl px-4 py-3 text-left text-sm leading-5">
-                  불편한 점이 있다면 <br />
-                  편하게 연락주세요!{' '}
+                  {t('anyProblems')}<br />
+                  {t('getInTouch')}{' '}
                   <i className="fa-solid fa-heart text-violet-500" />
                 </div>
               </div>
