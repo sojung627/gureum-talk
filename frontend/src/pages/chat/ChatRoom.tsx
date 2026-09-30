@@ -596,7 +596,7 @@ function ChatRoom({
     <>
       <div className={`mx-auto mt-12 grid max-w-[1480px] grid-cols-1 items-stretch gap-6 px-6 lg:px-12 ${
         isVoiceChatOpen
-          ? 'md:grid-cols-[2.3fr_7fr_3fr]'
+          ? 'md:grid-cols-[minmax(0,2.65fr)_minmax(0,7fr)_minmax(0,2.65fr)]'
           : 'md:grid-cols-[2.3fr_10fr]'
       }`}>
         <div className="flex flex-col rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:h-[700px]">
@@ -617,7 +617,7 @@ function ChatRoom({
               대화 목록
             </div>
 
-            <div className="mt-2 min-h-0 flex-1 overflow-y-auto pr-1 scrollbar-custom">
+            <div className="mt-2 min-h-0 flex-1 overflow-y-auto scrollbar-custom">
               {isRoomListLoading ? (
                 <div
                   className="flex h-10 items-center justify-center gap-1"

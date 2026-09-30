@@ -68,7 +68,7 @@ function Header({
             <img className="w-15 h-15 object-contain" src="/images/gureum/GureumAI.png" alt="구름AI" />
             <span className="text-2xl font-bold tracking-tight text-slate-800">
               Gureum<span className="text-violet-500">Talk</span>
-            </span>
+            </span> 
           </button>
 
           <nav className="hidden items-center gap-12 md:flex">

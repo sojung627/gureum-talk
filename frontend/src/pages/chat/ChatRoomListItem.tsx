@@ -282,7 +282,9 @@ function ChatRoomListItem({
                 type="button"
                 onClick={toggleFloatingMenu}
                 disabled={isBusy}
-                className="grid h-7 w-7 shrink-0 place-items-center text-slate-400 opacity-0 transition hover:text-violet-500 group-hover:opacity-100 group-focus-within:opacity-100"
+                className={`grid h-7 shrink-0 place-items-center overflow-hidden text-slate-400 transition hover:text-violet-500 group-hover:w-7 group-hover:opacity-100 group-focus-within:w-7 group-focus-within:opacity-100 [@media(hover:none)]:w-7 [@media(hover:none)]:opacity-100 ${
+                  isMenuOpen ? 'w-7 opacity-100' : 'w-0 opacity-0'
+                }`}
                 aria-label="대화방 메뉴"
                 aria-expanded={isMenuOpen}
               >
