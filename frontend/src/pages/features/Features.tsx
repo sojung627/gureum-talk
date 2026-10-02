@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import { isLanguage, languages } from '../../i18n'
+import LanguagePicker from '../../components/LanguagePicker'
 import { useState } from 'react'
 import { VoiceWave } from '../HomePage'
 
 function Features() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
 
 const [darkModeOn, setDarkModeOn] = useState(true)
@@ -184,22 +184,11 @@ const features = [
             <i className="fa-solid fa-chevron-right text-xs text-slate-300" />
           </div>
 
-          <div className="flex items-center justify-between pt-3">
+          <div className="flex items-center justify-between gap-3 pt-3">
             <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
               <i className="fa-solid fa-earth-asia text-slate-400" />
               {t('language')}</div>
-            <select
-              aria-label={t('language')}
-              value={i18n.resolvedLanguage}
-              onChange={(event) => {
-                if (isLanguage(event.target.value)) void i18n.changeLanguage(event.target.value)
-              }}
-              className="min-w-0 rounded-lg border border-violet-100 bg-white px-2 py-2 text-sm text-slate-600 outline-none focus:ring-2 focus:ring-violet-300"
-            >
-              {languages.map(({ code, label }) => (
-                <option key={code} value={code}>{label}</option>
-              ))}
-            </select>
+            <LanguagePicker />
           </div>
         </div>
       ),
