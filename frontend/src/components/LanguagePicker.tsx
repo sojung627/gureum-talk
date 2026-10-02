@@ -41,13 +41,13 @@ export default function LanguagePicker() {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((previous) => !previous)}
-        className="flex items-center gap-3 rounded-lg px-2 py-1 text-sm font-medium text-slate-500 transition-colors hover:bg-violet-50 hover:text-violet-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300"
+        className="-mr-2 flex items-center gap-3 rounded-lg px-2 py-1 text-sm font-medium text-slate-500 transition-colors hover:bg-violet-50 hover:text-violet-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300"
       >
         <span lang={current.code}>{current.label}</span>
         <i aria-hidden="true" className={`fa-solid fa-chevron-right text-xs transition-transform ${open ? 'rotate-90 text-violet-400' : 'text-slate-300'}`} />
       </button>
       {open && (
-        <div id={panelId} className="absolute right-0 top-full z-20 mt-2 w-36 rounded-2xl border border-violet-100 bg-white p-1.5 shadow-lg shadow-violet-100/60">
+        <div id={panelId} className="absolute -right-2 top-full z-20 mt-2 w-36 rounded-2xl border border-violet-100 bg-white p-1.5 shadow-lg shadow-violet-100/60">
           {languages.map(({ code, label }) => (
             <button
               key={code}

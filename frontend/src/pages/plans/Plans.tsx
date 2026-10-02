@@ -129,17 +129,21 @@ function Plans() {
               </div>
               <h3 className="text-lg font-bold text-slate-800">{plan.name}</h3>
               <p className="mt-1 text-sm text-slate-400">{plan.description}</p>
-              <div className="mt-6 flex items-baseline gap-1 whitespace-nowrap">
-                <div className="text-xl font-bold text-violet-600 sm:text-2xl lg:text-3xl">
+              <div className="mt-6 flex items-center gap-1.5">
+                <div className="shrink-0 whitespace-nowrap text-xl font-bold text-violet-600 sm:text-2xl lg:text-3xl">
                   {getDisplayPrice(plan.price).toLocaleString()}
-                  <span className="text-xs font-medium text-slate-400 sm:text-sm lg:text-base">
-                    {t('wonPer')}{billingCycle === 'yearly' ? t('year') : t('month')}
-                  </span>
                 </div>
-                {billingCycle === 'yearly' && plan.price > 0 && (
-                  <span className="text-[10px] text-slate-400 line-through">
-                    {(plan.price * 12).toLocaleString()}{t('won')}</span>
-                )}
+                <div className="flex min-w-0 flex-col gap-0.5 font-medium text-slate-400">
+                  <span className="text-xs">{t('won')}</span>
+                  <div className="flex items-baseline gap-1 whitespace-nowrap text-[10px]">
+                    <span>/ {billingCycle === 'yearly' ? t('year') : t('month')}</span>
+                    {billingCycle === 'yearly' && plan.price > 0 && (
+                      <span className="text-[8px] line-through">
+                        {(plan.price * 12).toLocaleString()}{t('won')}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
               <div className="mt-4 space-y-2">
                 {plan.content.map((item) => (
