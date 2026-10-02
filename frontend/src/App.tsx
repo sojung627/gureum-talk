@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 
@@ -19,6 +19,7 @@ import { queryKeys } from './queries/queryKeys'
 import {
   activeChatRoomIdAtom,
   activeModalAtom,
+  darkModeOnAtom,
 } from './state/uiAtoms'
 
 
@@ -34,6 +35,7 @@ function LoginRequiredRedirect() {
 
 
 function App() {
+  const darkModeOn = useAtomValue(darkModeOnAtom)
   const queryClient = useQueryClient()
   const setActiveChatRoomId = useSetAtom(activeChatRoomIdAtom)
   const setActiveModal = useSetAtom(activeModalAtom)
@@ -70,7 +72,9 @@ function App() {
     <div
       className="relative min-h-screen overflow-hidden bg-[#fbfaff] bg-cover bg-center bg-no-repeat text-slate-800"
       style={{
-        backgroundImage: "url('/images/background/backgroundMain.png')",
+        backgroundImage: darkModeOn
+          ? "url('/images/background/backgroundMainDarkmode.png')"
+          : "url('/images/background/backgroundMain.png')",
       }}
     >
       <Header

@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useNavigate } from 'react-router-dom'
 
 import {
@@ -35,6 +35,7 @@ import { queryKeys } from '../../queries/queryKeys'
 import {
   activeChatRoomIdAtom,
   activeModalAtom,
+  shortcutsEnabledAtom,
 } from '../../state/uiAtoms'
 // md를 위해 추가
 import ReactMarkdown from 'react-markdown'
@@ -63,6 +64,7 @@ function ChatRoom({
     activeChatRoomIdAtom,
   )
   const [activeModal, setActiveModal] = useAtom(activeModalAtom)
+  const shortcutsEnabled = useAtomValue(shortcutsEnabledAtom)
   const [inputMessage, setInputMessage] = useState('')
   const [actionChatRoomId, setActionChatRoomId] =
     useState<number | null>(null)
@@ -310,6 +312,9 @@ function ChatRoom({
     setActiveChatRoomId, queryClient, activeModal, setActiveModal, navigate])
 
   useEffect(() => {
+    if (!shortcutsEnabled) {
+      return
+    }
     const handleNewChatShortcut = (event: KeyboardEvent) => {
       if (
         !event.ctrlKey || !event.shiftKey || event.altKey || event.metaKey
@@ -324,7 +329,7 @@ function ChatRoom({
     }
     window.addEventListener('keydown', handleNewChatShortcut)
     return () => window.removeEventListener('keydown', handleNewChatShortcut)
-  }, [startNewChat])
+  }, [shortcutsEnabled, startNewChat])
 
   useEffect(() => {
     const input = messageInputRef.current
@@ -608,8 +613,8 @@ function ChatRoom({
             <button
               type="button"
               onClick={startNewChat}
-              title={t('newChatShortcut')}
-              aria-keyshortcuts="Control+Shift+O"
+              title={t(shortcutsEnabled ? 'newChatShortcut' : 'newChat')}
+              aria-keyshortcuts={shortcutsEnabled ? 'Control+Shift+O' : undefined}
               disabled={isSending || isSessionLoading || !isAuthenticated || actionChatRoomId !== null}
               className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-400 px-7 font-semibold text-white shadow-xl shadow-violet-200 transition hover:-translate-y-0.5"
             >
@@ -812,7 +817,7 @@ function ChatRoom({
                 value={inputMessage}
                 onKeyDown={(event) => {
                   if (
-                    event.key !== 'Enter' || event.shiftKey
+                    !shortcutsEnabled || event.key !== 'Enter' || event.shiftKey
                     || event.nativeEvent.isComposing || event.keyCode === 229
                   ) {
                     return

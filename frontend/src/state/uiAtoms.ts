@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
 import { type ChatRoomSummary } from '../api/chat'
 
@@ -14,3 +15,12 @@ export type AppModal =
 export const activeChatRoomIdAtom = atom<number | null>(null)
 
 export const activeModalAtom = atom<AppModal>(null)
+
+export const darkModeOnAtom = atom(false)
+
+export const shortcutsEnabledAtom = atomWithStorage(
+  'gureumtalk.shortcutsEnabled',
+  true,
+  undefined,
+  { getOnInit: true },
+)

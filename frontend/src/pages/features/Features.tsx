@@ -1,15 +1,42 @@
 import { useTranslation } from 'react-i18next'
 import LanguagePicker from '../../components/LanguagePicker'
 import { useState } from 'react'
+import { useAtom } from 'jotai'
+import { darkModeOnAtom, shortcutsEnabledAtom } from '../../state/uiAtoms'
 import { VoiceWave } from '../HomePage'
+
+function SettingSwitch({ label, checked, onToggle }: {
+  label: string
+  checked: boolean
+  onToggle: () => void
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-label={label}
+      aria-checked={checked}
+      onClick={onToggle}
+      className={`relative h-6 w-11 shrink-0 rounded-full transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 ${
+        checked ? 'bg-violet-500' : 'bg-slate-200'
+      }`}
+    >
+      <span
+        className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+          checked ? 'translate-x-5' : 'translate-x-0'
+        }`}
+      />
+    </button>
+  )
+}
 
 function Features() {
   const { t } = useTranslation()
 
 
-const [darkModeOn, setDarkModeOn] = useState(true)
+const [darkModeOn, setDarkModeOn] = useAtom(darkModeOnAtom)
 const [notificationsOn, setNotificationsOn] = useState(true)
-const [shortcutsOn, setShortcutsOn] = useState(true)
+const [shortcutsOn, setShortcutsOn] = useAtom(shortcutsEnabledAtom)
 const features = [
   {
     id: '01',
@@ -153,70 +180,37 @@ const features = [
     content: [t('modeAlertsShortcuts'), t('withoutDistractions'), t('focusOnChat')],
     preview: (
         <div className="rounded-2xl bg-white border border-slate-200 p-4">
-          <div className="flex items-center justify-between py-3 border-b border-slate-100">
+          <div className="flex items-center justify-between gap-3 py-3 border-b border-slate-100">
             <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
               <i className="fa-regular fa-moon text-slate-400" />
               {t('darkMode')}</div>
-            <button
-              type="button"
-              role="switch"
-              aria-label={t('darkMode')}
-              aria-checked={darkModeOn}
-              onClick={() => setDarkModeOn((prev) => !prev)}
-              className={`relative h-6 w-11 rounded-full transition ${
-                darkModeOn ? 'bg-violet-500' : 'bg-slate-200'
-              }`}
-            >
-              <span
-                className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                  darkModeOn ? 'translate-x-5' : 'translate-x-0'
-                }`}
-              />
-            </button>
+            <SettingSwitch
+              label={t('darkMode')}
+              checked={darkModeOn}
+              onToggle={() => setDarkModeOn((prev) => !prev)}
+            />
           </div>
 
-          <div className="flex items-center justify-between py-3 border-b border-slate-100">
+          <div className="flex items-center justify-between gap-3 py-3 border-b border-slate-100">
             <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
               <i className="fa-regular fa-bell text-slate-400" />
               {t('notifications')}</div>
-            <button
-              type="button"
-              role="switch"
-              aria-label={t('notifications')}
-              aria-checked={notificationsOn}
-              onClick={() => setNotificationsOn((prev) => !prev)}
-              className={`relative h-6 w-11 rounded-full transition ${
-                notificationsOn ? 'bg-violet-500' : 'bg-slate-200'
-              }`}
-            >
-              <span
-                className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                  notificationsOn ? 'translate-x-5' : 'translate-x-0'
-                }`}
-              />
-            </button>
+            <SettingSwitch
+              label={t('notifications')}
+              checked={notificationsOn}
+              onToggle={() => setNotificationsOn((prev) => !prev)}
+            />
           </div>
 
-          <div className="flex items-center justify-between py-3 border-b border-slate-100">
+          <div className="flex items-center justify-between gap-3 py-3 border-b border-slate-100">
             <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
               <i className="fa-regular fa-keyboard text-slate-400" />
               {t('shortcuts')}</div>
-            <button
-              type="button"
-              role="switch"
-              aria-label={t('shortcuts')}
-              aria-checked={shortcutsOn}
-              onClick={() => setShortcutsOn((prev) => !prev)}
-              className={`relative h-6 w-11 rounded-full transition ${
-                shortcutsOn ? 'bg-violet-500' : 'bg-slate-200'
-              }`}
-            >
-              <span
-                className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                  shortcutsOn ? 'translate-x-5' : 'translate-x-0'
-                }`}
-              />
-            </button>
+            <SettingSwitch
+              label={t('shortcuts')}
+              checked={shortcutsOn}
+              onToggle={() => setShortcutsOn((prev) => !prev)}
+            />
           </div>
 
           <div className="flex items-center justify-between gap-3 pt-3">
