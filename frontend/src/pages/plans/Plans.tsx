@@ -116,8 +116,8 @@ function Plans() {
             <div
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className={`relative cursor-pointer rounded-2xl border bg-white p-6 transition ${
-                isSelected ? 'border-2 border-violet-500 shadow-lg' : 'border-slate-100'
+              className={`relative flex min-w-0 flex-col cursor-pointer rounded-2xl border-2 bg-white p-6 transition ${
+                isSelected ? 'border-violet-500 shadow-lg' : 'border-slate-100'
               }`}
             >
               {isSelected && (
@@ -145,7 +145,7 @@ function Plans() {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 space-y-2">
+              <div className="mt-4 flex-1 space-y-2">
                 {plan.content.map((item) => (
                   <p key={item} className="flex items-center gap-2 text-sm text-slate-500">
                     <i className="fa-solid fa-check text-violet-500" />
@@ -155,10 +155,10 @@ function Plans() {
               </div>
               <button
                 type="button"
-                className={`mt-6 w-full rounded-xl py-3 text-sm font-semibold transition ${
+                className={`mt-6 w-full shrink-0 rounded-xl border px-3 py-3 text-sm font-semibold transition ${
                   isSelected
-                    ? 'bg-gradient-to-r from-violet-600 to-indigo-400 text-white shadow'
-                    : 'border border-violet-300 text-violet-600 hover:bg-violet-50'
+                    ? 'border-transparent bg-gradient-to-r from-violet-600 to-indigo-400 text-white shadow'
+                    : 'border-violet-300 text-violet-600 hover:bg-violet-50'
                 }`}
               >
                 {plan.button}
