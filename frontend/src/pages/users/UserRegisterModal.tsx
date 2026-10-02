@@ -214,11 +214,11 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
   return (
     <div className="overflow-hidden fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="relative w-full max-w-[520px] rounded-[32px] bg-white p-8 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-custom">
+      <div className="relative w-full max-w-[520px] rounded-[32px] bg-white dark:bg-[#151c35] p-8 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-custom">
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-6 top-6 text-3xl text-slate-400 hover:text-slate-700"
+          className="absolute right-6 top-6 text-3xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
         >
           <i className="fa-solid fa-x"></i>
         </button>
@@ -227,13 +227,13 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
           <img className="w-25 h-25 object-contain" src="/images/gureum/GureumAI.png" alt={t('gureumAI')} />
         </div>
 
-        <h2 className="text-3xl font-bold text-center text-slate-800">{t('register')}</h2>
-        <p className="mt-3 text-center text-slate-500">
+        <h2 className="text-3xl font-bold text-center text-slate-800 dark:text-slate-100">{t('register')}</h2>
+        <p className="mt-3 text-center text-slate-500 dark:text-slate-400">
           {t('authIntro')}</p>
 
         {/* 이름 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">{t('name')}</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">{t('name')}</label>
           <div className="relative">
             <input
               type="text"
@@ -241,7 +241,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
               onChange={handleNameChange}
               placeholder={t('namePlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition focus:border-violet-400 ${
-                nameError ? 'border-red-400 focus:border-red-400' : 'border-slate-200'
+                nameError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 dark:border-slate-700/70'
               }`}
             />
             <i className="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -256,7 +256,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
         {/* 전화번호 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">{t('phone')}</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">{t('phone')}</label>
           <div className="mt-3 relative">
             <input
               type="text"
@@ -265,7 +265,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
               value={phone}
               maxLength={13}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition focus:border-violet-400 ${
-                phoneError ? 'border-red-400 focus:border-red-400' : 'border-slate-200'
+                phoneError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 dark:border-slate-700/70'
               }`}
             />
             <i className="fa-solid fa-phone-flip absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -280,7 +280,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
         {/* 아이디 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">{t('username')}</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">{t('username')}</label>
           <div className="flex gap-3">
             <div className="relative flex-[7.5]">
               <input
@@ -290,7 +290,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
                 placeholder={t('usernamePlaceholder')}
                 maxLength={15}
                 className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition ${
-                  userIdError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 focus:border-violet-400'
+                  userIdError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 dark:border-slate-700/70 focus:border-violet-400'
                 }`}
               />
               <i className="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -300,7 +300,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
               type="button"
               onClick={handleCheckUserId}
               disabled={checkingUserId}
-              className="flex-[2.5] h-14 rounded-2xl bg-gradient-to-r from-violet-100 to-indigo-100 font-semibold text-violet-600 shadow-sm shadow-violet-100 transition hover:-translate-y-0.5 hover:from-violet-600 hover:to-indigo-400 hover:text-white hover:shadow-lg hover:shadow-violet-200 whitespace-nowrap disabled:opacity-50"
+              className="flex-[2.5] h-14 rounded-2xl bg-gradient-to-r from-violet-100 dark:from-violet-500/25 to-indigo-100 dark:to-indigo-500/25 font-semibold text-violet-600 dark:text-violet-300 shadow-sm shadow-violet-100 dark:shadow-black/20 transition hover:-translate-y-0.5 hover:from-violet-600 hover:to-indigo-400 hover:text-white hover:shadow-lg hover:shadow-violet-200 dark:hover:shadow-violet-950/40 whitespace-nowrap disabled:opacity-50"
             >
               {checkingUserId ? t('checking') : t('checkAvailability')}
             </button>
@@ -314,7 +314,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
           )}
 
           {userIdChecked && !userIdError && (
-            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-violet-500">
+            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-violet-500 dark:text-violet-300">
               <i className="bi bi-check-circle" />
               {t('usernameAvailable')}</p>
           )}
@@ -322,7 +322,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
         {/* 비밀번호 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">{t('password')}</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">{t('password')}</label>
           <div className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -330,13 +330,13 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
               onChange={handlePasswordChange}
               placeholder={t('passwordPlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition focus:border-violet-400 ${
-                passwordError ? 'border-red-400 focus:border-red-400' : 'border-slate-200'
+                passwordError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 dark:border-slate-700/70'
               }`}
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500 dark:hover:text-violet-300"
             >
               <i className={showPassword ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'} />
             </button>
@@ -351,7 +351,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
         {/* 비밀번호 확인 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">{t('confirmPassword')}</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">{t('confirmPassword')}</label>
           <div className="relative">
             <input
               type={showPasswordConfirm ? 'text' : 'password'}
@@ -359,13 +359,13 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
               onChange={handlePasswordConfirmChange}
               placeholder={t('confirmPasswordPlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition focus:border-violet-400 ${
-                passwordConfirmError ? 'border-red-400 focus:border-red-400' : 'border-slate-200'
+                passwordConfirmError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 dark:border-slate-700/70'
               }`}
             />
             <button
               type="button"
               onClick={() => setShowPasswordConfirm((prev) => !prev)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500 dark:hover:text-violet-300"
             >
               <i className={showPasswordConfirm ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'} />
             </button>
@@ -380,7 +380,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
         {/* 이메일 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">{t('email')}</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">{t('email')}</label>
           <div className="relative">
             <input
               type="text"
@@ -388,7 +388,7 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
               onChange={handleEmailChange}
               placeholder={t('emailPlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition ${
-                emailError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 focus:border-violet-400'
+                emailError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 dark:border-slate-700/70 focus:border-violet-400'
               }`}
             />
             <i className="fa-regular fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
@@ -403,15 +403,15 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
 
         {/* 동의 체크 박스 */}
         <div>
-          <label className="mt-4 flex items-center gap-3 text-base text-slate-500">
+          <label className="mt-4 flex items-center gap-3 text-base text-slate-500 dark:text-slate-400">
             <input type="checkbox" className="peer hidden" />
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-slate-300 bg-white text-white peer-checked:border-violet-500 peer-checked:bg-violet-500">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-slate-300 dark:border-slate-700/70 bg-white dark:bg-[#151c35] text-white dark:text-[#151c35] peer-checked:border-violet-500 peer-checked:bg-violet-500 dark:peer-checked:bg-violet-500 dark:peer-checked:text-white">
               <i className="fa-solid fa-check text-xs" />
             </span>
             <span>
               <Trans i18nKey="consent" components={{
-                terms: <button type="button" className="font-semibold text-violet-500 hover:underline" />,
-                privacy: <button type="button" className="font-semibold text-violet-500 hover:underline" />,
+                terms: <button type="button" className="font-semibold text-violet-500 dark:text-violet-300 hover:underline" />,
+                privacy: <button type="button" className="font-semibold text-violet-500 dark:text-violet-300 hover:underline" />,
               }} />
             </span>
           </label>
@@ -425,15 +425,15 @@ function UserRegisterModal({ onClose, onSwitchToLogin }: UserRegisterModalProps)
             disabled={!isFormValid}
             className={`h-14 w-full rounded-2xl font-semibold text-white shadow-lg transition ${
               isFormValid
-                ? 'bg-gradient-to-r from-violet-600 to-indigo-400 shadow-violet-200 hover:-translate-y-0.5 hover:shadow-xl'
-                : 'cursor-not-allowed bg-slate-300 shadow-none'
+                ? 'bg-gradient-to-r from-violet-600 to-indigo-400 shadow-violet-200 dark:shadow-violet-950/40 hover:-translate-y-0.5 hover:shadow-xl'
+                : 'cursor-not-allowed bg-slate-300 dark:bg-slate-600 shadow-none'
             }`}
           >
             {t('register')}</button>
 
-          <div className="mt-5 text-center text-sm text-slate-500">
+          <div className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
             {t('alreadyAccount')}{' '}
-            <button type="button" onClick={onSwitchToLogin} className="font-semibold text-violet-500 hover:underline">
+            <button type="button" onClick={onSwitchToLogin} className="font-semibold text-violet-500 dark:text-violet-300 hover:underline">
               {t('login')}</button>
           </div>
         </div>

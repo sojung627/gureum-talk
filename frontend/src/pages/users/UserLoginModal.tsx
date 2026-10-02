@@ -132,11 +132,11 @@ function UserLoginModal({
 
   return (
     <div className="overflow-hidden fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="relative w-full max-w-[520px] rounded-[32px] bg-white p-8 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-custom">
+      <div className="relative w-full max-w-[520px] rounded-[32px] bg-white dark:bg-[#151c35] p-8 shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-custom">
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-6 top-6 text-3xl text-slate-400 hover:text-slate-700"
+          className="absolute right-6 top-6 text-3xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
         >
           <i className="fa-solid fa-x" />
         </button>
@@ -145,14 +145,14 @@ function UserLoginModal({
           <img className="w-25 h-25 object-contain" src="/images/gureum/GureumAI.png" alt={t('gureumAI')} />
         </div>
 
-        <h2 className="text-center text-3xl font-bold text-slate-800">{t('login')}</h2>
+        <h2 className="text-center text-3xl font-bold text-slate-800 dark:text-slate-100">{t('login')}</h2>
 
-        <p className="mt-3 text-center text-slate-500">
+        <p className="mt-3 text-center text-slate-500 dark:text-slate-400">
           {t('authIntro')}</p>
 
         {/* 아이디 */}
         <div className="mt-8">
-          <label className="mb-1 block text-base font-semibold text-slate-700">{t('username')}</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">{t('username')}</label>
 
           <div className="relative">
             <input
@@ -165,7 +165,7 @@ function UserLoginModal({
               }}
               placeholder={t('usernamePlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition focus:border-violet-400 ${
-                usernameError ? 'border-red-400 focus:border-red-400' : 'border-slate-200'
+                usernameError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 dark:border-slate-700/70'
               }`}
             />
             <i className="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -179,14 +179,14 @@ function UserLoginModal({
           )}
 
           <div className="regular mt-2">
-            <label className="group flex cursor-pointer items-center gap-3 text-base text-slate-500">
+            <label className="group flex cursor-pointer items-center gap-3 text-base text-slate-500 dark:text-slate-400">
               <input
                 type="checkbox"
                 className="peer hidden"
                 checked={saveId}
                 onChange={(e) => setSaveId(e.target.checked)}
               />
-              <div className="flex h-5 w-5 items-center justify-center rounded-md border border-slate-300 transition peer-checked:border-violet-500 peer-checked:bg-violet-500">
+              <div className="flex h-5 w-5 items-center justify-center rounded-md border border-slate-300 dark:border-slate-700/70 transition peer-checked:border-violet-500 peer-checked:bg-violet-500">
                 <i className="fa-solid fa-check text-xs text-white opacity-0 transition group-has-[:checked]:opacity-100" />
               </div>
               <span>{t('rememberUsername')}</span>
@@ -196,7 +196,7 @@ function UserLoginModal({
 
         {/* 비밀번호 */}
         <div className="mt-4">
-          <label className="mb-1 block text-base font-semibold text-slate-700">{t('password')}</label>
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">{t('password')}</label>
 
           <div className="relative">
             <input
@@ -209,13 +209,13 @@ function UserLoginModal({
               }}
               placeholder={t('passwordPlaceholder')}
               className={`h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition focus:border-violet-400 ${
-                passwordError ? 'border-red-400 focus:border-red-400' : 'border-slate-200'
+                passwordError ? 'border-red-400 focus:border-red-400' : 'border-slate-200 dark:border-slate-700/70'
               }`}
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500 dark:hover:text-violet-300"
             >
               <i className={showPassword ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'} />
             </button>
@@ -258,20 +258,20 @@ function UserLoginModal({
             disabled={isLoginDisabled}
             className={`h-14 w-full rounded-2xl font-semibold text-white shadow-lg transition ${
               isLoginDisabled
-                ? 'cursor-not-allowed bg-slate-300 shadow-none'
-                : 'bg-gradient-to-r from-violet-600 to-indigo-400 shadow-violet-200 hover:-translate-y-0.5 hover:shadow-xl'
+                ? 'cursor-not-allowed bg-slate-300 dark:bg-slate-600 shadow-none'
+                : 'bg-gradient-to-r from-violet-600 to-indigo-400 shadow-violet-200 dark:shadow-violet-950/40 hover:-translate-y-0.5 hover:shadow-xl'
             }`}
           >
             {t('login')}</button>
 
-          <div className="mt-5 text-center text-sm text-slate-500">
+          <div className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
             {t('noAccount')}{' '}
-            <button type="button" onClick={onSwitchToRegister} className="font-semibold text-violet-500 hover:underline">
+            <button type="button" onClick={onSwitchToRegister} className="font-semibold text-violet-500 dark:text-violet-300 hover:underline">
               {t('register')}</button>
           </div>
-          <div className="mt-5 text-center text-sm text-slate-500">
+          <div className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
             {t('forgotPassword')}{' '}
-            <button type="button" onClick={onSwitchToPasswordReset} className="font-semibold text-violet-500 hover:underline">
+            <button type="button" onClick={onSwitchToPasswordReset} className="font-semibold text-violet-500 dark:text-violet-300 hover:underline">
               {t('resetPassword')}</button>
           </div>
         </div>

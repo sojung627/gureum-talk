@@ -331,17 +331,17 @@ function UserPasswordResetModal({
     `h-14 w-full rounded-2xl border pl-5 pr-14 text-sm outline-none transition ${
       hasError
         ? 'border-red-400 focus:border-red-400'
-        : 'border-slate-200 focus:border-violet-400'
+        : 'border-slate-200 dark:border-slate-700/70 focus:border-violet-400'
     }`
   )
 
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center overflow-hidden bg-black/40 backdrop-blur-sm">
-      <div className="scrollbar-custom relative max-h-[90vh] w-full max-w-[520px] overflow-y-auto rounded-[32px] bg-white p-8 shadow-2xl">
+      <div className="scrollbar-custom relative max-h-[90vh] w-full max-w-[520px] overflow-y-auto rounded-[32px] bg-white dark:bg-[#151c35] p-8 shadow-2xl">
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-6 top-6 text-3xl text-slate-400 hover:text-slate-700"
+          className="absolute right-6 top-6 text-3xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
           aria-label={t('closeResetPassword')}
         >
           <i className="fa-solid fa-x" />
@@ -355,16 +355,16 @@ function UserPasswordResetModal({
           />
         </div>
 
-        <h2 className="text-center text-3xl font-bold text-slate-800">
+        <h2 className="text-center text-3xl font-bold text-slate-800 dark:text-slate-100">
           {t('resetPassword')}</h2>
-        <p className="mt-3 text-center text-slate-500">
+        <p className="mt-3 text-center text-slate-500 dark:text-slate-400">
           {t('resetIntro')}</p>
 
-        <div className="mt-6 font-semibold text-violet-500">
+        <div className="mt-6 font-semibold text-violet-500 dark:text-violet-300">
           <i className="bi bi-1-circle-fill" /> {t('verifyIdentity')}</div>
 
         <div className="mt-3">
-          <label className="mb-1 block text-base font-semibold text-slate-700">
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">
             {t('username')}</label>
           <div className="relative">
             <input
@@ -390,7 +390,7 @@ function UserPasswordResetModal({
         </div>
 
         <div className="mt-3">
-          <label className="mb-1 block text-base font-semibold text-slate-700">
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">
             {t('phone')}</label>
           <div className="relative">
             <input
@@ -425,15 +425,15 @@ function UserPasswordResetModal({
             type="button"
             onClick={handleSendCode}
             disabled={sendCodeMutation.isPending || isVerified}
-            className="h-14 w-full rounded-2xl bg-gradient-to-r from-violet-100 to-indigo-100 font-semibold text-violet-600 shadow-sm shadow-violet-100 transition hover:-translate-y-0.5 hover:from-violet-600 hover:to-indigo-400 hover:text-white hover:shadow-lg hover:shadow-violet-200 disabled:cursor-wait disabled:opacity-60 disabled:hover:translate-y-0"
+            className="h-14 w-full rounded-2xl bg-gradient-to-r from-violet-100 dark:from-violet-500/25 to-indigo-100 dark:to-indigo-500/25 font-semibold text-violet-600 dark:text-violet-300 shadow-sm shadow-violet-100 dark:shadow-black/20 transition hover:-translate-y-0.5 hover:from-violet-600 hover:to-indigo-400 hover:text-white hover:shadow-lg hover:shadow-violet-200 dark:hover:shadow-violet-950/40 disabled:cursor-wait disabled:opacity-60 disabled:hover:translate-y-0"
           >
             {sendCodeMutation.isPending ? t('sending') : t('getCode')}
           </button>
         </div>
 
-        <div className="my-8 border-t border-dashed border-slate-200" />
+        <div className="my-8 border-t border-dashed border-slate-200 dark:border-slate-700/70" />
 
-        <div className="font-semibold text-violet-500">
+        <div className="font-semibold text-violet-500 dark:text-violet-300">
           <i className="bi bi-2-circle-fill" /> {t('verifyCode')}</div>
 
         <div className="mt-3 flex gap-3">
@@ -455,7 +455,7 @@ function UserPasswordResetModal({
             type="button"
             onClick={handleVerifyCode}
             disabled={verifyCodeMutation.isPending || isVerified}
-            className="h-14 flex-[2.5] whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-100 to-indigo-100 font-semibold text-violet-600 shadow-sm shadow-violet-100 transition hover:-translate-y-0.5 hover:from-violet-600 hover:to-indigo-400 hover:text-white hover:shadow-lg hover:shadow-violet-200 disabled:cursor-wait disabled:opacity-60"
+            className="h-14 flex-[2.5] whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-100 dark:from-violet-500/25 to-indigo-100 dark:to-indigo-500/25 font-semibold text-violet-600 dark:text-violet-300 shadow-sm shadow-violet-100 dark:shadow-black/20 transition hover:-translate-y-0.5 hover:from-violet-600 hover:to-indigo-400 hover:text-white hover:shadow-lg hover:shadow-violet-200 dark:hover:shadow-violet-950/40 disabled:cursor-wait disabled:opacity-60"
           >
             {verifyCodeMutation.isPending ? t('checking') : t('verify')}
           </button>
@@ -474,23 +474,23 @@ function UserPasswordResetModal({
           </p>
         )}
 
-        <div className="mt-5 flex items-center justify-between text-sm text-slate-500">
+        <div className="mt-5 flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
           <span>
             <i className="bi bi-info-circle" /> {t('codeValidity')}</span>
           {requestId && !isVerified && (
-            <span className={remainingSeconds > 0 ? 'text-violet-500' : 'text-red-400'}>
+            <span className={remainingSeconds > 0 ? 'text-violet-500 dark:text-violet-300' : 'text-red-400'}>
               {formattedRemainingTime}
             </span>
           )}
         </div>
 
-        <div className="my-8 border-t border-dashed border-slate-200" />
+        <div className="my-8 border-t border-dashed border-slate-200 dark:border-slate-700/70" />
 
-        <div className="font-semibold text-violet-500">
+        <div className="font-semibold text-violet-500 dark:text-violet-300">
           <i className="bi bi-3-circle-fill" /> {t('setNewPassword')}</div>
 
         <div className="mt-3">
-          <label className="mb-1 block text-base font-semibold text-slate-700">
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">
             {t('newPassword')}</label>
           <div className="relative">
             <input
@@ -506,7 +506,7 @@ function UserPasswordResetModal({
               type="button"
               onClick={() => setShowPassword((current) => !current)}
               disabled={!isVerified}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500 dark:hover:text-violet-300"
               aria-label={t('toggleNewPassword')}
             >
               <i className={showPassword ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'} />
@@ -520,7 +520,7 @@ function UserPasswordResetModal({
         </div>
 
         <div className="mt-3">
-          <label className="mb-1 block text-base font-semibold text-slate-700">
+          <label className="mb-1 block text-base font-semibold text-slate-700 dark:text-slate-200">
             {t('confirmNewPassword')}</label>
           <div className="relative">
             <input
@@ -536,7 +536,7 @@ function UserPasswordResetModal({
               type="button"
               onClick={() => setShowPasswordConfirm((current) => !current)}
               disabled={!isVerified}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-500 dark:hover:text-violet-300"
               aria-label={t('toggleConfirmPassword')}
             >
               <i className={showPasswordConfirm ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'} />
@@ -562,18 +562,18 @@ function UserPasswordResetModal({
             type="button"
             onClick={handleChangePassword}
             disabled={changePasswordMutation.isPending || passwordChangeSucceeded}
-            className="h-14 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 font-semibold text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5 hover:shadow-xl disabled:cursor-wait disabled:opacity-60"
+            className="h-14 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 font-semibold text-white shadow-lg shadow-violet-200 dark:shadow-violet-950/40 transition hover:-translate-y-0.5 hover:shadow-xl disabled:cursor-wait disabled:opacity-60"
           >
             {changePasswordMutation.isPending ? t('changing') : t('changePassword')}
           </button>
         </div>
 
-        <div className="mt-5 text-center text-sm text-slate-500">
+        <div className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
           {t('rememberedPassword')}{' '}
           <button
             type="button"
             onClick={onSwitchToLogin}
-            className="font-semibold text-violet-500 hover:underline"
+            className="font-semibold text-violet-500 dark:text-violet-300 hover:underline"
           >
             {t('login')}</button>
         </div>

@@ -36,6 +36,14 @@ function LoginRequiredRedirect() {
 
 function App() {
   const darkModeOn = useAtomValue(darkModeOnAtom)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = darkModeOn ? 'dark' : 'light'
+    return () => {
+      delete document.documentElement.dataset.theme
+    }
+  }, [darkModeOn])
+
   const queryClient = useQueryClient()
   const setActiveChatRoomId = useSetAtom(activeChatRoomIdAtom)
   const setActiveModal = useSetAtom(activeModalAtom)
@@ -70,7 +78,8 @@ function App() {
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-[#fbfaff] bg-cover bg-center bg-no-repeat text-slate-800"
+      data-theme={darkModeOn ? 'dark' : 'light'}
+      className="relative min-h-screen overflow-hidden bg-[#fbfaff] dark:bg-[#090e24] bg-cover bg-center bg-no-repeat text-slate-800 dark:text-slate-100"
       style={{
         backgroundImage: darkModeOn
           ? "url('/images/background/backgroundMainDarkmode.png')"

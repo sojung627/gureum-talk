@@ -591,7 +591,7 @@ function ChatRoom({
     },
     offline: {
       label: t('disconnected'),
-      dotClassName: 'bg-slate-300',
+      dotClassName: 'bg-slate-300 dark:bg-slate-600',
     },
   }[serverStatus]
   const queryError = chatRoomsQuery.error
@@ -608,7 +608,7 @@ function ChatRoom({
           ? 'md:grid-cols-[minmax(0,2.65fr)_minmax(0,7fr)_minmax(0,2.65fr)]'
           : 'md:grid-cols-[2.3fr_10fr]'
       }`}>
-        <div className="flex flex-col rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:h-[700px]">
+        <div className="flex flex-col rounded-2xl border border-violet-100 dark:border-violet-400/20 bg-white dark:bg-[#151c35] p-5 shadow-sm md:h-[700px]">
           <div className="flex min-h-0 w-full flex-1 flex-col">
             <button
               type="button"
@@ -616,7 +616,7 @@ function ChatRoom({
               title={t(shortcutsEnabled ? 'newChatShortcut' : 'newChat')}
               aria-keyshortcuts={shortcutsEnabled ? 'Control+Shift+O' : undefined}
               disabled={isSending || isSessionLoading || !isAuthenticated || actionChatRoomId !== null}
-              className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-400 px-7 font-semibold text-white shadow-xl shadow-violet-200 transition hover:-translate-y-0.5"
+              className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-400 px-7 font-semibold text-white shadow-xl shadow-violet-200 dark:shadow-violet-950/40 transition hover:-translate-y-0.5"
             >
               <i className="fa-solid fa-plus" />
               {t('newChat')}</button>
@@ -675,7 +675,7 @@ function ChatRoom({
               ))}
             </div>
 
-            <div className="mt-3 shrink-0 rounded-2xl bg-violet-100 p-4 text-center shadow-sm">
+            <div className="mt-3 shrink-0 rounded-2xl bg-violet-100 dark:bg-violet-400/15 p-4 text-center shadow-sm">
               <div className="flex justify-center">
                 <img
                   alt={t('gureum')}
@@ -683,14 +683,14 @@ function ChatRoom({
                   className="h-[92px] w-[92px] object-contain"
                 />
               </div>
-              <p className="text-sm leading-5 text-slate-700">
+              <p className="text-sm leading-5 text-slate-700 dark:text-slate-200">
                 {t('withGureum')}<br />
                 {t('spendYourDay')}{' '}
-                <i className="fa-solid fa-heart text-violet-500" />
+                <i className="fa-solid fa-heart text-violet-500 dark:text-violet-300" />
               </p>
               <button
                 type="button"
-                className="mt-3 h-9 w-full rounded-xl border border-violet-500 font-bold text-violet-500"
+                className="mt-3 h-9 w-full rounded-xl border border-violet-500 font-bold text-violet-500 dark:text-violet-300"
                 onClick={() => navigate('/help')}
               >
                 {t('learnMore')}</button>
@@ -698,7 +698,7 @@ function ChatRoom({
           </div>
         </div>
 
-        <div className="flex min-h-[445px] flex-col rounded-2xl border border-violet-100 bg-white p-4 shadow-sm md:h-[700px]">
+        <div className="flex min-h-[445px] flex-col rounded-2xl border border-violet-100 dark:border-violet-400/20 bg-white dark:bg-[#151c35] p-4 shadow-sm md:h-[700px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img
@@ -707,10 +707,10 @@ function ChatRoom({
                 className="h-10 w-10 rounded-full object-cover"
               />
               <div className="flex flex-col">
-                <span className="font-semibold text-gray-800">
+                <span className="font-semibold text-gray-800 dark:text-slate-100">
                   Gureum AI
                 </span>
-                <div className="flex items-center gap-1 text-xs text-gray-400">
+                <div className="flex items-center gap-1 text-xs text-gray-400 dark:text-slate-400">
                   <span
                     className={`h-2 w-2 rounded-full ${statusInformation.dotClassName}`}
                   />
@@ -736,20 +736,20 @@ function ChatRoom({
               }}
             />
           </div>
-          <hr className="-mx-4 mt-3 border-gray-200" />
+          <hr className="-mx-4 mt-3 border-gray-200 dark:border-slate-700/70" />
 
           <div
             className="scrollbar-custom min-h-0 flex-1 overflow-y-auto px-2 py-4"
             aria-live="polite"
           >
             {messages.length === 0 && !isSending && (
-              <div className="flex h-full flex-col items-center justify-center text-center text-sm text-gray-400">
+              <div className="flex h-full flex-col items-center justify-center text-center text-sm text-gray-400 dark:text-slate-400">
                 <img
                   alt=""
                   src="/images/gureum/GureumAI.png"
                   className="mb-3 h-16 w-16 rounded-full object-cover opacity-90"
                 />
-                <p className="font-medium text-gray-400">
+                <p className="font-medium text-gray-400 dark:text-slate-400">
                   {t('chatEmpty')}</p>
               </div>
             )}
@@ -768,7 +768,7 @@ function ChatRoom({
                     className={
                       chatMessage.role === 'user'
                         ? 'max-w-[80%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-gradient-to-r from-violet-600 to-indigo-500 px-4 py-2.5 text-sm leading-relaxed text-white shadow-sm'
-                        : 'max-w-[80%] whitespace-pre-wrap break-words rounded-2xl rounded-bl-md border border-violet-100 bg-violet-50 px-4 py-2.5 text-sm leading-relaxed text-gray-700'
+                        : 'max-w-[80%] whitespace-pre-wrap break-words rounded-2xl rounded-bl-md border border-violet-100 dark:border-violet-400/20 bg-violet-50 dark:bg-violet-400/10 px-4 py-2.5 text-sm leading-relaxed text-gray-700 dark:text-slate-200'
                     }
                   >
                     {chatMessage.role === 'assistant' ? (
@@ -784,7 +784,7 @@ function ChatRoom({
 
               {isSending && (
                 <div className="flex justify-start">
-                  <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-violet-100 bg-violet-50 px-4 py-3">
+                  <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-violet-100 dark:border-violet-400/20 bg-violet-50 dark:bg-violet-400/10 px-4 py-3">
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-violet-400" />
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-violet-400 [animation-delay:120ms]" />
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-violet-400 [animation-delay:240ms]" />
@@ -798,7 +798,7 @@ function ChatRoom({
 
           {displayedErrorMessage && (
             <p
-              className="mb-2 px-2 text-xs text-rose-500"
+              className="mb-2 px-2 text-xs text-rose-500 dark:text-rose-300"
               role="alert"
             >
               {translateMessage(displayedErrorMessage)}
@@ -809,11 +809,11 @@ function ChatRoom({
             className="mt-auto"
             onSubmit={handleChatSubmit}
           >
-            <div className="flex min-h-[45px] w-full items-center gap-3 rounded-3xl border border-violet-100 py-2 pl-5 pr-2 shadow-sm focus-within:border-violet-300">
+            <div className="flex min-h-[45px] w-full items-center gap-3 rounded-3xl border border-violet-100 dark:border-violet-400/20 py-2 pl-5 pr-2 shadow-sm focus-within:border-violet-300 dark:focus-within:border-violet-400/20">
               <textarea
                 ref={messageInputRef}
                 rows={1}
-                className="min-w-0 flex-1 resize-none bg-transparent leading-6 text-gray-700 outline-none caret-violet-500 placeholder:text-gray-300 disabled:cursor-not-allowed"
+                className="min-w-0 flex-1 resize-none bg-transparent leading-6 text-gray-700 dark:text-slate-200 outline-none caret-violet-500 placeholder:text-gray-300 dark:placeholder:text-slate-400 disabled:cursor-not-allowed"
                 value={inputMessage}
                 onKeyDown={(event) => {
                   if (
@@ -844,8 +844,8 @@ function ChatRoom({
                   onClick={toggleVoiceListening}
                   className={`flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition disabled:cursor-not-allowed disabled:opacity-50 ${
                     isVoiceListening
-                      ? 'bg-violet-500 text-white shadow-sm shadow-violet-300'
-                      : 'bg-gray-100 text-gray-400 hover:text-violet-500'
+                      ? 'bg-violet-500 text-white shadow-sm shadow-violet-300 dark:shadow-violet-950/40'
+                      : 'bg-gray-100 dark:bg-[#232d49] text-gray-400 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-300'
                   }`}
                   disabled={
                     isSending
@@ -881,25 +881,25 @@ function ChatRoom({
         </div>
 
         {isVoiceChatOpen && (
-          <div className="flex flex-col rounded-2xl border border-violet-100 bg-white p-5 shadow-sm md:h-[700px]">
+          <div className="flex flex-col rounded-2xl border border-violet-100 dark:border-violet-400/20 bg-white dark:bg-[#151c35] p-5 shadow-sm md:h-[700px]">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-gray-800">
+              <span className="font-semibold text-gray-800 dark:text-slate-100">
                 {t('voiceChat')}</span>
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={closeVoiceChatPanel}
                   disabled={updateVoicePreferenceMutation.isPending}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-gray-100 disabled:cursor-wait disabled:opacity-50"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 dark:border-slate-700/70 transition-colors hover:bg-gray-100 dark:hover:bg-[#232d49] disabled:cursor-wait disabled:opacity-50"
                   aria-label={t('closeVoiceChat')}
                 >
-                  <i className="fa-solid fa-minus text-gray-400" />
+                  <i className="fa-solid fa-minus text-gray-400 dark:text-slate-400" />
                 </button>
                 <button
                   type="button"
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-gray-100"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 dark:border-slate-700/70 transition-colors hover:bg-gray-100 dark:hover:bg-[#232d49]"
                 >
-                  <i className="fa-solid fa-sliders text-gray-400" />
+                  <i className="fa-solid fa-sliders text-gray-400 dark:text-slate-400" />
                 </button>
               </div>
             </div>
@@ -915,10 +915,10 @@ function ChatRoom({
 
       {pendingDeleteChatRoom && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/35 px-6 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl">
-            <h2 className="text-lg font-bold text-slate-800">
+          <div className="w-full max-w-sm rounded-3xl bg-white dark:bg-[#151c35] p-6 shadow-2xl">
+            <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
               {t('deleteConversation')}</h2>
-            <p className="mt-3 break-words text-sm leading-6 text-slate-500">
+            <p className="mt-3 break-words text-sm leading-6 text-slate-500 dark:text-slate-400">
               {t('deleteConfirmation', { title: pendingDeleteChatRoom.chat_title })}
             </p>
             <div className="mt-6 flex justify-end gap-2">
@@ -928,7 +928,7 @@ function ChatRoom({
                   setActiveModal(null)
                 }}
                 disabled={actionChatRoomId !== null}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-500 hover:bg-slate-50"
+                className="rounded-xl border border-slate-200 dark:border-slate-700/70 px-4 py-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1d2542]"
               >
                 {t('cancel')}</button>
               <button

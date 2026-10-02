@@ -1,5 +1,31 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@layer base {
+  [data-theme="dark"] :is(input, textarea, select) {
+    background-color: #10172e;
+    color: #e2e8f0;
+  }
+}
+
+[data-theme="dark"] ::selection {
+  color: #f5f3ff;
+  background: #6d28d9;
+}
+
+[data-theme="dark"] .scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #514575;
+}
+
+[data-theme="dark"] .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #8b75bd;
+}
+
 html,
 body,
 #root {

@@ -62,8 +62,8 @@ function Header({
             onClick={() => navigate('/')}
           >
             <img className="w-15 h-15 object-contain" src="/images/gureum/GureumAI.png" alt={t('gureumAI')} />
-            <span className="text-2xl font-bold tracking-tight text-slate-800">
-              Gureum<span className="text-violet-500">Talk</span>
+            <span className="text-2xl font-bold tracking-tight text-slate-800 dark:text-slate-100">
+              Gureum<span className="text-violet-500 dark:text-violet-300">Talk</span>
             </span> 
           </button>
 
@@ -76,7 +76,7 @@ function Header({
                   type="button"
                   onClick={() => handleMenuClick(item.path)}
                   className={`relative py-4 text-[15px] font-medium transition-colors ${
-                    isActive ? 'text-slate-900' : 'text-slate-500 hover:text-violet-500'
+                    isActive ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-300'
                   }`}
                 >
                   {t(item.label)}
@@ -94,7 +94,7 @@ function Header({
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="rounded-2xl border border-slate-100 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
+                  className="rounded-2xl border border-slate-100 dark:border-slate-700/70 bg-white/90 dark:bg-[#151c35]/95 px-6 py-3 text-sm font-semibold text-slate-600 dark:text-slate-300 shadow-sm transition hover:bg-slate-50 dark:hover:bg-[#1d2542]"
                 >
                   {t('logout')}</button>
               </>
@@ -103,13 +103,13 @@ function Header({
                 <button
                   type="button"
                   onClick={() => setActiveModal({ type: 'login' })}
-                  className="rounded-2xl border border-slate-100 bg-white/90 px-6 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50"
+                  className="rounded-2xl border border-slate-100 dark:border-slate-700/70 bg-white/90 dark:bg-[#151c35]/95 px-6 py-3 text-sm font-semibold text-slate-600 dark:text-slate-300 shadow-sm transition hover:bg-slate-50 dark:hover:bg-[#1d2542]"
                 >
                   {t('login')}</button>
                 <button
                   type="button"
                   onClick={() => setActiveModal({ type: 'register' })}
-                  className="rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:-translate-y-0.5"
+                  className="rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 dark:shadow-violet-950/40 transition hover:-translate-y-0.5"
                 >
                   {t('register')}</button>
               </>

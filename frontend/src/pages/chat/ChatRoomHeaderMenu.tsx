@@ -101,7 +101,7 @@ function ChatRoomHeaderMenu({
   }
 
   const roomActionClassName =
-    'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-slate-600 hover:bg-violet-50 hover:text-violet-600 disabled:cursor-not-allowed disabled:text-slate-300 disabled:hover:bg-transparent'
+    'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-slate-600 dark:text-slate-300 hover:bg-violet-50 dark:hover:bg-violet-400/10 hover:text-violet-600 dark:hover:text-violet-300 disabled:cursor-not-allowed disabled:text-slate-300 dark:disabled:text-slate-500 disabled:hover:bg-transparent'
 
   return (
     <div ref={menuContainerRef} className="relative">
@@ -111,20 +111,20 @@ function ChatRoomHeaderMenu({
           setIsMenuOpen((currentValue) => !currentValue)
           setIsRenaming(false)
         }}
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-gray-100"
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 dark:border-slate-700/70 transition-colors hover:bg-gray-100 dark:hover:bg-[#232d49]"
         aria-label={t('chatRoomMenu')}
         aria-expanded={isMenuOpen}
       >
-        <i className="fa-solid fa-ellipsis text-gray-400" />
+        <i className="fa-solid fa-ellipsis text-gray-400 dark:text-slate-400" />
       </button>
 
       {isMenuOpen && (
-        <div className="absolute right-0 top-10 z-50 w-48 rounded-xl border border-violet-100 bg-white p-1.5 shadow-xl">
+        <div className="absolute right-0 top-10 z-50 w-48 rounded-xl border border-violet-100 dark:border-violet-400/20 bg-white dark:bg-[#151c35] p-1.5 shadow-xl">
           {isRenaming && chatRoom ? (
             <div className="p-1.5">
               <label
                 htmlFor="active-chat-room-title"
-                className="mb-1.5 block text-xs font-semibold text-slate-600"
+                className="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300"
               >
                 {t('rename')}</label>
               <input
@@ -136,21 +136,21 @@ function ChatRoomHeaderMenu({
                 onChange={(event) => setTitleDraft(event.target.value)}
                 onKeyDown={handleRenameKeyDown}
                 disabled={isBusy}
-                className="h-9 w-full rounded-lg border border-violet-200 px-2 text-sm text-slate-700 outline-none focus:border-violet-400 disabled:cursor-wait"
+                className="h-9 w-full rounded-lg border border-violet-200 dark:border-violet-400/20 px-2 text-sm text-slate-700 dark:text-slate-200 outline-none focus:border-violet-400 disabled:cursor-wait"
               />
               <div className="mt-2 flex justify-end gap-1.5">
                 <button
                   type="button"
                   onClick={() => setIsRenaming(false)}
                   disabled={isBusy}
-                  className="rounded-lg px-2.5 py-1.5 text-xs text-slate-500 hover:bg-slate-50"
+                  className="rounded-lg px-2.5 py-1.5 text-xs text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1d2542]"
                 >
                   {t('cancel')}</button>
                 <button
                   type="button"
                   onClick={() => void saveRenamedTitle()}
                   disabled={!titleDraft.trim() || isBusy}
-                  className="rounded-lg bg-violet-500 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-violet-600 disabled:cursor-not-allowed disabled:bg-violet-200"
+                  className="rounded-lg bg-violet-500 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-violet-600 disabled:cursor-not-allowed disabled:bg-violet-200 dark:disabled:bg-violet-400/20"
                 >
                   {t('save')}</button>
               </div>
@@ -200,7 +200,7 @@ function ChatRoomHeaderMenu({
                   }
                 }}
                 disabled={!chatRoom || isBusy}
-                className={`${roomActionClassName} text-rose-500 hover:bg-rose-50 hover:text-rose-600`}
+                className={`${roomActionClassName} text-rose-500 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-500/15 hover:text-rose-600 dark:hover:text-rose-300`}
               >
                 <i className="fa-solid fa-trash-can w-4" />
                 {t('delete')}</button>

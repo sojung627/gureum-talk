@@ -11,9 +11,9 @@ export function VoiceWave({ size = 288 }: { size?: number }) {
         className="relative grid h-72 w-72 place-items-center"
         style={{ transform: `scale(${scale})`, transformOrigin: 'top left' }}
       >
-        <div className="absolute inset-0 rounded-full border border-violet-100" />
+        <div className="absolute inset-0 rounded-full border border-violet-100 dark:border-violet-400/20" />
         <div className="absolute inset-7 rounded-full border border-fuchsia-100" />
-        <div className="absolute inset-14 rounded-full bg-violet-200/20 blur-2xl" />
+        <div className="absolute inset-14 rounded-full bg-violet-200/20 dark:bg-violet-400/10 blur-2xl" />
         <span className="absolute left-3 top-1/2 h-2 w-2 rounded-full bg-violet-300" />
         <span className="absolute right-8 top-10 h-2 w-2 rounded-full bg-violet-300" />
         <span className="absolute bottom-6 right-16 h-1.5 w-1.5 rounded-full bg-fuchsia-200" />
@@ -38,21 +38,21 @@ function HomePage() {
       <div className="relative z-10 mx-auto grid max-w-[1480px] gap-12 px-12 py-16 lg:grid-cols-[0.7fr_1.4fr] lg:items-center lg:px-20">
         {/* 왼쪽 소개 영역 */}
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-100 to-pink-100 px-5 py-2 text-sm font-semibold text-violet-600">
+          <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-100 dark:from-violet-500/25 to-pink-100 dark:to-pink-500/20 px-5 py-2 text-sm font-semibold text-violet-600 dark:text-violet-300">
             {t('chatAndVoice')}<span className="text-pink-400">
               <i className="fa-solid fa-heart" />
             </span>
           </div>
 
-          <h1 className="mt-12 text-5xl font-light leading-[1.4] tracking-tight text-slate-800 lg:text-6xl">
+          <h1 className="mt-12 text-5xl font-light leading-[1.4] tracking-tight text-slate-800 dark:text-slate-100 lg:text-6xl">
             <Trans i18nKey="homeHeadline" components={{
               line: <br />,
               strong: <strong className="font-semibold" />,
-              accent: <span className="font-semibold text-violet-500" />,
+              accent: <span className="font-semibold text-violet-500 dark:text-violet-300" />,
             }} />
           </h1>
 
-          <p className="mt-8 text-lg leading-9 text-slate-600">
+          <p className="mt-8 text-lg leading-9 text-slate-600 dark:text-slate-300">
             {t('warmConversation')}<br />
             {t('lighterHeart')}</p>
 
@@ -60,36 +60,36 @@ function HomePage() {
             <button
               type="button"
               onClick={() => navigate('/chat')}
-              className="rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 px-7 py-4 font-semibold text-white shadow-xl shadow-violet-200 transition hover:-translate-y-0.5"
+              className="rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-400 px-7 py-4 font-semibold text-white shadow-xl shadow-violet-200 dark:shadow-violet-950/40 transition hover:-translate-y-0.5"
             >
               <i className="fa-regular fa-comment-dots" /> {t('startAiChat')}</button>
             <button
               type="button"
-              className="rounded-2xl bg-white px-7 py-4 font-semibold text-violet-500 shadow-lg shadow-violet-100 transition hover:-translate-y-0.5"
+              className="rounded-2xl bg-white dark:bg-[#151c35] px-7 py-4 font-semibold text-violet-500 dark:text-violet-300 shadow-lg shadow-violet-100 dark:shadow-black/20 transition hover:-translate-y-0.5"
             >
               <i className="fa-solid fa-microphone" /> {t('talkByVoice')}</button>
           </div>
         </div>
 
         {/* 채팅 카드 + 음성 카드 — 배경 네모 추가 */}
-        <div className="rounded-[36px] bg-white/60 p-6 shadow-[0_12px_40px_rgba(124,103,255,0.13)] backdrop-blur-sm">
+        <div className="rounded-[36px] bg-white/60 dark:bg-[#151c35]/75 p-6 shadow-[0_12px_40px_rgba(124,103,255,0.13)] backdrop-blur-sm">
           <div className="grid h-[650px] min-w-0 grid-cols-[1.55fr_1fr] gap-3">
 
             {/* 채팅 카드 */}
-            <section className="grid min-w-0 grid-rows-[96px_1fr_88px] overflow-hidden rounded-[28px] bg-white shadow-[0_20px_55px_rgba(92,75,150,0.12)]">
-              <header className="flex items-center justify-between rounded-[28px] bg-white px-7 shadow-[0_6px_22px_rgba(84,68,140,0.08)]">
+            <section className="grid min-w-0 grid-rows-[96px_1fr_88px] overflow-hidden rounded-[28px] bg-white dark:bg-[#151c35] shadow-[0_20px_55px_rgba(92,75,150,0.12)]">
+              <header className="flex items-center justify-between rounded-[28px] bg-white dark:bg-[#151c35] px-7 shadow-[0_6px_22px_rgba(84,68,140,0.08)]">
                 <div className="flex items-center gap-4">
                   <img className="w-15 h-15 object-contain" src="/images/gureum/GureumAI.png" alt={t('gureumAI')} />
                 <div>
 
-                    <h2 className="text-[19px] font-bold text-slate-800">Gureum</h2>
+                    <h2 className="text-[19px] font-bold text-slate-800 dark:text-slate-100">Gureum</h2>
                     <p className="mt-1 flex items-center gap-2 text-[13px] text-slate-400">
                       <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
                       Online
                     </p>
                   </div>
                 </div>
-                <button type="button" aria-label={t('chatMenu')} className="grid h-10 w-10 place-items-center rounded-full bg-slate-50 text-slate-400">
+                <button type="button" aria-label={t('chatMenu')} className="grid h-10 w-10 place-items-center rounded-full bg-slate-50 dark:bg-[#1d2542] text-slate-400">
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
                     <circle cx="5" cy="12" r="1.7" />
                     <circle cx="12" cy="12" r="1.7" />
@@ -102,7 +102,7 @@ function HomePage() {
                 <div className="flex items-start gap-3">
                   <img className="w-11 h-11 object-contain" src="/images/gureum/GureumAI.png" alt={t('gureumAI')} />
                   <div>
-                    <div className="max-w-[360px] rounded-[20px] rounded-tl-md bg-gradient-to-br from-[#f8f7fb] to-[#f5f2fa] px-5 py-4 text-[15px] leading-7 text-slate-700">
+                    <div className="max-w-[360px] rounded-[20px] rounded-tl-md bg-gradient-to-br from-[#f8f7fb] dark:from-[#232d49] to-[#f5f2fa] dark:to-[#1d2542] px-5 py-4 text-[15px] leading-7 text-slate-700 dark:text-slate-200">
                       {t('longTimeNoSee')}<br />
                       {t('howHaveYouBeen')}</div>
                     <p className="mt-2 px-2 text-[12px] text-slate-400">{t('time2030')}</p>
@@ -110,7 +110,7 @@ function HomePage() {
                 </div>
 
                 <div className="ml-auto mt-3 w-fit max-w-[310px]">
-                  <div className="rounded-[20px] rounded-tr-md bg-gradient-to-br from-violet-100 to-indigo-100 px-5 py-3.5 text-[15px] font-medium leading-7 text-indigo-700">
+                  <div className="rounded-[20px] rounded-tr-md bg-gradient-to-br from-violet-100 dark:from-violet-500/25 to-indigo-100 dark:to-indigo-500/25 px-5 py-3.5 text-[15px] font-medium leading-7 text-indigo-700 dark:text-indigo-200">
                     {t('hardLately')}</div>
                   <p className="mt-2 text-right text-[12px] text-slate-400">{t('time2031')}</p>
                 </div>
@@ -118,7 +118,7 @@ function HomePage() {
                 <div className="mt-3 flex items-start gap-3">
                   <img className="w-11 h-11 object-contain" src="/images/gureum/GureumAI.png" alt={t('gureumAI')} />
                   <div>
-                    <div className="max-w-[370px] rounded-[20px] rounded-tl-md bg-gradient-to-br from-[#f8f7fb] to-[#f5f2fa] px-5 py-4 text-[15px] leading-7 text-slate-700">
+                    <div className="max-w-[370px] rounded-[20px] rounded-tl-md bg-gradient-to-br from-[#f8f7fb] dark:from-[#232d49] to-[#f5f2fa] dark:to-[#1d2542] px-5 py-4 text-[15px] leading-7 text-slate-700 dark:text-slate-200">
                       {t('sorryToHear')}<br />
                       {t('tellMeWhatHappened')}<br />
                       {t('onYourSide')}<br />
@@ -127,10 +127,10 @@ function HomePage() {
                   </div>
                 </div>
 
-                <div className="mt-3 flex w-fit items-center gap-1.5 rounded-2xl bg-violet-50 px-4 py-3">
+                <div className="mt-3 flex w-fit items-center gap-1.5 rounded-2xl bg-violet-50 dark:bg-violet-400/10 px-4 py-3">
                   <span className="h-2.5 w-2.5 rounded-full bg-violet-400" />
                   <span className="h-2.5 w-2.5 rounded-full bg-violet-300" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-violet-200" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-violet-200 dark:bg-violet-400/20" />
                 </div>
               </div>
 
@@ -138,11 +138,11 @@ function HomePage() {
                 className="grid grid-cols-[minmax(0,1fr)_56px] items-center gap-3 px-7 pb-5 pt-2"
                 onSubmit={(event) => event.preventDefault()}
               >
-                <div className="relative flex h-14 min-w-0 items-center rounded-full border border-violet-100 bg-white px-5">
+                <div className="relative flex h-14 min-w-0 items-center rounded-full border border-violet-100 dark:border-violet-400/20 bg-white dark:bg-[#151c35] px-5">
                   <input
                     type="text"
                     placeholder={t('messagePlaceholder')}
-                    className="min-w-0 flex-1 bg-transparent text-[14px] text-slate-700 outline-none placeholder:text-slate-300 caret-violet-500"
+                    className="min-w-0 flex-1 bg-transparent text-[14px] text-slate-700 dark:text-slate-200 outline-none placeholder:text-slate-300 dark:placeholder:text-slate-400 caret-violet-500"
                   />
                     <button
                         type="button"
@@ -167,10 +167,10 @@ function HomePage() {
             </section>
 
             {/* 음성 채팅 카드 */}
-            <section className="grid min-w-0 grid-rows-[96px_1fr_88px] overflow-hidden rounded-[28px] bg-white shadow-[0_20px_55px_rgba(92,75,150,0.12)]">
+            <section className="grid min-w-0 grid-rows-[96px_1fr_88px] overflow-hidden rounded-[28px] bg-white dark:bg-[#151c35] shadow-[0_20px_55px_rgba(92,75,150,0.12)]">
               <header className="flex items-center justify-between px-7">
-                <h2 className="text-[19px] font-bold text-slate-800">{t('voiceChat')}</h2>
-                <button type="button" aria-label={t('voiceSettings')} className="grid h-10 w-10 place-items-center rounded-full bg-slate-50 text-slate-500">
+                <h2 className="text-[19px] font-bold text-slate-800 dark:text-slate-100">{t('voiceChat')}</h2>
+                <button type="button" aria-label={t('voiceSettings')} className="grid h-10 w-10 place-items-center rounded-full bg-slate-50 dark:bg-[#1d2542] text-slate-500 dark:text-slate-400">
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
                     <path d="M4 7h7" />
                     <path d="M15 7h5" />
@@ -184,7 +184,7 @@ function HomePage() {
 
               <div className="flex flex-col items-center justify-center">
                 <div className="relative grid h-64 w-64 place-items-center">
-                  <div className="absolute inset-0 rounded-full border border-violet-100" />
+                  <div className="absolute inset-0 rounded-full border border-violet-100 dark:border-violet-400/20" />
                   <div className="absolute inset-7 rounded-full border border-fuchsia-100" />
                   <span className="absolute left-2 top-1/2 h-2 w-2 rounded-full bg-violet-300" />
                   <span className="absolute right-5 top-10 h-2 w-2 rounded-full bg-violet-300" />
@@ -200,7 +200,7 @@ function HomePage() {
               </div>
 
               <div className="px-7 pb-5 pt-2">
-                <button type="button" className="flex h-14 w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-pink-50 to-rose-50 text-[15px] font-semibold text-rose-500">
+                <button type="button" className="flex h-14 w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-pink-50 dark:from-pink-500/15 to-rose-50 dark:to-rose-500/15 text-[15px] font-semibold text-rose-500 dark:text-rose-300">
                   <span className="h-4 w-4 rounded-[4px] bg-rose-400" />
                   {t('endConversation')}</button>
               </div>
@@ -213,29 +213,29 @@ function HomePage() {
 
       {/* 피처 카드 섹션 */}
       <div className="relative z-10 mx-auto max-w-[1480px] px-6 pb-16 lg:px-12">
-        <div className="rounded-[28px] bg-white/80 backdrop-blur-sm shadow-[0_8px_32px_rgba(124,103,255,0.10)] px-10 py-8">
+        <div className="rounded-[28px] bg-white/80 dark:bg-[#1d2542]/90 backdrop-blur-sm shadow-[0_8px_32px_rgba(124,103,255,0.10)] px-10 py-8">
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
 
             {/* 따뜻한 AI 친구 */}
             <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-violet-100">
-                <i className="fa-solid fa-comment-dots text-xl text-violet-500" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-400/15">
+                <i className="fa-solid fa-comment-dots text-xl text-violet-500 dark:text-violet-300" />
               </div>
               <div>
-                <p className="text-[15px] font-bold text-slate-800">{t('warmAiFriend')}</p>
-                <p className="mt-1 text-[13px] leading-6 text-slate-500">
+                <p className="text-[15px] font-bold text-slate-800 dark:text-slate-100">{t('warmAiFriend')}</p>
+                <p className="mt-1 text-[13px] leading-6 text-slate-500 dark:text-slate-400">
                   {t('alwaysOnYourSide')}<br />{t('caringCompanion')}</p>
               </div>
             </div>
 
             {/* 음성으로 더 가까이 */}
             <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-pink-100">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-400/15">
                 <i className="fa-solid fa-microphone text-xl text-pink-400" />
               </div>
               <div>
-                <p className="text-[15px] font-bold text-slate-800">{t('closerByVoice')}</p>
-                <p className="mt-1 text-[13px] leading-6 text-slate-500">
+                <p className="text-[15px] font-bold text-slate-800 dark:text-slate-100">{t('closerByVoice')}</p>
+                <p className="mt-1 text-[13px] leading-6 text-slate-500 dark:text-slate-400">
                   {t('voiceConversations')}<br />{t('deeperConnection')}</p>
               </div>
             </div>
@@ -246,20 +246,20 @@ function HomePage() {
                 <i className="fa-solid fa-shield text-xl text-sky-400" />
               </div>
               <div>
-                <p className="text-[15px] font-bold text-slate-800">{t('safeSpace')}</p>
-                <p className="mt-1 text-[13px] leading-6 text-slate-500">
+                <p className="text-[15px] font-bold text-slate-800 dark:text-slate-100">{t('safeSpace')}</p>
+                <p className="mt-1 text-[13px] leading-6 text-slate-500 dark:text-slate-400">
                   {t('storiesProtected')}<br />{t('talkWithConfidence')}</p>
               </div>
             </div>
 
             {/* 나만을 위한 대화 */}
             <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-pink-100">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-400/15">
                 <i className="fa-solid fa-heart text-xl text-pink-400" />
               </div>
               <div>
-                <p className="text-[15px] font-bold text-slate-800">{t('personalConversations')}</p>
-                <p className="mt-1 text-[13px] leading-6 text-slate-500">
+                <p className="text-[15px] font-bold text-slate-800 dark:text-slate-100">{t('personalConversations')}</p>
+                <p className="mt-1 text-[13px] leading-6 text-slate-500 dark:text-slate-400">
                   {t('yourInterests')}<br />{t('understandEmpathize')}</p>
               </div>
             </div>

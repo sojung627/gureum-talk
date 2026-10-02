@@ -202,8 +202,8 @@ function ChatRoomListItem({
         <div
           className={`flex min-h-10 items-center gap-1 rounded-xl px-2 transition-colors ${
             isActive
-              ? 'bg-violet-100 text-violet-700'
-              : 'text-slate-600 hover:bg-violet-50'
+              ? 'bg-violet-100 dark:bg-violet-400/15 text-violet-700 dark:text-violet-300'
+              : 'text-slate-600 dark:text-slate-300 hover:bg-violet-50 dark:hover:bg-violet-400/10'
           }`}
         >
           {isRenaming ? (
@@ -217,7 +217,7 @@ function ChatRoomListItem({
                   setTitleDraft(event.target.value)
                 }}
                 onKeyDown={handleRenameKeyDown}
-                className="h-8 min-w-0 flex-1 rounded-lg border border-violet-300 bg-white px-2 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-violet-100"
+                className="h-8 min-w-0 flex-1 rounded-lg border border-violet-300 dark:border-violet-400/20 bg-white dark:bg-[#151c35] px-2 text-sm text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-violet-100 dark:focus:ring-violet-400/20"
                 aria-label={t('conversationName')}
               />
               <button
@@ -226,7 +226,7 @@ function ChatRoomListItem({
                   void saveRenamedTitle()
                 }}
                 disabled={!titleDraft.trim() || isBusy}
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-violet-500 hover:bg-white disabled:cursor-not-allowed disabled:text-slate-300"
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-violet-500 dark:text-violet-300 hover:bg-white dark:hover:bg-[#151c35] disabled:cursor-not-allowed disabled:text-slate-300 dark:disabled:text-slate-500"
                 aria-label={t('saveName')}
               >
                 <i className="fa-solid fa-check text-xs" />
@@ -235,7 +235,7 @@ function ChatRoomListItem({
                 type="button"
                 onClick={cancelRenaming}
                 disabled={isBusy}
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-slate-400 hover:bg-white"
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-slate-400 hover:bg-white dark:hover:bg-[#151c35]"
                 aria-label={t('cancelRename')}
               >
                 <i className="fa-solid fa-xmark text-xs" />
@@ -251,8 +251,8 @@ function ChatRoomListItem({
                 disabled={isBusy}
                 className={`grid h-7 shrink-0 place-items-center overflow-hidden transition-all duration-150 ${
                   chatRoom.chat_is_pinned
-                    ? 'w-7 text-violet-600 opacity-100'
-                    : 'w-7 text-slate-400 opacity-100 hover:text-violet-500'
+                    ? 'w-7 text-violet-600 dark:text-violet-300 opacity-100'
+                    : 'w-7 text-slate-400 opacity-100 hover:text-violet-500 dark:hover:text-violet-300'
                 }`}
                 aria-label={
                   chatRoom.chat_is_pinned
@@ -285,7 +285,7 @@ function ChatRoomListItem({
                 type="button"
                 onClick={toggleFloatingMenu}
                 disabled={isBusy}
-                className={`grid h-7 shrink-0 place-items-center overflow-hidden text-slate-400 transition hover:text-violet-500 group-hover:w-7 group-hover:opacity-100 group-focus-within:w-7 group-focus-within:opacity-100 [@media(hover:none)]:w-7 [@media(hover:none)]:opacity-100 ${
+                className={`grid h-7 shrink-0 place-items-center overflow-hidden text-slate-400 transition hover:text-violet-500 dark:hover:text-violet-300 group-hover:w-7 group-hover:opacity-100 group-focus-within:w-7 group-focus-within:opacity-100 [@media(hover:none)]:w-7 [@media(hover:none)]:opacity-100 ${
                   isMenuOpen ? 'w-7 opacity-100' : 'w-0 opacity-0'
                 }`}
                 aria-label={t('conversationMenu')}
@@ -303,7 +303,7 @@ function ChatRoomListItem({
         && createPortal(
           <div
             ref={floatingMenuRef}
-            className="fixed z-[100] grid w-40 grid-cols-1 gap-1 rounded-xl border border-violet-100 bg-white p-1.5 shadow-xl"
+            className="fixed z-[100] grid w-40 grid-cols-1 gap-1 rounded-xl border border-violet-100 dark:border-violet-400/20 bg-white dark:bg-[#151c35] p-1.5 shadow-xl"
             style={{
               top: menuPosition.top,
               left: menuPosition.left,
@@ -315,14 +315,14 @@ function ChatRoomListItem({
                 setIsMenuOpen(false)
                 void onShare(chatRoom)
               }}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-slate-600 hover:bg-violet-50 hover:text-violet-600"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-slate-600 dark:text-slate-300 hover:bg-violet-50 dark:hover:bg-violet-400/10 hover:text-violet-600 dark:hover:text-violet-300"
             >
               <i className="fa-solid fa-share-nodes" />
               {t('share')}</button>
             <button
               type="button"
               onClick={startRenaming}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-slate-600 hover:bg-violet-50 hover:text-violet-600"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-slate-600 dark:text-slate-300 hover:bg-violet-50 dark:hover:bg-violet-400/10 hover:text-violet-600 dark:hover:text-violet-300"
             >
               <i className="fa-solid fa-pen" />
               {t('rename')}</button>
@@ -332,7 +332,7 @@ function ChatRoomListItem({
                 setIsMenuOpen(false)
                 onDelete(chatRoom)
               }}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-rose-500 hover:bg-rose-50"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-rose-500 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-500/15"
             >
               <i className="fa-solid fa-trash-can" />
               {t('delete')}</button>

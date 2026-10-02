@@ -1,8 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { type FormEvent, useState } from 'react'
+import { useAtomValue } from 'jotai'
+import { darkModeOnAtom } from '../../state/uiAtoms'
 
 function Help() {
   const { t } = useTranslation()
+  const darkModeOn = useAtomValue(darkModeOnAtom)
 
 
 // 검색창 입력값을 관리하는 상태
@@ -15,17 +18,17 @@ const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
 const help = [
     {
        title: t('gettingStartedGureum'),
-       icon: <i className="fa-solid fa-rocket text-2xl text-violet-500" />,
+       icon: <i className="fa-solid fa-rocket text-2xl text-violet-500 dark:text-violet-300" />,
        content: [t('fromSignup'), t('toBasics')],
     },
     {
        title: t('voiceGuide'),
-       icon: <i className="fa-solid fa-microphone text-2xl text-violet-500" />,
+       icon: <i className="fa-solid fa-microphone text-2xl text-violet-500 dark:text-violet-300" />,
        content: [t('startVoice'), t('configureVoice')],
     },
     {
        title: t('exploreChat'),
-       icon: <i className="fa-solid fa-heart text-2xl text-violet-500" />,
+       icon: <i className="fa-solid fa-heart text-2xl text-violet-500 dark:text-violet-300" />,
        content: [t('safely'), t('convenientChat')],
     },
 ]
@@ -33,17 +36,17 @@ const help = [
 const help2 = [
     {
        title: t('billingGuide'),
-       icon: <i className="fa-solid fa-credit-card text-2xl text-violet-500" />,
+       icon: <i className="fa-solid fa-credit-card text-2xl text-violet-500 dark:text-violet-300" />,
        content: [t('planTypes'), t('checkOptions')],
     },
     {
        title: t('accountSecurity'),
-       icon: <i className="fa-solid fa-shield text-2xl text-violet-500" />,
+       icon: <i className="fa-solid fa-shield text-2xl text-violet-500 dark:text-violet-300" />,
        content: [t('secureAccount'), t('protectPrivacy')],
     },
     {
        title: t('faq'),
-       icon: <i className="fa-solid fa-question text-2xl text-violet-500" />,
+       icon: <i className="fa-solid fa-question text-2xl text-violet-500 dark:text-violet-300" />,
        content: [t('commonQuestions'), t('answersCollection')],
     },
 ]
@@ -82,40 +85,40 @@ const helpCenter = [
 const fastLink = [
     {
         content: t('serviceTerms'),
-        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 dark:text-slate-500 group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors" />,
     },
     {
         content: t('privacy'),
-        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 dark:text-slate-500 group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors" />,
     },
     {
         content: t('youthPolicy'),
-        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 dark:text-slate-500 group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors" />,
     },
     {
         content: t('reportRights'),
-        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-violet-600 transition-colors" />,
+        icon: <i className="fa-solid fa-chevron-right text-xs text-slate-300 dark:text-slate-500 group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors" />,
     },
 ]
 
     return (
         <div className="mt-12 grid grid-cols-1 gap-6 px-6 md:grid-cols-9 lg:px-24 max-w-[1480px] mx-auto">
             <div className="md:col-span-2 flex flex-col gap-6">
-              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex-1 bg-white dark:bg-[#151c35] rounded-2xl border border-gray-100 dark:border-slate-700/70 p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className='text-[18px] font-bold'>
                       {t('helpCenter')}</div>
-                    <span className="block text-sm text-slate-600 leading-5">
+                    <span className="block text-sm text-slate-600 dark:text-slate-300 leading-5">
                       {t('howCanWeHelp')}</span>
                   </div>
                 </div>
-                <div className="mt-3 border-b border-gray-100" />
+                <div className="mt-3 border-b border-gray-100 dark:border-slate-700/70" />
                 <div className="mt-3 flex flex-col gap-1">
                   {helpCenter.map((item, index) => (
                     <button
                       key={index}
-                      className="flex items-center gap-3 px-2 py-2 rounded-lg text-left text-sm text-slate-600 hover:bg-violet-50 hover:text-violet-600 transition-colors"
+                      className="flex items-center gap-3 px-2 py-2 rounded-lg text-left text-sm text-slate-600 dark:text-slate-300 hover:bg-violet-50 dark:hover:bg-violet-400/10 hover:text-violet-600 dark:hover:text-violet-300 transition-colors"
                     >
                       {item.icon}
                       <span>{item.title}</span>
@@ -123,7 +126,7 @@ const fastLink = [
                   ))}
                 </div>
               </div>
-              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center gap-2">
+              <div className="flex-1 bg-white dark:bg-[#151c35] rounded-2xl border border-gray-100 dark:border-slate-700/70 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center gap-2">
                 <div className="flex justify-center">
                   <img
                     alt={t('gureum')}
@@ -133,37 +136,37 @@ const fastLink = [
                 </div>
                 <div className='text-center text-[15px] font-bold'>
                   {t('needMoreHelp')}</div>
-                <span className="mt-1 text-center block text-sm text-slate-600 leading-5">
+                <span className="mt-1 text-center block text-sm text-slate-600 dark:text-slate-300 leading-5">
                   {t('directSupport')}<br />
                   {t('getHelp')}</span>
                 <div className="mt-2 flex justify-center">
                   <button
                     type="button"
-                    className="flex items-center gap-2 px-4 py-2 bg-violet-100 text-violet-600 rounded-lg text-sm"
+                    className="flex items-center gap-2 px-4 py-2 bg-violet-100 dark:bg-violet-400/15 text-violet-600 dark:text-violet-300 rounded-lg text-sm"
                   >
                     {t('contactSupport')}<i className="fa-solid fa-chevron-right text-xs" />
                   </button>
                 </div>
               </div>
             </div>
-            <div className="md:col-span-5 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="relative w-full h-50 bg-violet-100 rounded-xl overflow-hidden">
+            <div className="md:col-span-5 bg-white dark:bg-[#151c35] rounded-2xl border border-gray-100 dark:border-slate-700/70 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="relative w-full h-50 bg-violet-100 dark:bg-violet-400/15 rounded-xl overflow-hidden">
                 <img
-                  src="/images/gureum/Gureum_bg.png"
+                  src={darkModeOn ? '/images/gureum/Gureum_bgDarkmode.png' : '/images/gureum/Gureum_bg.png'}
                   className="w-full h-full object-cover object-right"
                 />
                 <div className="absolute inset-0 flex flex-col justify-center gap-3 px-8">
                   <div>
-                    <h1 className="text-xl font-bold text-slate-800">
+                    <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">
                       {t('hello')}</h1>
-                    <h2 className="mt-1 text-xl font-bold text-violet-600">
-                      {t('gureumHelpCenter')}<span className="text-slate-800">{t('welcomeSuffix')}</span>
+                    <h2 className="mt-1 text-xl font-bold text-violet-600 dark:text-violet-300">
+                      {t('gureumHelpCenter')}<span className="text-slate-800 dark:text-slate-100">{t('welcomeSuffix')}</span>
                     </h2>
-                    <p className="mt-2 text-xs text-slate-600 leading-5">
+                    <p className="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-5">
                       {t('useMoreEasily')}<br />
                       {t('usefulInformation')}</p>
                   </div>
-                  <form onSubmit={handleSearchSubmit} className="relative w-80 h-9 rounded-full bg-white shadow-lg">
+                  <form onSubmit={handleSearchSubmit} className="relative w-80 h-9 rounded-full bg-white dark:bg-[#151c35] shadow-lg">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 w-[2px] h-[14px] animate-[caretBlink_0.8s_infinite]" />
                     <input
                         type="text"
@@ -172,7 +175,7 @@ const fastLink = [
                         placeholder={t('searchHelp')} style={{ fontSize: '11px' }}
                         className="relative -top-px block w-full h-full bg-transparent pl-4 pr-12 font-normal text-slate-400 placeholder:text-[12px] placeholder:font-normal placeholder:text-slate-400 outline-none caret-transparent"
                     />
-                    <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center text-slate-400 hover:text-violet-600 transition-colors">
+                    <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center text-slate-400 hover:text-violet-600 dark:hover:text-violet-300 transition-colors">
                       <i className="fa-solid fa-magnifying-glass text-xs" />
                     </button>
                   </form>
@@ -182,20 +185,20 @@ const fastLink = [
                 <span className="font-semibold">{t('popularHelp')}</span>
                 <div>
                   <button
-                    className="text-violet-500"
+                    className="text-violet-500 dark:text-violet-300"
                   >
-                    {t('viewAllCompact')}<i className="fa-solid fa-chevron-right text-violet-500 text-xs text-slate-300" />
+                    {t('viewAllCompact')}<i className="fa-solid fa-chevron-right text-violet-500 dark:text-violet-300 text-xs text-slate-300 dark:text-slate-500" />
                   </button>
                 </div>
               </div>
               <div className="mt-2 grid grid-cols-3 gap-6">
                 {help.map((item, index) => (
-                  <div key={index} className="bg-white rounded-2xl border border-gray-200 p-6 min-h-40 flex flex-col items-center justify-center text-center gap-3">
-                    <div className="flex items-center justify-center w-14 h-14 rounded-full bg-violet-100">
+                  <div key={index} className="bg-white dark:bg-[#151c35] rounded-2xl border border-gray-200 dark:border-slate-700/70 p-6 min-h-40 flex flex-col items-center justify-center text-center gap-3">
+                    <div className="flex items-center justify-center w-14 h-14 rounded-full bg-violet-100 dark:bg-violet-400/15">
                      {item.icon}
                     </div>
-                    <span className="text-sm font-semibold text-slate-700">{item.title}</span>
-                    <div className="text-xs text-slate-500">
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{item.title}</span>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
                       {item.content.map((line, lineIndex) => (
                         <span key={lineIndex} className="block">{line}</span>
                       ))}
@@ -205,12 +208,12 @@ const fastLink = [
               </div>
               <div className="mt-6 grid grid-cols-3 gap-6">
                 {help2.map((item, index) => (
-                  <div key={index} className="bg-white rounded-2xl border border-gray-200 p-6 min-h-40 flex flex-col items-center justify-center text-center gap-3">
-                    <div className="flex items-center justify-center w-14 h-14 rounded-full bg-violet-100">
+                  <div key={index} className="bg-white dark:bg-[#151c35] rounded-2xl border border-gray-200 dark:border-slate-700/70 p-6 min-h-40 flex flex-col items-center justify-center text-center gap-3">
+                    <div className="flex items-center justify-center w-14 h-14 rounded-full bg-violet-100 dark:bg-violet-400/15">
                       {item.icon}
                     </div>
-                    <span className="text-sm font-semibold text-slate-700">{item.title}</span>
-                    <div className="text-xs text-slate-500">
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{item.title}</span>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
                       {item.content.map((line, lineIndex) => (
                         <span key={lineIndex} className="block">{line}</span>
                       ))}
@@ -220,14 +223,14 @@ const fastLink = [
               </div>
             </div>
             <div className="md:col-span-2 flex flex-col gap-6">
-              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex-1 bg-white dark:bg-[#151c35] rounded-2xl border border-gray-100 dark:border-slate-700/70 p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className='text-[18px] font-bold'>
                   {t('quickLinks')}</div>
                 <div className="mt-3 flex flex-col gap-1">
                     {fastLink.map((item, index) => (
                       <button
                         key={index}
-                        className="group flex items-center justify-between px-2 py-2 rounded-lg text-left text-sm text-slate-600 hover:bg-violet-50 hover:text-violet-600 transition-colors"
+                        className="group flex items-center justify-between px-2 py-2 rounded-lg text-left text-sm text-slate-600 dark:text-slate-300 hover:bg-violet-50 dark:hover:bg-violet-400/10 hover:text-violet-600 dark:hover:text-violet-300 transition-colors"
                       >
                         <span>{item.content}</span>
                         {item.icon}
@@ -235,10 +238,10 @@ const fastLink = [
                     ))}
                   </div>
               </div>
-              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-center">
+              <div className="flex-1 bg-white dark:bg-[#151c35] rounded-2xl border border-gray-100 dark:border-slate-700/70 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-center">
                 <div className='text-[15px] font-bold'>
                   {t('stillNeedHelp')}</div>
-                <span className="mt-2 block text-sm text-slate-600 leading-5">
+                <span className="mt-2 block text-sm text-slate-600 dark:text-slate-300 leading-5">
                   {t('askDirectly')}<br />
                   {t('replySooner')}</span>
                 <button
@@ -249,7 +252,7 @@ const fastLink = [
                   <span>{t('contact')}</span>
                 </button>
               </div>
-              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex-1 bg-white dark:bg-[#151c35] rounded-2xl border border-gray-100 dark:border-slate-700/70 p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className='text-[15px] font-bold'>
                   {t('openingHours')}</div>
                 <div className="mt-2 flex flex-col gap-1 text-sm leading-5">
@@ -266,10 +269,10 @@ const fastLink = [
                     <span>{t('closed')}</span>
                   </div>
                 </div>
-                <div className="mt-2 bg-violet-50 rounded-xl px-4 py-3 text-left text-sm leading-5">
+                <div className="mt-2 bg-violet-50 dark:bg-violet-400/10 rounded-xl px-4 py-3 text-left text-sm leading-5">
                   {t('anyProblems')}<br />
                   {t('getInTouch')}{' '}
-                  <i className="fa-solid fa-heart text-violet-500" />
+                  <i className="fa-solid fa-heart text-violet-500 dark:text-violet-300" />
                 </div>
               </div>
             </div>
