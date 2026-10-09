@@ -25,7 +25,7 @@ export const darkModeOnAtom = atomWithStorage(
 
 export const notificationsEnabledAtom = atomWithStorage(
   'gureumtalk.notificationsEnabled',
-  true,
+  false,
   undefined,
   { getOnInit: true },
 )

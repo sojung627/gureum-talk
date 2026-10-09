@@ -8,8 +8,11 @@ import {
   useState,
 } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useAtom, useAtomValue } from 'jotai'
-import { useNavigate } from 'react-router-dom'
+import { useAtom, useAtomValue, useStore } from 'jotai'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { showAnswerNotification } from '../../notifications'
+import i18n from '../../i18n'
+import { type LoginUser } from '../../api/user'
 
 import {
   type ChatHistoryMessage,
@@ -36,6 +39,7 @@ import {
   activeChatRoomIdAtom,
   activeModalAtom,
   shortcutsEnabledAtom,
+  notificationsEnabledAtom,
 } from '../../state/uiAtoms'
 // md를 위해 추가
 import ReactMarkdown from 'react-markdown'
@@ -60,6 +64,8 @@ function ChatRoom({
 
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const store = useStore()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [activeChatRoomId, setActiveChatRoomId] = useAtom(
     activeChatRoomIdAtom,
   )
@@ -120,6 +126,27 @@ function ChatRoom({
       message: string
       chatRoomId: number | null
     }) => sendChatMessage(message, chatRoomId),
+    onMutate: () => queryClient.getQueryData<LoginUser | null>(queryKeys.session)?.username,
+    onSuccess: (response, variables, requestUsername) => {
+      void showAnswerNotification(
+        response.chat_room_id,
+        i18n.t('answerNotificationTitle'),
+        i18n.t('answerNotificationBody'),
+        () => {
+          const user = queryClient.getQueryData<LoginUser | null>(queryKeys.session)
+          const viewingRoom = window.location.pathname === '/chat'
+            && (store.get(activeChatRoomIdAtom) === response.chat_room_id
+              || store.get(activeChatRoomIdAtom) === variables.chatRoomId)
+            && document.visibilityState === 'visible' && document.hasFocus()
+          const enabled = store.get(notificationsEnabledAtom)
+          const sameUser = Boolean(user && user.username === requestUsername)
+          if (!enabled || !sameUser || viewingRoom) {
+            console.info('[GureumTalk notifications] reply suppressed', { enabled, sameUser, viewingRoom })
+          }
+          return enabled && sameUser && !viewingRoom
+        },
+      )
+    },
   })
   const pinChatRoomMutation = useMutation({
     mutationFn: ({
@@ -180,6 +207,17 @@ function ChatRoom({
   })
 
   const chatRooms = chatRoomsQuery.data ?? []
+  useEffect(() => {
+    const room = searchParams.get('room')
+    if (!room || !chatRoomsQuery.isSuccess) return
+    const roomId = Number(room)
+    if (Number.isSafeInteger(roomId) && chatRoomsQuery.data.some(item => item.chat_room_id === roomId)) {
+      setActiveChatRoomId(roomId)
+    }
+    const nextParams = new URLSearchParams(searchParams)
+    nextParams.delete('room')
+    setSearchParams(nextParams, { replace: true })
+  }, [searchParams, setSearchParams, chatRoomsQuery.isSuccess, chatRoomsQuery.data, setActiveChatRoomId])
   const chatRoomSections = [
     {
       label: t('pinned'),
@@ -382,10 +420,12 @@ function ChatRoom({
     setErrorMessage('')
 
     try {
+      const requestUsername = queryClient.getQueryData<LoginUser | null>(queryKeys.session)?.username
       const chatResponse = await sendMessageMutation.mutateAsync({
         message: trimmedMessage,
         chatRoomId: sourceChatRoomId,
       })
+      if (queryClient.getQueryData<LoginUser | null>(queryKeys.session)?.username !== requestUsername) return
       const assistantMessage = createDisplayMessage(
         'assistant',
         chatResponse.answer,
@@ -399,7 +439,9 @@ function ChatRoom({
         queryKeys.chat.messages(chatResponse.chat_room_id),
         completedMessages,
       )
-      setActiveChatRoomId(chatResponse.chat_room_id)
+      if (window.location.pathname === '/chat' && store.get(activeChatRoomIdAtom) === sourceChatRoomId) {
+        setActiveChatRoomId(chatResponse.chat_room_id)
+      }
       queryClient.setQueryData(queryKeys.chat.status, 'online')
 
       // 첫 대화에서 생성된 AI 제목과 최근 대화 순서를 목록에 반영한다.

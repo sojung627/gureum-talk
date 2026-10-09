@@ -345,5 +345,14 @@
   "emptyAiResponse": "구름이가 답변을 만들지 못했습니다.",
   "aiLimitReached": "무료 한도를 초과하였습니다. 결제하여 구름이와 다시 대화 하시겠습니까?",
   "aiConnectionFailed": "AI 서버에 연결할 수 없습니다.",
-  "aiGenerationFailed": "AI 서버에서 답변을 생성하지 못했습니다."
+  "aiGenerationFailed": "AI 서버에서 답변을 생성하지 못했습니다.",
+  "notificationTest": "알림 테스트",
+  "notificationTestBody": "구름톡 알림 테스트입니다.",
+  "answerNotificationTitle": "구름톡",
+  "answerNotificationBody": "구름이의 답변이 도착했어요. 눌러서 확인해 주세요.",
+  "notificationsFailed": "알림을 켜지 못했어요. 브라우저 설정을 확인하고 다시 시도해 주세요.",
+  "notificationsUnsupported": "이 환경에서는 시스템 알림을 사용할 수 없어요. 지원되는 브라우저에서 HTTPS로 접속해 주세요.",
+  "notificationsBlocked": "브라우저에서 알림을 차단했어요. 사이트 설정에서 알림을 허용해 주세요.",
+  "notificationsEnabledHint": "알림이 켜졌어요. 구름톡 탭이 열린 상태에서 대화방을 보고 있지 않으면 답변 도착을 알려드려요.",
+  "notificationsDisabledHint": "알림이 꺼져 있어요. 켜면 브라우저 알림 권한을 요청해요."
 }

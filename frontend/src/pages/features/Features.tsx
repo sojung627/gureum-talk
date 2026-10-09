@@ -1,13 +1,16 @@
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
+import { closeAnswerNotifications, enableNotifications, notificationPermission, showTestNotification } from '../../notifications'
 import LanguagePicker from '../../components/LanguagePicker'
 import { useAtom } from 'jotai'
 import { darkModeOnAtom, notificationsEnabledAtom, shortcutsEnabledAtom } from '../../state/uiAtoms'
 import { VoiceWave } from '../HomePage'
 
-function SettingSwitch({ label, checked, onToggle }: {
+function SettingSwitch({ label, checked, onToggle, disabled = false }: {
   label: string
   checked: boolean
   onToggle: () => void
+  disabled?: boolean
 }) {
   return (
     <button
@@ -16,6 +19,7 @@ function SettingSwitch({ label, checked, onToggle }: {
       aria-label={label}
       aria-checked={checked}
       onClick={onToggle}
+      disabled={disabled}
       className={`relative h-6 w-11 shrink-0 rounded-full transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 ${
         checked ? 'bg-violet-500' : 'bg-slate-200 dark:bg-slate-600'
       }`}
@@ -35,6 +39,40 @@ function Features() {
 
 const [darkModeOn, setDarkModeOn] = useAtom(darkModeOnAtom)
 const [notificationsOn, setNotificationsOn] = useAtom(notificationsEnabledAtom)
+const [permission, setPermission] = useState(notificationPermission)
+const [requestingPermission, setRequestingPermission] = useState(false)
+const [notificationError, setNotificationError] = useState(false)
+useEffect(() => {
+  const refresh = () => setPermission(notificationPermission())
+  window.addEventListener('focus', refresh)
+  document.addEventListener('visibilitychange', refresh)
+  return () => {
+    window.removeEventListener('focus', refresh)
+    document.removeEventListener('visibilitychange', refresh)
+  }
+}, [])
+const toggleNotifications = async () => {
+  setNotificationError(false)
+  if (notificationsOn && notificationPermission() === 'granted') {
+    setNotificationsOn(false)
+    await closeAnswerNotifications()
+    return
+  }
+  setRequestingPermission(true)
+  try {
+    const nextPermission = await enableNotifications()
+    setPermission(nextPermission)
+    setNotificationsOn(nextPermission === 'granted')
+    if (nextPermission === 'granted') {
+      setNotificationError(!await showTestNotification(t('answerNotificationTitle'), t('notificationTestBody')))
+    }
+  } catch {
+    setNotificationsOn(false)
+    setNotificationError(true)
+  } finally {
+    setRequestingPermission(false)
+  }
+}
 const [shortcutsOn, setShortcutsOn] = useAtom(shortcutsEnabledAtom)
 const features = [
   {
@@ -196,10 +234,36 @@ const features = [
               {t('notifications')}</div>
             <SettingSwitch
               label={t('notifications')}
-              checked={notificationsOn}
-              onToggle={() => setNotificationsOn((prev) => !prev)}
+              checked={notificationsOn && permission === 'granted'}
+              disabled={requestingPermission}
+              onToggle={() => { void toggleNotifications() }}
             />
           </div>
+
+          {notificationsOn && permission === 'granted' && (
+            <button
+              type="button"
+              disabled={requestingPermission}
+              className="mt-2 text-xs font-medium text-violet-600 dark:text-violet-300 disabled:opacity-50"
+              onClick={async () => {
+                setRequestingPermission(true)
+                try {
+                  setNotificationError(!await showTestNotification(t('answerNotificationTitle'), t('notificationTestBody')))
+                } finally {
+                  setRequestingPermission(false)
+                }
+              }}
+            >
+              {t('notificationTest')}
+            </button>
+          )}
+
+          {(notificationError || permission === 'unsupported' || permission === 'denied') && (
+            <p role="status" className="py-2 text-xs text-slate-500 dark:text-slate-400">
+              {t(notificationError ? 'notificationsFailed' : permission === 'unsupported'
+                ? 'notificationsUnsupported' : 'notificationsBlocked')}
+            </p>
+          )}
 
           <div className="flex items-center justify-between gap-3 py-3 border-b border-slate-100 dark:border-slate-700/70">
             <div className="flex items-center gap-3 text-sm font-medium text-slate-700 dark:text-slate-200">

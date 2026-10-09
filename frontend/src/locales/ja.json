@@ -345,5 +345,14 @@
   "emptyAiResponse": "グルムが返答を生成できませんでした。",
   "aiLimitReached": "無料枠の上限に達しました。グルムと会話を続けるためにアップグレードしますか？",
   "aiConnectionFailed": "AIサービスに接続できませんでした。",
-  "aiGenerationFailed": "AIサービスが返答を生成できませんでした。"
+  "aiGenerationFailed": "AIサービスが返答を生成できませんでした。",
+  "notificationTest": "通知テスト",
+  "notificationTestBody": "GureumTalkのテスト通知です。",
+  "answerNotificationTitle": "GureumTalk",
+  "answerNotificationBody": "グルムから返信が届きました。クリックして会話を確認してください。",
+  "notificationsFailed": "通知を有効にできませんでした。ブラウザーの設定を確認して再試行してください。",
+  "notificationsUnsupported": "この環境ではシステム通知を利用できません。対応ブラウザーでHTTPS接続してください。",
+  "notificationsBlocked": "ブラウザーが通知をブロックしています。サイト設定で通知を許可してください。",
+  "notificationsEnabledHint": "通知はオンです。GureumTalkのタブを開いたまま会話を離れると、返信をお知らせします。",
+  "notificationsDisabledHint": "通知はオフです。オンにするとブラウザーの通知許可を求めます。"
 }

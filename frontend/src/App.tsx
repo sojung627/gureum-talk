@@ -20,6 +20,7 @@ import {
   activeChatRoomIdAtom,
   activeModalAtom,
   darkModeOnAtom,
+  notificationsEnabledAtom,
 } from './state/uiAtoms'
 
 
@@ -36,6 +37,8 @@ function LoginRequiredRedirect() {
 
 function App() {
   const darkModeOn = useAtomValue(darkModeOnAtom)
+  // Keep storage subscriptions active when the settings page is unmounted.
+  useAtomValue(notificationsEnabledAtom)
 
   useEffect(() => {
     document.documentElement.dataset.theme = darkModeOn ? 'dark' : 'light'

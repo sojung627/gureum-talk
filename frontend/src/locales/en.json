@@ -345,5 +345,14 @@
   "emptyAiResponse": "Gureum could not generate a reply.",
   "aiLimitReached": "You have reached the free limit. Would you like to upgrade to keep talking with Gureum?",
   "aiConnectionFailed": "Could not connect to the AI service.",
-  "aiGenerationFailed": "The AI service could not generate a reply."
+  "aiGenerationFailed": "The AI service could not generate a reply.",
+  "notificationTest": "Test notification",
+  "notificationTestBody": "This is a GureumTalk test notification.",
+  "answerNotificationTitle": "GureumTalk",
+  "answerNotificationBody": "Gureum has replied. Click to view your conversation.",
+  "notificationsFailed": "Could not enable notifications. Check your browser settings and try again.",
+  "notificationsUnsupported": "System notifications are unavailable here. Use a supported browser over HTTPS.",
+  "notificationsBlocked": "Your browser has blocked notifications. Allow notifications in the site settings.",
+  "notificationsEnabledHint": "Notifications are on. Keep GureumTalk open to receive reply alerts when you are away from the conversation.",
+  "notificationsDisabledHint": "Notifications are off. Turn them on to request browser permission."
 }
