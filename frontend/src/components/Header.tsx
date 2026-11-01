@@ -24,7 +24,7 @@ type HeaderProps = {
 
 function Header({
   loginUser,
-  isSessionLoading,
+  isSessionLoading, 
   onLoginSuccess,
   onLogout,
 }: HeaderProps) {
