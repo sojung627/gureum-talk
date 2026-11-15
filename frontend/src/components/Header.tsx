@@ -22,7 +22,7 @@ type HeaderProps = {
   onLogout: () => Promise<void>
 }
 
-function Header({
+function Header({ 
   loginUser,
   isSessionLoading, 
   onLoginSuccess,
