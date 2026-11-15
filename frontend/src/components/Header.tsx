@@ -8,7 +8,7 @@ import UserLoginModal from '../pages/users/UserLoginModal'
 import UserRegisterModal from '../pages/users/UserRegisterModal'
 import { activeModalAtom } from '../state/uiAtoms'
 
-const navigationItems = [
+const navigationItems = [ 
   { path: '/', label: 'home' },
   { path: '/features', label: 'features' },
   { path: '/plans', label: 'plans' },
