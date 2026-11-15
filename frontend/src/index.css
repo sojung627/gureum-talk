@@ -72,53 +72,27 @@ input {
   }
 }
 
-@keyframes voiceRingSpin {
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
+@keyframes voiceDotReappear {
+  /* Position changes happen only in the fully invisible intervals. */
+  0%, 30% {
+    left: var(--dot-x-one);
+    top: var(--dot-y-one);
   }
-}
-
-@keyframes voiceRingSpinReverse {
-  to {
-    transform: translate(-50%, -50%) rotate(-360deg);
+  34%, 64% {
+    left: var(--dot-x-two);
+    top: var(--dot-y-two);
   }
-}
-
-@keyframes voiceGradientShift {
-  0% {
-    filter: hue-rotate(0deg) saturate(0.92);
-    opacity: 0.42;
+  68%, 100% {
+    left: var(--dot-x-three);
+    top: var(--dot-y-three);
   }
-  50% {
-    filter: hue-rotate(10deg) saturate(1.05);
-    opacity: 0.68;
+  0%, 30%, 34%, 64%, 68%, 100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
   }
-  100% {
-    filter: hue-rotate(-8deg) saturate(0.98);
-    opacity: 0.5;
-  }
-}
-
-@keyframes voiceOrbitSpin {
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-@keyframes voiceOrbitSpinReverse {
-  to {
-    transform: translate(-50%, -50%) rotate(-360deg);
-  }
-}
-
-@keyframes voiceDotColorShift {
-  0%, 100% {
-    filter: hue-rotate(0deg) brightness(1);
-    box-shadow: 0 0 8px rgba(139, 92, 246, 0.45);
-  }
-  50% {
-    filter: hue-rotate(55deg) brightness(1.18);
-    box-shadow: 0 0 14px rgba(236, 72, 153, 0.65);
+  12%, 46%, 80% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1.25);
   }
 }
 
@@ -158,9 +132,9 @@ input {
     transparent calc(100% - 2px),
     #000 calc(100% - 1.5px)
   );
-  animation:
-    voiceRingSpin 13s linear infinite,
-    voiceGradientShift 6s ease-in-out infinite;
+  opacity: calc(0.2 + var(--voice-energy) * 0.8);
+  transform: translate(-50%, -50%) scale(calc(1 + var(--voice-energy) * 0.075));
+  transition: opacity 100ms ease-out, transform 100ms linear;
 }
 
 .voice-ring--outer {
@@ -171,20 +145,18 @@ input {
 .voice-ring--middle {
   width: 76%;
   height: 76%;
-  animation-name: voiceRingSpinReverse, voiceGradientShift;
-  animation-duration: 9s, 5s;
+  opacity: calc(0.28 + var(--voice-energy) * 0.72);
+  transition-duration: 160ms, 100ms;
 }
 
 .voice-orbit--outer {
   width: 91%;
   height: 91%;
-  animation: voiceOrbitSpin 10s linear infinite;
 }
 
 .voice-orbit--middle {
   width: 76%;
   height: 76%;
-  animation: voiceOrbitSpinReverse 7s linear infinite;
 }
 
 .voice-orbit-dot {
@@ -199,28 +171,44 @@ input {
     #c084fc 42%,
     #7c3aed 100%
   );
-  animation: voiceDotColorShift 3.2s ease-in-out infinite;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+  animation: voiceDotReappear 9s ease-in-out infinite;
 }
 
 .voice-orbit-dot--one {
-  top: -4px;
-  left: 50%;
+  --dot-x-one: 50%;
+  --dot-y-one: 0%;
+  --dot-x-two: 7%;
+  --dot-y-two: 24%;
+  --dot-x-three: 78%;
+  --dot-y-three: 90%;
 }
 
 .voice-orbit-dot--two {
-  right: 5%;
-  bottom: 20%;
+  --dot-x-one: 89%;
+  --dot-y-one: 80%;
+  --dot-x-two: 36%;
+  --dot-y-two: 98%;
+  --dot-x-three: 91%;
+  --dot-y-three: 21%;
   width: 6px;
   height: 6px;
-  animation-delay: -1.4s;
+  animation-duration: 10.8s;
+  animation-delay: -2.2s;
 }
 
 .voice-orbit-dot--three {
-  top: 45%;
-  left: -3px;
+  --dot-x-one: 0%;
+  --dot-y-one: 45%;
+  --dot-x-two: 72%;
+  --dot-y-two: 5%;
+  --dot-x-three: 67%;
+  --dot-y-three: 97%;
   width: 7px;
   height: 7px;
-  animation-delay: -2.1s;
+  animation-duration: 8.4s;
+  animation-delay: -4.6s;
 }
 
 .voice-visualizer-orb {
