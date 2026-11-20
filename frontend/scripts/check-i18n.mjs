@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'src')
-const locales = Object.fromEntries(['ko', 'en', 'ja'].map(language => [
+const locales = Object.fromEntries(['ko', 'en', 'ja', 'fr'].map(language => [
   language,
   JSON.parse(readFileSync(join(root, 'locales', `${language}.json`), 'utf8')),
 ]))
@@ -42,4 +42,4 @@ function inspect(directory) {
   }
 }
 inspect(root)
-console.log(`Checked ${keys.length} messages in Korean, English, and Japanese; UI keys, placeholders, and rich text tags match.`)
+console.log(`Checked ${keys.length} messages in Korean, English, Japanese, and French; UI keys, placeholders, and rich text tags match.`)
