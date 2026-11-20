@@ -78,8 +78,8 @@ async def create_chat_response(
     chat_completion = await groq_client.chat.completions.create(
         model=settings.groq_model,
         messages=request_messages,
-        temperature=0.7,
-        max_completion_tokens=512,
+        temperature=0.7, # AI 답변 랜덤성(0.5 평균 (0.0 ~ 1.5))
+        max_completion_tokens=2048,
         # Qwen 3.6의 생각 모드를 끄고 답변 본문만 생성
         # reasoning_format="hidden"만 사용하면 제한된 출력 토큰을
         # 숨겨진 생각에 모두 사용해 content가 비는 경우가 있음

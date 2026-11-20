@@ -39,10 +39,6 @@ export async function showAnswerNotification(
   return showSystemNotification(title, body, `/chat?room=${roomId}`, `gureumtalk-answer-${roomId}`, shouldNotify)
 }
 
-export async function showTestNotification(title: string, body: string): Promise<boolean> {
-  return showSystemNotification(title, body, '/features', 'gureumtalk-test', () => true)
-}
-
 async function showSystemNotification(
   title: string, body: string, url: string, tag: string, shouldNotify: () => boolean,
 ): Promise<boolean> {

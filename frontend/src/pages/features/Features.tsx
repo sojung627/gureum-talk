@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
-import { closeAnswerNotifications, enableNotifications, notificationPermission, showTestNotification } from '../../notifications'
+import { closeAnswerNotifications, enableNotifications, notificationPermission } from '../../notifications'
 import LanguagePicker from '../../components/LanguagePicker'
 import { useAtom } from 'jotai'
 import { darkModeOnAtom, notificationsEnabledAtom, shortcutsEnabledAtom } from '../../state/uiAtoms'
@@ -63,9 +63,6 @@ const toggleNotifications = async () => {
     const nextPermission = await enableNotifications()
     setPermission(nextPermission)
     setNotificationsOn(nextPermission === 'granted')
-    if (nextPermission === 'granted') {
-      setNotificationError(!await showTestNotification(t('answerNotificationTitle'), t('notificationTestBody')))
-    }
   } catch {
     setNotificationsOn(false)
     setNotificationError(true)
@@ -239,24 +236,6 @@ const features = [
               onToggle={() => { void toggleNotifications() }}
             />
           </div>
-
-          {notificationsOn && permission === 'granted' && (
-            <button
-              type="button"
-              disabled={requestingPermission}
-              className="mt-2 text-xs font-medium text-violet-600 dark:text-violet-300 disabled:opacity-50"
-              onClick={async () => {
-                setRequestingPermission(true)
-                try {
-                  setNotificationError(!await showTestNotification(t('answerNotificationTitle'), t('notificationTestBody')))
-                } finally {
-                  setRequestingPermission(false)
-                }
-              }}
-            >
-              {t('notificationTest')}
-            </button>
-          )}
 
           {(notificationError || permission === 'unsupported' || permission === 'denied') && (
             <p role="status" className="py-2 text-xs text-slate-500 dark:text-slate-400">

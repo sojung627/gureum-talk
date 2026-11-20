@@ -851,7 +851,15 @@ function ChatRoom({
             className="mt-auto"
             onSubmit={handleChatSubmit}
           >
-            <div className="flex min-h-[45px] w-full items-center gap-3 rounded-3xl border border-violet-100 dark:border-violet-400/20 py-2 pl-5 pr-2 shadow-sm focus-within:border-violet-300 dark:focus-within:border-violet-400/20">
+            <div className="flex min-h-[45px] w-full items-center gap-3 rounded-3xl border border-violet-100 dark:border-violet-400/20 py-2 pl-2 pr-2 shadow-sm focus-within:border-violet-300 dark:focus-within:border-violet-400/20">
+              <button
+                type="button"
+                aria-label={t('attachImage')}
+                title={t('attachImage')}
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-violet-600 text-white transition hover:bg-violet-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500"
+              >
+                <i className="fa-solid fa-plus text-[13px]" aria-hidden="true" />
+              </button>
               <textarea
                 ref={messageInputRef}
                 rows={1}

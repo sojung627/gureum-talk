@@ -32,7 +32,7 @@ const context = {
   } },
 }
 vm.runInNewContext(compiled, context)
-const { showAnswerNotification, enableNotifications, closeAnswerNotifications, showTestNotification } = context.exports
+const { showAnswerNotification, enableNotifications, closeAnswerNotifications } = context.exports
 const show = condition => showAnswerNotification(7, 'GureumTalk', 'Reply ready', condition)
 await show(() => false)
 assert.equal(shown.length, 0, 'Off or visible conversation must not notify')
@@ -41,6 +41,8 @@ await show(() => true)
 assert.equal(shown.length, 0, 'Browser denial must override the app setting')
 assert.equal(await enableNotifications(), 'denied')
 permission = 'granted'
+assert.equal(await enableNotifications(), 'granted')
+assert.equal(shown.length, 0, 'Enabling notifications must not send a test notification')
 await show(() => true)
 assert.equal(shown.length, 1, 'Enabled background response should notify')
 assert.equal(shown[0].options.data.url, '/chat?room=7')
@@ -55,9 +57,6 @@ allowFallback = true
 assert.equal(await show(() => true), true)
 assert.equal(shown.length, 2, 'Worker failure should fall back to the desktop API')
 beforeRegister = () => {}
-assert.equal(await showTestNotification('Test', 'Test body'), true)
-assert.equal(shown.length, 3, 'Test notification must work while the settings page is visible')
-assert.equal(shown[2].options.data.url, '/features')
 registration.active = null
 const readyRegistration = { ...registration, active: {} }
 context.navigator.serviceWorker.ready = Promise.resolve(readyRegistration)
