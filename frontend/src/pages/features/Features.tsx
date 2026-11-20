@@ -247,7 +247,7 @@ const features = [
           <div className="flex items-center justify-between gap-3 py-3 border-b border-slate-100 dark:border-slate-700/70">
             <div className="flex items-center gap-3 text-sm font-medium text-slate-700 dark:text-slate-200">
               <i className="fa-regular fa-keyboard text-slate-400" />
-              {t('shortcuts')}</div>
+              {t('shortcuts')}</div> 
             <SettingSwitch
               label={t('shortcuts')}
               checked={shortcutsOn}
