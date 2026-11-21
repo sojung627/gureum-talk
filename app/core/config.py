@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     groq_api_key: str
     # AI 챗봇 모델
     groq_model: str = "qwen/qwen3.6-27b"
+    groq_vision_model: str = "qwen/qwen3.8-27b"
+    chat_upload_path: str = "storage/chat_images"
     # 로그인 세션
     session_secret_key: str
     # SOLAPI 문자 인증

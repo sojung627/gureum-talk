@@ -353,5 +353,19 @@
   "notificationsUnsupported": "この環境ではシステム通知を利用できません。対応ブラウザーでHTTPS接続してください。",
   "notificationsBlocked": "ブラウザーが通知をブロックしています。サイト設定で通知を許可してください。",
   "notificationsEnabledHint": "通知はオンです。GureumTalkのタブを開いたまま会話を離れると、返信をお知らせします。",
-  "notificationsDisabledHint": "通知はオフです。オンにするとブラウザーの通知許可を求めます。"
+  "notificationsDisabledHint": "通知はオフです。オンにするとブラウザーの通知許可を求めます。",
+  "imageCountLimit": "画像は一度に3枚まで添付できます。",
+  "imageSizeLimit": "画像は1枚あたり5MBまでです。",
+  "imageTypeLimit": "JPG、PNG、WebP形式の画像のみ添付できます。",
+  "imageUploadFailed": "画像のアップロードに失敗しました。",
+  "removeImage": "画像を削除",
+  "enlargeImage": "画像{{number}}を拡大",
+  "attachedImage": "添付画像{{number}}",
+  "imagePreview": "画像プレビュー",
+  "closeImage": "画像を閉じる",
+  "imageResolutionLimit": "画像の解像度が大きすぎます。",
+  "invalidImage": "有効な画像ファイルを添付してください。",
+  "imageExpired": "添付画像の有効期限が切れているか、利用できません。再度添付してください。",
+  "imageMissing": "画像ファイルがありません。再度添付してください。",
+  "aiInputLimit": "画像と会話内容がAIの入力上限を超えています。メッセージを短くするか、新しいチャットで再度お試しください。"
 }

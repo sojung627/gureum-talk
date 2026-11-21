@@ -353,5 +353,19 @@
   "notificationsUnsupported": "System notifications are unavailable here. Use a supported browser over HTTPS.",
   "notificationsBlocked": "Your browser has blocked notifications. Allow notifications in the site settings.",
   "notificationsEnabledHint": "Notifications are on. Keep GureumTalk open to receive reply alerts when you are away from the conversation.",
-  "notificationsDisabledHint": "Notifications are off. Turn them on to request browser permission."
+  "notificationsDisabledHint": "Notifications are off. Turn them on to request browser permission.",
+  "imageCountLimit": "You can attach up to 3 images at a time.",
+  "imageSizeLimit": "Each image must be 5 MB or smaller.",
+  "imageTypeLimit": "Only JPG, PNG, and WebP images are supported.",
+  "imageUploadFailed": "Image upload failed.",
+  "removeImage": "Remove image",
+  "enlargeImage": "Enlarge image {{number}}",
+  "attachedImage": "Attached image {{number}}",
+  "imagePreview": "Image preview",
+  "closeImage": "Close image",
+  "imageResolutionLimit": "The image resolution is too large.",
+  "invalidImage": "Please attach a valid image file.",
+  "imageExpired": "The attached image has expired or is unavailable. Please attach it again.",
+  "imageMissing": "The image file is missing. Please attach it again.",
+  "aiInputLimit": "The images and conversation exceed the AI input limit. Shorten your message or try again in a new chat."
 }

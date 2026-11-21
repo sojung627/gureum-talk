@@ -13,9 +13,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { showAnswerNotification } from '../../notifications'
 import i18n from '../../i18n'
 import { type LoginUser } from '../../api/user'
+import axios from 'axios'
+import ChatImages, { ImagePreview } from './ChatImages'
 
 import {
   type ChatHistoryMessage,
+  type ChatAttachment,
   type ChatRoomSummary,
   type ChatServerStatus,
   deleteChatRoom,
@@ -24,6 +27,7 @@ import {
   getChatServerStatus,
   renameChatRoom,
   sendChatMessage,
+  uploadChatImages,
   updateChatRoomPin,
 } from '../../api/chat'
 import {
@@ -48,6 +52,8 @@ import remarkGfm from 'remark-gfm'
 
 type DisplayMessage = ChatHistoryMessage & {
   id: string
+  localImages?: File[]
+  isUploading?: boolean
 }
 
 type ChatRoomProps = {
@@ -72,6 +78,11 @@ function ChatRoom({
   const [activeModal, setActiveModal] = useAtom(activeModalAtom)
   const shortcutsEnabled = useAtomValue(shortcutsEnabledAtom)
   const [inputMessage, setInputMessage] = useState('')
+  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [isUploadingImages, setIsUploadingImages] = useState(false)
+  const imageInputRef = useRef<HTMLInputElement | null>(null)
+  const sendAttemptRef = useRef<{ key: string; id: string; attachments?: ChatAttachment[] } | null>(null)
+  const submitInProgressRef = useRef(false)
   const [actionChatRoomId, setActionChatRoomId] =
     useState<number | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
@@ -109,6 +120,7 @@ function ChatRoom({
         id: `stored-${storedMessage.chat_message_id}`,
         role: storedMessage.role,
         content: storedMessage.content,
+        attachments: storedMessage.attachments,
       }))
     },
     enabled: (
@@ -122,10 +134,14 @@ function ChatRoom({
     mutationFn: ({
       message,
       chatRoomId,
+      attachments,
+      requestId,
     }: {
       message: string
       chatRoomId: number | null
-    }) => sendChatMessage(message, chatRoomId),
+      attachments: ChatAttachment[]
+      requestId: string
+    }) => sendChatMessage(message, chatRoomId, attachments.map(item => item.attachment_id), requestId),
     onMutate: () => queryClient.getQueryData<LoginUser | null>(queryKeys.session)?.username,
     onSuccess: (response, variables, requestUsername) => {
       void showAnswerNotification(
@@ -240,7 +256,7 @@ function ChatRoom({
     : chatRooms.find(
       (chatRoom) => chatRoom.chat_room_id === activeChatRoomId,
     ) ?? null
-  const isSending = sendMessageMutation.isPending
+  const isSending = sendMessageMutation.isPending || isUploadingImages
   const isRoomListLoading = (
     isAuthenticated
     && !isSessionLoading
@@ -340,6 +356,8 @@ function ChatRoom({
       [],
     )
     setInputMessage('')
+    setImageFiles([])
+    sendAttemptRef.current = null
     setErrorMessage('')
     if (activeModal?.type === 'delete-chat-room') {
       setActiveModal(null)
@@ -387,6 +405,8 @@ function ChatRoom({
     }
 
     setErrorMessage('')
+    setImageFiles([])
+    sendAttemptRef.current = null
     setActiveChatRoomId(chatRoomId)
   }
 
@@ -397,41 +417,65 @@ function ChatRoom({
 
     const trimmedMessage = inputMessage.trim()
     if (
-      !trimmedMessage
+      (!trimmedMessage && imageFiles.length === 0)
       || isSending
+      || submitInProgressRef.current
       || isSessionLoading
       || !isAuthenticated
     ) {
       return
     }
 
-    const userMessage = createDisplayMessage(
-      'user',
-      trimmedMessage,
-    )
+    submitInProgressRef.current = true
     setIsVoiceListening(false)
     const sourceChatRoomId = activeChatRoomId
     const sourceMessageKey = queryKeys.chat.messages(sourceChatRoomId)
-    queryClient.setQueryData<DisplayMessage[]>(
-      sourceMessageKey,
-      (currentMessages = []) => [...currentMessages, userMessage],
-    )
-    setInputMessage('')
+    const submittedFiles = imageFiles
+    const submittedInput = inputMessage
     setErrorMessage('')
+    const requestUsername = queryClient.getQueryData<LoginUser | null>(queryKeys.session)?.username
+    const attemptKey = JSON.stringify([requestUsername, sourceChatRoomId, trimmedMessage,
+      imageFiles.map(file => [file.name, file.size, file.lastModified])])
+    if (sendAttemptRef.current?.key !== attemptKey) {
+      sendAttemptRef.current = { key: attemptKey, id: crypto.randomUUID() }
+    }
+    const attempt = sendAttemptRef.current
+    const userMessage: DisplayMessage = {
+      ...createDisplayMessage('user', trimmedMessage),
+      localImages: submittedFiles,
+      isUploading: submittedFiles.length > 0 && !attempt.attachments,
+    }
+    // Move the draft into the conversation immediately, before any network work.
+    queryClient.setQueryData<DisplayMessage[]>(sourceMessageKey,
+      (currentMessages = []) => [...currentMessages, userMessage])
+    setInputMessage('')
+    setImageFiles([])
 
     try {
-      const requestUsername = queryClient.getQueryData<LoginUser | null>(queryKeys.session)?.username
+      setIsUploadingImages(true)
+      if (!attempt.attachments) {
+        attempt.attachments = submittedFiles.length ? await uploadChatImages(submittedFiles) : []
+      }
+      if (queryClient.getQueryData<LoginUser | null>(queryKeys.session)?.username !== requestUsername) return
+      queryClient.setQueryData<DisplayMessage[]>(sourceMessageKey,
+        (currentMessages = []) => currentMessages.map(item => item.id === userMessage.id
+          ? { ...item, attachments: attempt.attachments, isUploading: false } : item))
+      setIsUploadingImages(false)
       const chatResponse = await sendMessageMutation.mutateAsync({
         message: trimmedMessage,
         chatRoomId: sourceChatRoomId,
+        attachments: attempt.attachments,
+        requestId: attempt.id,
       })
       if (queryClient.getQueryData<LoginUser | null>(queryKeys.session)?.username !== requestUsername) return
+      sendAttemptRef.current = null
       const assistantMessage = createDisplayMessage(
         'assistant',
         chatResponse.answer,
       )
       const completedMessages = [
-        ...(queryClient.getQueryData<DisplayMessage[]>(sourceMessageKey) ?? []),
+        ...(queryClient.getQueryData<DisplayMessage[]>(sourceMessageKey) ?? []).map(item => item.id === userMessage.id
+          ? { ...item, localImages: undefined, isUploading: false } : item),
         assistantMessage,
       ]
       queryClient.setQueryData(sourceMessageKey, completedMessages)
@@ -449,12 +493,23 @@ function ChatRoom({
         queryKey: queryKeys.chat.rooms,
       })
     } catch (error: unknown) {
+      if (queryClient.getQueryData<LoginUser | null>(queryKeys.session)?.username !== requestUsername) return
+      queryClient.setQueryData<DisplayMessage[]>(sourceMessageKey,
+        (currentMessages = []) => currentMessages.filter(item => item.id !== userMessage.id))
+      setInputMessage(submittedInput)
+      setImageFiles(submittedFiles)
+      if (error instanceof Error && axios.isAxiosError(error.cause) && error.cause.response?.status === 400) {
+        attempt.attachments = undefined
+      }
       const readableErrorMessage =
         error instanceof Error
           ? error.message
           : t('chatFailed')
       setErrorMessage(readableErrorMessage)
       await serverStatusQuery.refetch()
+    } finally {
+      setIsUploadingImages(false)
+      submitInProgressRef.current = false
     }
   }
 
@@ -806,20 +861,24 @@ function ChatRoom({
                       : 'flex justify-start'
                   }
                 >
-                  <div
-                    className={
-                      chatMessage.role === 'user'
-                        ? 'max-w-[80%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-gradient-to-r from-violet-600 to-indigo-500 px-4 py-2.5 text-sm leading-relaxed text-white shadow-sm'
-                        : 'max-w-[80%] whitespace-pre-wrap break-words rounded-2xl rounded-bl-md border border-violet-100 dark:border-violet-400/20 bg-violet-50 dark:bg-violet-400/10 px-4 py-2.5 text-sm leading-relaxed text-gray-700 dark:text-slate-200'
-                    }
-                  >
-                    {chatMessage.role === 'assistant' ? (
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {chatMessage.content}
-                      </ReactMarkdown>
-                    ) : (
-                      chatMessage.content  
+                  <div className={`flex min-w-0 max-w-[85%] flex-col gap-2 sm:max-w-[80%] ${
+                    chatMessage.role === 'user' ? 'items-end' : 'items-start'
+                  }`}>
+                    {(!!chatMessage.attachments?.length || !!chatMessage.localImages?.length) && (
+                      <ChatImages attachments={chatMessage.attachments} localImages={chatMessage.localImages}
+                        isUploading={chatMessage.isUploading} />
                     )}
+                    {chatMessage.content.trim() && <div className={
+                      chatMessage.role === 'user'
+                        ? 'max-w-full whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-gradient-to-r from-violet-600 to-indigo-500 px-4 py-2.5 text-sm leading-relaxed text-white shadow-sm'
+                        : 'max-w-full whitespace-pre-wrap break-words rounded-2xl rounded-bl-md border border-violet-100 dark:border-violet-400/20 bg-violet-50 dark:bg-violet-400/10 px-4 py-2.5 text-sm leading-relaxed text-gray-700 dark:text-slate-200'
+                    }>
+                      {chatMessage.role === 'assistant' ? (
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {chatMessage.content}
+                        </ReactMarkdown>
+                      ) : chatMessage.content}
+                    </div>}
                   </div>
                 </div>
               ))}
@@ -848,14 +907,35 @@ function ChatRoom({
           )}
 
           <form
-            className="mt-auto"
+            className="relative mt-auto"
             onSubmit={handleChatSubmit}
           >
+            {imageFiles.length > 0 && <div className="pointer-events-none absolute inset-x-0 bottom-full z-10 mb-3 flex items-end gap-3 px-3">
+              <div className="pointer-events-auto flex w-fit gap-3">
+                {imageFiles.map((file, index) => <ImagePreview key={`${file.name}-${index}`} file={file}
+                  onRemove={() => { if (!isSending) setImageFiles(current => current.filter((_, position) => position !== index)) }} />)}
+              </div>
+              <span className="shrink-0 pb-0.5 text-[11px] font-medium tabular-nums tracking-wide text-violet-500/80 dark:text-violet-300/80">{imageFiles.length}/3</span>
+            </div>}
+            <input ref={imageInputRef} type="file" accept="image/jpeg,image/png,image/webp" multiple className="hidden"
+              onChange={event => {
+                const selected = Array.from(event.target.files ?? [])
+                event.target.value = ''
+                if (imageFiles.length + selected.length > 3) { setErrorMessage(t('imageCountLimit')); return }
+                if (selected.some(file => !['image/jpeg', 'image/png', 'image/webp'].includes(file.type))) {
+                  setErrorMessage(t('imageTypeLimit')); return
+                }
+                if (selected.some(file => file.size > 5 * 1024 * 1024)) { setErrorMessage(t('imageSizeLimit')); return }
+                setErrorMessage('')
+                setImageFiles(current => [...current, ...selected])
+              }} />
             <div className="flex min-h-[45px] w-full items-center gap-3 rounded-3xl border border-violet-100 dark:border-violet-400/20 py-2 pl-2 pr-2 shadow-sm focus-within:border-violet-300 dark:focus-within:border-violet-400/20">
               <button
                 type="button"
                 aria-label={t('attachImage')}
                 title={t('attachImage')}
+                onClick={() => imageInputRef.current?.click()}
+                disabled={isSending || isSessionLoading || !isAuthenticated || imageFiles.length >= 3}
                 className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-violet-600 text-white transition hover:bg-violet-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500"
               >
                 <i className="fa-solid fa-plus text-[13px]" aria-hidden="true" />
@@ -916,7 +996,7 @@ function ChatRoom({
                   type="submit"
                   className="flex h-7 w-7 items-center justify-center rounded-full bg-violet-600 text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:bg-violet-300"
                   disabled={
-                    !inputMessage.trim()
+                    (!inputMessage.trim() && imageFiles.length === 0)
                     || isSending
                     || isSessionLoading
                     || !isAuthenticated

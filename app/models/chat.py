@@ -4,6 +4,8 @@ from sqlalchemy import (
     Column,
     DateTime,
     ForeignKey,
+    Integer,
+    JSON,
     String,
     Text,
 )
@@ -68,8 +70,24 @@ class ChatMessage(Base):
     )
     chat_content = Column(Text, nullable=True)
     voice_file_path = Column(String(512), nullable=True)
+    client_request_id = Column(String(36), nullable=True, unique=True)
+    response_data = Column(JSON, nullable=True)
     chat_message_created_at = Column(
         DateTime(timezone=True),
         nullable=False,
         server_default=func.now(),
     )
+
+
+class ChatAttachment(Base):
+    __tablename__ = "chat_attachments"
+
+    attachment_id = Column(String(36), primary_key=True)
+    user_id = Column(BigInteger, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False, index=True)
+    chat_message_id = Column(BigInteger, ForeignKey("chat_messages.chat_message_id", ondelete="CASCADE"), nullable=True, index=True)
+    storage_key = Column(String(64), nullable=False)
+    content_type = Column(String(40), nullable=False)
+    size = Column(Integer, nullable=False)
+    width = Column(Integer, nullable=False)
+    height = Column(Integer, nullable=False)
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())

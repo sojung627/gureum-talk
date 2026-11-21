@@ -353,5 +353,19 @@
   "notificationsUnsupported": "Les notifications système ne sont pas disponibles ici. Utilisez un navigateur compatible via HTTPS.",
   "notificationsBlocked": "Votre navigateur bloque les notifications. Autorisez-les dans les paramètres du site.",
   "notificationsEnabledHint": "Les notifications sont activées. Gardez GureumTalk ouvert pour recevoir une alerte lorsque vous ne consultez pas la conversation.",
-  "notificationsDisabledHint": "Les notifications sont désactivées. Activez-les pour demander l’autorisation au navigateur."
+  "notificationsDisabledHint": "Les notifications sont désactivées. Activez-les pour demander l’autorisation au navigateur.",
+  "imageCountLimit": "Vous pouvez joindre jusqu’à 3 images à la fois.",
+  "imageSizeLimit": "Chaque image doit faire au maximum 5 Mo.",
+  "imageTypeLimit": "Seules les images JPG, PNG et WebP sont acceptées.",
+  "imageUploadFailed": "Échec de l’envoi des images.",
+  "removeImage": "Retirer l’image",
+  "enlargeImage": "Agrandir l’image {{number}}",
+  "attachedImage": "Image jointe {{number}}",
+  "imagePreview": "Aperçu de l’image",
+  "closeImage": "Fermer l’image",
+  "imageResolutionLimit": "La résolution de l’image est trop élevée.",
+  "invalidImage": "Veuillez joindre un fichier image valide.",
+  "imageExpired": "L’image jointe a expiré ou est indisponible. Veuillez la joindre à nouveau.",
+  "imageMissing": "Le fichier image est introuvable. Veuillez le joindre à nouveau.",
+  "aiInputLimit": "Les images et la conversation dépassent la limite d’entrée de l’IA. Raccourcissez votre message ou réessayez dans une nouvelle discussion."
 }

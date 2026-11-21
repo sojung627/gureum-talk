@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from groq import APIConnectionError, APIStatusError, RateLimitError
@@ -6,6 +7,8 @@ from app.core.error.exceptions import (
     ChatRoomNotFoundError,
     EmptyAIResponseError,
 )
+
+logger = logging.getLogger(__name__)
 
 
 # 애플리케이션과 Groq 관련 오류 처리
@@ -80,6 +83,20 @@ def register_error_handlers(app: FastAPI) -> None:
             request: Request,
             error: APIStatusError,
     ) -> JSONResponse:
+        body = error.body if isinstance(error.body, dict) else {}
+        details = body.get("error", body)
+        code = details.get("code") if isinstance(details, dict) else None
+        # Do not log the request body, image data, user text, or API credentials.
+        logger.warning("Groq request failed: status=%s code=%s request_id=%s",
+                       error.status_code, code, error.response.headers.get("x-request-id"))
+        if error.status_code == 413:
+            return JSONResponse(
+                status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+                content={
+                    "code": "ai_input_limit",
+                    "message": "이미지와 대화 내용이 AI 입력 한도를 초과했습니다. 메시지를 줄이거나 새 대화에서 다시 시도해 주세요.",
+                },
+            )
         return JSONResponse(
             status_code=status.HTTP_502_BAD_GATEWAY,
             content={

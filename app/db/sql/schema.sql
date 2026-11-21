@@ -1,4 +1,5 @@
 -- 테이블 삭제
+DROP TABLE IF EXISTS chat_attachments CASCADE;
 DROP TABLE IF EXISTS chat_messages CASCADE;
 DROP TABLE IF EXISTS chat_rooms CASCADE;
 DROP TABLE IF EXISTS password_reset_verifications CASCADE;
@@ -72,12 +73,14 @@ CREATE TABLE chat_messages (
                                sender_role VARCHAR(20) NOT NULL
                                    CHECK (sender_role IN ('USER', 'ASSISTANT', 'SYSTEM')),
 
-    -- TEXT: 일반 채팅 / VOICE: 음성 입력
+    -- TEXT: 일반 채팅 / VOICE: 음성 입력 / IMAGE: 이미지 첨부
                                message_type VARCHAR(20) NOT NULL
-                                   CHECK (message_type IN ('TEXT', 'VOICE')),
+                                   CHECK (message_type IN ('TEXT', 'VOICE', 'IMAGE')),
 
                                chat_content TEXT,
                                voice_file_path VARCHAR(512),
+                               client_request_id VARCHAR(36) UNIQUE,
+                               response_data JSON,
                                chat_message_created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
                                CONSTRAINT fk_chat_messages_room
@@ -93,6 +96,20 @@ CREATE TABLE chat_messages (
 );
 
 -- 조회 성능을 위한 인덱스
+CREATE TABLE chat_attachments (
+    attachment_id VARCHAR(36) PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    chat_message_id BIGINT REFERENCES chat_messages(chat_message_id) ON DELETE CASCADE,
+    storage_key VARCHAR(64) NOT NULL,
+    content_type VARCHAR(40) NOT NULL,
+    size INTEGER NOT NULL,
+    width INTEGER NOT NULL,
+    height INTEGER NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_chat_attachments_user ON chat_attachments(user_id);
+CREATE INDEX idx_chat_attachments_message ON chat_attachments(chat_message_id);
+
 CREATE INDEX idx_chat_rooms_user_id
     ON chat_rooms(user_id);
 

@@ -9,6 +9,32 @@ export type ChatRole = 'user' | 'assistant'
 export type ChatHistoryMessage = {
   role: ChatRole
   content: string
+  attachments?: ChatAttachment[]
+}
+
+export type ChatAttachment = {
+  attachment_id: string
+  url: string
+  content_type: string
+  size: number
+  width: number
+  height: number
+}
+
+export function chatImageUrl(path: string): string {
+  return new URL(path, apiClient.defaults.baseURL).href
+}
+
+export async function uploadChatImages(files: File[]): Promise<ChatAttachment[]> {
+  const form = new FormData()
+  files.forEach(file => form.append('files', file))
+  try {
+    return (await apiClient.post<ChatAttachment[]>('/api/ai/images', form, {
+      headers: { 'Content-Type': undefined },
+    })).data
+  } catch (error) {
+    throw createChatApiError(error, t('imageUploadFailed'))
+  }
 }
 
 export type EmotionScore = {
@@ -39,6 +65,7 @@ export type StoredChatMessage = {
   role: ChatRole
   content: string
   created_at: string
+  attachments: ChatAttachment[]
 }
 
 export type ChatServerStatus = 'online' | 'offline'
@@ -103,6 +130,8 @@ export async function getChatServerStatus(): Promise<ChatServerStatus> {
 export async function sendChatMessage(
   message: string,
   chatRoomId: number | null,
+  attachmentIds: string[] = [],
+  clientRequestId?: string,
 ): Promise<ChatResponse> {
   try {
     const response = await apiClient.post<ChatResponse>(
@@ -110,6 +139,8 @@ export async function sendChatMessage(
       {
         message,
         chat_room_id: chatRoomId,
+        attachment_ids: attachmentIds,
+        client_request_id: clientRequestId,
       },
     )
 

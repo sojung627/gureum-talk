@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 
 from app.core.error.exceptions import ChatRoomNotFoundError
-from app.models.chat import ChatMessage, ChatRoom
+from app.models.chat import ChatAttachment, ChatMessage, ChatRoom
 
 
 def list_chat_rooms(
@@ -88,6 +88,9 @@ def save_chat_exchange(
         assistant_message: str,
         chat_title: str,
         chat_room: ChatRoom | None = None,
+        attachments: list[ChatAttachment] | None = None,
+        client_request_id: str | None = None,
+        response_data: dict | None = None,
 ) -> ChatRoom:
     """사용자 질문과 AI 답변을 하나의 트랜잭션으로 저장"""
     try:
@@ -99,14 +102,20 @@ def save_chat_exchange(
             db.add(chat_room)
             db.flush()
 
+        user_record = ChatMessage(
+            chat_room_id=chat_room.chat_room_id,
+            sender_role="USER",
+            message_type="IMAGE" if attachments else "TEXT",
+            chat_content=user_message,
+            client_request_id=client_request_id,
+            response_data={**response_data, "chat_room_id": chat_room.chat_room_id, "chat_title": chat_room.chat_title} if response_data else None,
+        )
+        db.add(user_record)
+        db.flush()
+        for attachment in attachments or []:
+            attachment.chat_message_id = user_record.chat_message_id
         db.add_all(
             [
-                ChatMessage(
-                    chat_room_id=chat_room.chat_room_id,
-                    sender_role="USER",
-                    message_type="TEXT",
-                    chat_content=user_message,
-                ),
                 ChatMessage(
                     chat_room_id=chat_room.chat_room_id,
                     sender_role="ASSISTANT",
@@ -160,5 +169,16 @@ def delete_chat_room(
         chat_room: ChatRoom,
 ) -> None:
     """대화방을 삭제하면 FK 설정에 따라 메시지도 함께 삭제"""
+    from app.core.services.chat_images import image_path
+    attachments = db.query(ChatAttachment).join(
+        ChatMessage, ChatMessage.chat_message_id == ChatAttachment.chat_message_id,
+    ).filter(ChatMessage.chat_room_id == chat_room.chat_room_id).all()
+    paths = [image_path(attachment.storage_key) for attachment in attachments]
     db.delete(chat_room)
     db.commit()
+    for path in paths:
+        try:
+            path.unlink(missing_ok=True)
+        except OSError:
+            # The cleanup command retries orphaned files after 24 hours.
+            pass
