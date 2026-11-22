@@ -5,9 +5,10 @@ type MessageActionsProps = {
   content: string
   copyText: (text: string) => Promise<void>
   onNotice: (message: string) => void
+  showFeedback?: boolean
 }
 
-export default function MessageActions({ content, copyText, onNotice }: MessageActionsProps) {
+export default function MessageActions({ content, copyText, onNotice, showFeedback = true }: MessageActionsProps) {
   const { t, i18n } = useTranslation()
   const [reading, setReading] = useState(false)
   const [feedback, setFeedback] = useState<'like' | 'dislike' | null>(null)
@@ -88,7 +89,7 @@ export default function MessageActions({ content, copyText, onNotice }: MessageA
 
   return (
     <div className="flex items-center gap-1.5 pl-1" role="group" aria-label={t('messageActions')}>
-      {actions.map(action => (
+      {actions.filter(action => showFeedback || (action.id !== 'like' && action.id !== 'dislike')).map(action => (
         <button
           key={action.id}
           type="button"

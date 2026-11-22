@@ -885,11 +885,12 @@ function ChatRoom({
                         </ReactMarkdown>
                       ) : chatMessage.content}
                     </div>}
-                    {chatMessage.role === 'assistant' && chatMessage.content.trim() && (
+                    {chatMessage.content.trim() && (
                       <MessageActions
                         content={chatMessage.content}
                         copyText={copyTextToClipboard}
                         onNotice={showNotice}
+                        showFeedback={chatMessage.role === 'assistant'}
                       />
                     )}
                   </div>

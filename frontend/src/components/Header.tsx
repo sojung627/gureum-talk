@@ -9,7 +9,7 @@ import UserRegisterModal from '../pages/users/UserRegisterModal'
 import { activeModalAtom } from '../state/uiAtoms'
 
 const navigationItems = [  
-  { path: '/', label: 'home' },
+  { path: '/', label: 'home' }, 
   { path: '/features', label: 'features' },
   { path: '/plans', label: 'plans' },
   { path: '/help', label: 'help' },
