@@ -367,5 +367,14 @@
   "invalidImage": "올바른 이미지 파일을 첨부해 주세요.",
   "imageExpired": "첨부 이미지가 만료되었거나 사용할 수 없습니다. 다시 첨부해 주세요.",
   "imageMissing": "이미지 파일이 없습니다. 다시 첨부해 주세요.",
-  "aiInputLimit": "이미지와 대화 내용이 AI 입력 한도를 초과했습니다. 메시지를 줄이거나 새 대화에서 다시 시도해 주세요."
+  "aiInputLimit": "이미지와 대화 내용이 AI 입력 한도를 초과했습니다. 메시지를 줄이거나 새 대화에서 다시 시도해 주세요.",
+  "messageActions": "답변 동작",
+  "messageCopy": "복사",
+  "messageReadAloud": "소리 내어 읽기",
+  "messageStopReading": "읽기 중지",
+  "messageLike": "좋아요",
+  "messageDislike": "싫어요",
+  "messageCopied": "답변을 복사했습니다.",
+  "messageActionFailed": "작업을 완료하지 못했습니다. 다시 시도해 주세요.",
+  "messageSpeechUnavailable": "이 브라우저에서는 소리 내어 읽기를 지원하지 않습니다."
 }

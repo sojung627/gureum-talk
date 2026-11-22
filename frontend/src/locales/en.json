@@ -367,5 +367,14 @@
   "invalidImage": "Please attach a valid image file.",
   "imageExpired": "The attached image has expired or is unavailable. Please attach it again.",
   "imageMissing": "The image file is missing. Please attach it again.",
-  "aiInputLimit": "The images and conversation exceed the AI input limit. Shorten your message or try again in a new chat."
+  "aiInputLimit": "The images and conversation exceed the AI input limit. Shorten your message or try again in a new chat.",
+  "messageActions": "Message actions",
+  "messageCopy": "Copy",
+  "messageReadAloud": "Read aloud",
+  "messageStopReading": "Stop reading",
+  "messageLike": "Like",
+  "messageDislike": "Dislike",
+  "messageCopied": "Reply copied.",
+  "messageActionFailed": "Could not complete the action. Please try again.",
+  "messageSpeechUnavailable": "This browser does not support reading aloud."
 }

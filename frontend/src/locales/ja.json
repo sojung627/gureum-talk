@@ -367,5 +367,14 @@
   "invalidImage": "有効な画像ファイルを添付してください。",
   "imageExpired": "添付画像の有効期限が切れているか、利用できません。再度添付してください。",
   "imageMissing": "画像ファイルがありません。再度添付してください。",
-  "aiInputLimit": "画像と会話内容がAIの入力上限を超えています。メッセージを短くするか、新しいチャットで再度お試しください。"
+  "aiInputLimit": "画像と会話内容がAIの入力上限を超えています。メッセージを短くするか、新しいチャットで再度お試しください。",
+  "messageActions": "回答の操作",
+  "messageCopy": "コピー",
+  "messageReadAloud": "読み上げ",
+  "messageStopReading": "読み上げを停止",
+  "messageLike": "高評価",
+  "messageDislike": "低評価",
+  "messageCopied": "回答をコピーしました。",
+  "messageActionFailed": "操作を完了できませんでした。もう一度お試しください。",
+  "messageSpeechUnavailable": "このブラウザーは読み上げに対応していません。"
 }

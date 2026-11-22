@@ -1,0 +1,69 @@
+<style>
+#gureum-actions .stage[hidden]{display:none}
+#gureum-actions .stage{box-sizing:border-box;min-height:310px;padding:32px 22px;display:flex;align-items:center;justify-content:center}
+#gureum-actions .product{--gt-bg:light-dark(#ffffff,#151322);--gt-text:light-dark(#374151,#e2e8f0);--gt-muted:light-dark(#777589,#a5a1b6);--gt-bubble:light-dark(#f5f3ff,#292238);--gt-line:light-dark(#ede9fe,#453651);--gt-hover:light-dark(#ede9fe,#3b2d50);--gt-purple:light-dark(#7c3aed,#c4a5ff);width:100%;max-width:550px;padding:24px;border-radius:20px;background:var(--gt-bg);color:var(--gt-text);font:14px/1.65 system-ui,'Malgun Gothic',sans-serif;box-shadow:0 5px 24px light-dark(#29203c0a,#00000018);box-sizing:border-box}
+#gureum-actions .sender{display:flex;align-items:center;gap:7px;margin-bottom:12px;font-size:12px;font-weight:500;color:var(--gt-muted)}
+#gureum-actions .sender svg{width:16px;height:16px;color:var(--gt-purple)}
+#gureum-actions .bubble{border:1px solid var(--gt-line);background:var(--gt-bubble);border-radius:16px 16px 16px 6px;padding:12px 16px;max-width:430px}
+#gureum-actions .bubble p{margin:0}
+#gureum-actions .bubble p+p{margin-top:8px}
+#gureum-actions .actions{display:flex;align-items:center;gap:4px;margin-top:var(--action-gap,8px);max-width:464px}
+#gureum-actions .action{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:32px;height:32px;padding:0;border:0;border-radius:8px;background:transparent;color:var(--gt-muted)}
+#gureum-actions .action svg{width:var(--icon-size,16px);height:var(--icon-size,16px);stroke-width:1.7}
+#gureum-actions .action:hover,#gureum-actions .action:focus-visible{background:var(--gt-hover);color:var(--gt-purple)}
+#gureum-actions .feedback{display:flex;gap:4px}
+#gureum-actions .split .feedback{margin-left:auto}
+#gureum-actions .split .actions{padding:0 4px}
+@media(pointer:coarse){#gureum-actions .action{width:44px;height:44px}}
+@media(max-width:420px){#gureum-actions .stage{padding:24px 8px;min-height:340px}#gureum-actions .product{padding:16px}#gureum-actions .actions{gap:0}#gureum-actions .feedback{gap:0}}
+</style>
+<div id="gureum-actions" class="viz-carousel viz-dotted-background" aria-label="말풍선 아래 아이콘 배치 초안" data-previous-label="이전 시안" data-next-label="다음 시안">
+  <section class="stage" data-variant="한 줄 정렬" aria-label="한 줄 정렬 시안">
+    <div class="product" aria-label="한 줄 정렬 아이콘 간격">
+      <div class="sender"><i data-lucide="cloud" aria-hidden="true"></i>구름</div>
+      <div class="bubble"><p>오늘은 잠깐 쉬어가도 괜찮아요.</p><p>따뜻한 차 한 잔 마시면서,<br>지금 하고 싶은 일부터 하나씩 해볼까요?</p></div>
+      <div class="actions" role="group" aria-label="답변 동작">
+        <button type="button" class="action cursor-interaction" aria-label="복사" data-tooltip="복사"><i data-lucide="copy" aria-hidden="true"></i></button>
+        <button type="button" class="action cursor-interaction" aria-label="소리 내어 읽기" data-tooltip="소리 내어 읽기"><i data-lucide="volume-2" aria-hidden="true"></i></button>
+        <button type="button" class="action cursor-interaction" aria-label="공유" data-tooltip="공유"><i data-lucide="share-2" aria-hidden="true"></i></button>
+        <div class="feedback" role="group" aria-label="답변 평가">
+          <button type="button" class="action cursor-interaction" aria-label="좋아요" data-tooltip="좋아요"><i data-lucide="thumbs-up" aria-hidden="true"></i></button>
+          <button type="button" class="action cursor-interaction" aria-label="싫어요" data-tooltip="싫어요"><i data-lucide="thumbs-down" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="stage" data-variant="평가 오른쪽 분리" aria-label="평가 오른쪽 분리 시안" hidden>
+    <div class="product split" aria-label="평가 오른쪽 분리 아이콘 간격">
+      <div class="sender"><i data-lucide="cloud" aria-hidden="true"></i>구름</div>
+      <div class="bubble"><p>오늘은 잠깐 쉬어가도 괜찮아요.</p><p>따뜻한 차 한 잔 마시면서,<br>지금 하고 싶은 일부터 하나씩 해볼까요?</p></div>
+      <div class="actions" role="group" aria-label="답변 동작">
+        <button type="button" class="action cursor-interaction" aria-label="복사" data-tooltip="복사"><i data-lucide="copy" aria-hidden="true"></i></button>
+        <button type="button" class="action cursor-interaction" aria-label="소리 내어 읽기" data-tooltip="소리 내어 읽기"><i data-lucide="volume-2" aria-hidden="true"></i></button>
+        <button type="button" class="action cursor-interaction" aria-label="공유" data-tooltip="공유"><i data-lucide="share-2" aria-hidden="true"></i></button>
+        <div class="feedback" role="group" aria-label="답변 평가">
+          <button type="button" class="action cursor-interaction" aria-label="좋아요" data-tooltip="좋아요"><i data-lucide="thumbs-up" aria-hidden="true"></i></button>
+          <button type="button" class="action cursor-interaction" aria-label="싫어요" data-tooltip="싫어요"><i data-lucide="thumbs-down" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+(() => {
+  const root = document.getElementById('gureum-actions');
+  root.querySelectorAll('.product').forEach(product => {
+    const state = {size:16, gap:8};
+    const render = () => {
+      product.style.setProperty('--icon-size',state.size+'px');
+      product.style.setProperty('--action-gap',state.gap+'px');
+    };
+    render();
+    if(globalThis.Tweak){
+      const tweak = new Tweak({container:product,onChange:render});
+      tweak.addSlider(state,'size',{label:'아이콘 크기',min:14,max:22,unit:'px'});
+      tweak.addSlider(state,'gap',{label:'말풍선 아래 간격',min:4,max:16,unit:'px'});
+    }
+  });
+})();
+</script>

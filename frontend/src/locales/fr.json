@@ -367,5 +367,14 @@
   "invalidImage": "Veuillez joindre un fichier image valide.",
   "imageExpired": "L’image jointe a expiré ou est indisponible. Veuillez la joindre à nouveau.",
   "imageMissing": "Le fichier image est introuvable. Veuillez le joindre à nouveau.",
-  "aiInputLimit": "Les images et la conversation dépassent la limite d’entrée de l’IA. Raccourcissez votre message ou réessayez dans une nouvelle discussion."
+  "aiInputLimit": "Les images et la conversation dépassent la limite d’entrée de l’IA. Raccourcissez votre message ou réessayez dans une nouvelle discussion.",
+  "messageActions": "Actions de la réponse",
+  "messageCopy": "Copier",
+  "messageReadAloud": "Lire à voix haute",
+  "messageStopReading": "Arrêter la lecture",
+  "messageLike": "J’aime",
+  "messageDislike": "Je n’aime pas",
+  "messageCopied": "Réponse copiée.",
+  "messageActionFailed": "Impossible de terminer cette action. Veuillez réessayer.",
+  "messageSpeechUnavailable": "Ce navigateur ne prend pas en charge la lecture à voix haute."
 }

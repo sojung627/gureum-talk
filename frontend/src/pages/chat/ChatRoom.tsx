@@ -38,6 +38,7 @@ import {
 import ChatRoomHeaderMenu from './ChatRoomHeaderMenu'
 import ChatRoomListItem from './ChatRoomListItem'
 import VoiceVisualizer from './VoiceVisualizer'
+import MessageActions from './MessageActions'
 import { queryKeys } from '../../queries/queryKeys'
 import {
   activeChatRoomIdAtom,
@@ -579,8 +580,13 @@ function ChatRoom({
     document.body.appendChild(temporaryTextArea)
     temporaryTextArea.focus()
     temporaryTextArea.select()
-    document.execCommand('copy')
-    temporaryTextArea.remove()
+    try {
+      if (!document.execCommand('copy')) {
+        throw new Error(t('messageActionFailed'))
+      }
+    } finally {
+      temporaryTextArea.remove()
+    }
   }
 
   const shareChatRoom = async (
@@ -879,6 +885,13 @@ function ChatRoom({
                         </ReactMarkdown>
                       ) : chatMessage.content}
                     </div>}
+                    {chatMessage.role === 'assistant' && chatMessage.content.trim() && (
+                      <MessageActions
+                        content={chatMessage.content}
+                        copyText={copyTextToClipboard}
+                        onNotice={showNotice}
+                      />
+                    )}
                   </div>
                 </div>
               ))}
